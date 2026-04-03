@@ -26,7 +26,7 @@ export function Navbar() {
     <nav className="border-b border-border bg-card shadow-sm">
       <div className="flex items-center justify-between px-4 py-3 md:px-6">
         {/* Logo & Brand */}
-        <Link href="/farmer/home" className="flex items-center gap-2">
+        <Link href="/farmer/(dashboard)/home" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-600 to-green-800" />
           <span className="hidden text-xl font-bold text-foreground sm:inline">
             AgriSathi
