@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home,
-  Shopping,
+  ShoppingBag,
   Cloud,
   Users,
   Stethoscope,
@@ -20,19 +20,19 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const menuItems = [
-  { label: 'Home', href: '/farmer/home', icon: Home },
-  { label: 'Marketplace', href: '/farmer/marketplace', icon: Shopping },
-  { label: 'Weather', href: '/farmer/weather', icon: Cloud },
-  { label: 'Communities', href: '/farmer/communities', icon: Users },
-  { label: 'Expert Talk', href: '/farmer/expert-talk', icon: Stethoscope },
-  { label: 'Schemes', href: '/farmer/schemes', icon: FileText },
-  { label: 'Workers', href: '/farmer/workers', icon: Wrench },
-  { label: 'My Products', href: '/farmer/my-products', icon: Package },
+  { label: 'Home', href: '/farmer/(dashboard)/home', icon: Home },
+  { label: 'Marketplace', href: '/farmer/(dashboard)/marketplace', icon: ShoppingBag },
+  { label: 'Weather', href: '/farmer/(dashboard)/weather', icon: Cloud },
+  { label: 'Communities', href: '/farmer/(dashboard)/communities', icon: Users },
+  { label: 'Expert Talk', href: '/farmer/(dashboard)/expert-talk', icon: Stethoscope },
+  { label: 'Schemes', href: '/farmer/(dashboard)/schemes', icon: FileText },
+  { label: 'Workers', href: '/farmer/(dashboard)/workers', icon: Wrench },
+  { label: 'My Products', href: '/farmer/(dashboard)/my-products', icon: Package },
 ];
 
 const bottomItems = [
-  { label: 'Settings', href: '/farmer/settings', icon: Settings },
-  { label: 'Help', href: '/farmer/help', icon: HelpCircle },
+  { label: 'Settings', href: '/farmer/(dashboard)/settings', icon: Settings },
+  { label: 'Help', href: '/farmer/(dashboard)/help', icon: HelpCircle },
 ];
 
 export function Sidebar() {

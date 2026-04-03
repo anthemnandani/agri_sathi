@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home,
-  Shopping,
+  ShoppingBag,
   Cloud,
   Users,
   Stethoscope,
@@ -13,11 +13,11 @@ import {
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { label: 'Home', href: '/farmer/home', icon: Home },
-  { label: 'Market', href: '/farmer/marketplace', icon: Shopping },
-  { label: 'Weather', href: '/farmer/weather', icon: Cloud },
-  { label: 'Community', href: '/farmer/communities', icon: Users },
-  { label: 'Expert', href: '/farmer/expert-talk', icon: Stethoscope },
+  { label: 'Home', href: '/farmer/(dashboard)/home', icon: Home },
+  { label: 'Market', href: '/farmer/(dashboard)/marketplace', icon: ShoppingBag },
+  { label: 'Weather', href: '/farmer/(dashboard)/weather', icon: Cloud },
+  { label: 'Community', href: '/farmer/(dashboard)/communities', icon: Users },
+  { label: 'Expert', href: '/farmer/(dashboard)/expert-talk', icon: Stethoscope },
 ];
 
 export function MobileNav() {
