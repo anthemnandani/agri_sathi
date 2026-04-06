@@ -1,101 +1,90 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Globe } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+import { useTheme } from '@/lib/theme-context';
+import { useTranslation } from '@/lib/use-translation';
+import { LANGUAGES } from '@/lib/i18n';
+import type { Language } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { toast } from 'sonner';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export function LanguageSettings() {
-  const [language, setLanguage] = useState('english');
+  const { language, setLanguage, isDark, setIsDark } = useTheme();
+  const { t } = useTranslation();
 
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage);
-    toast.success(
-      newLanguage === 'english'
-        ? 'Language changed to English'
-        : 'भाषा हिंदी में बदल दी गई है'
-    );
-    // Here you would integrate with a i18n library like next-i18next
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
   };
 
   return (
     <div className="space-y-6">
+      {/* Language Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
-            Language & Region
-          </CardTitle>
+          <CardTitle>{t('settings.language')}</CardTitle>
           <CardDescription>
-            Choose your preferred language for the app interface
+            Choose your preferred language for the platform
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Language Selection */}
-          <div>
-            <label className="text-sm font-medium text-foreground mb-2 block">
-              App Language
-            </label>
-            <Select value={language} onValueChange={handleLanguageChange}>
-              <SelectTrigger className="w-full max-w-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="hindi">हिंदी (Hindi)</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-2">
-              The entire app interface will switch to your selected language
-            </p>
-          </div>
-
-          {/* Language Info */}
-          <div className="p-4 rounded-lg bg-muted/50 border border-border">
-            <p className="text-sm text-foreground font-medium mb-2">
-              {language === 'english' ? 'Current Language: English' : 'वर्तमान भाषा: हिंदी'}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {language === 'english'
-                ? 'You are viewing AgriSathi in English. Switch to Hindi for better local experience.'
-                : 'आप AgriSathi को हिंदी में देख रहे हैं। बेहतर स्थानीय अनुभव के लिए अंग्रेजी पर स्विच करें।'}
-            </p>
-          </div>
-
-          {/* Additional Language Options */}
-          <div className="pt-4 border-t border-border">
-            <h3 className="text-sm font-medium text-foreground mb-3">
-              {language === 'english' ? 'Available Languages' : 'उपलब्ध भाषाएं'}
-            </h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-                <div className="h-3 w-3 rounded-full bg-primary" />
-                <div>
-                  <p className="text-sm font-medium">English</p>
-                  <p className="text-xs text-muted-foreground">
-                    {language === 'english' ? 'Currently selected' : 'वर्तमान में चयनित'}
-                  </p>
+        <CardContent>
+          <RadioGroup value={language} onValueChange={handleLanguageChange}>
+            <div className="space-y-4">
+              {(Object.entries(LANGUAGES) as [Language, typeof LANGUAGES['en']][]).map(([lang, info]) => (
+                <div key={lang} className="flex items-center space-x-2">
+                  <RadioGroupItem value={lang} id={lang} />
+                  <Label htmlFor={lang} className="cursor-pointer flex-1">
+                    <div>
+                      <p className="font-medium">{info.nativeName}</p>
+                      <p className="text-sm text-muted-foreground">{info.name}</p>
+                    </div>
+                  </Label>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-                <div className="h-3 w-3 rounded-full bg-green-600" />
-                <div>
-                  <p className="text-sm font-medium">हिंदी (Hindi)</p>
-                  <p className="text-xs text-muted-foreground">
-                    {language === 'english' ? 'Available for selection' : 'चयन के लिए उपलब्ध'}
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
+          </RadioGroup>
+        </CardContent>
+      </Card>
+
+      {/* Theme Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('settings.theme')}</CardTitle>
+          <CardDescription>
+            Choose between light and dark mode for comfortable viewing
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              variant={!isDark ? 'default' : 'outline'}
+              onClick={() => setIsDark(false)}
+              className="h-24 flex flex-col items-center justify-center"
+            >
+              <div className="text-2xl mb-2">☀️</div>
+              <span>{t('settings.lightMode')}</span>
+            </Button>
+            <Button
+              variant={isDark ? 'default' : 'outline'}
+              onClick={() => setIsDark(true)}
+              className="h-24 flex flex-col items-center justify-center"
+            >
+              <div className="text-2xl mb-2">🌙</div>
+              <span>{t('settings.darkMode')}</span>
+            </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Info */}
+      <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+        <CardHeader>
+          <CardTitle className="text-base">Language & Theme Support</CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm text-muted-foreground">
+          Your language and theme preferences are saved automatically. We use modern i18n standards to support multiple languages, 
+          making it easy to add new languages in the future. Theme preference is synced across all your devices.
         </CardContent>
       </Card>
     </div>

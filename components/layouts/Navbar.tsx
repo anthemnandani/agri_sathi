@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Bell, Search, User, Menu, LogOut } from 'lucide-react';
+import { Bell, Search, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { ThemeControls } from './ThemeControls';
 
 export function Navbar() {
   const [notifications] = useState([
@@ -46,6 +47,9 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Theme & Language Controls */}
+          <ThemeControls />
+
           {/* Notifications */}
           <div className="relative">
             <Button
