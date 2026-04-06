@@ -12,6 +12,7 @@ import {
   FileText,
   Wrench,
   Package,
+  Share2,
   Settings,
   HelpCircle,
 } from 'lucide-react';
