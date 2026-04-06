@@ -2,6 +2,7 @@ import React from 'react';
 import { QuickStats } from '@/components/farmer/home/QuickStats';
 import { PostCreate } from '@/components/farmer/home/PostCreate';
 import { FeedSection } from '@/components/farmer/home/FeedSection';
+import { HomeOverview } from '@/components/farmer/home/HomeOverview';
 
 export const metadata = {
   title: 'Home - AgriSathi',
@@ -19,6 +20,9 @@ export default function HomePage() {
 
       {/* Quick Stats */}
       <QuickStats />
+
+      {/* Home Overview - Featured Sections */}
+      <HomeOverview />
 
       {/* Create Post */}
       <PostCreate />
