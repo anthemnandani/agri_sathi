@@ -13,6 +13,7 @@ import { useTheme } from '@/lib/theme-context';
 
 export function ThemeControls() {
   const [mounted, setMounted] = useState(false);
+  const { language, setLanguage, isDark, setIsDark } = useTheme();
   
   useEffect(() => {
     setMounted(true);
@@ -30,8 +31,6 @@ export function ThemeControls() {
       </>
     );
   }
-
-  const { language, setLanguage, isDark, setIsDark } = useTheme();
 
   return (
     <>
