@@ -1,12 +1,9 @@
+'use client';
+
 import React from 'react';
 import { CropsPriceTab } from '@/components/farmer/crops/CropsPriceTab';
 import { CropsInformationTab } from '@/components/farmer/crops/CropsInformationTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-export const metadata = {
-  title: 'Crops - AgriSathi',
-  description: 'View crop prices and detailed information',
-};
 
 export default function CropsPage() {
   return (
