@@ -69,10 +69,10 @@ export function CropsPriceTab() {
 
   const filteredData = mockPriceData.filter((item) => {
     return (
-      (!filters.commodity || item.commodity === filters.commodity) &&
-      (!filters.state || item.state === filters.state) &&
-      (!filters.district || item.district === filters.district) &&
-      (!filters.market || item.marketName === filters.market)
+      (filters.commodity === '' || filters.commodity === 'all' || item.commodity === filters.commodity) &&
+      (filters.state === '' || filters.state === 'all' || item.state === filters.state) &&
+      (filters.district === '' || filters.district === 'all' || item.district === filters.district) &&
+      (filters.market === '' || filters.market === 'all' || item.marketName === filters.market)
     );
   });
 
@@ -168,7 +168,7 @@ export function CropsPriceTab() {
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="Paddy">Paddy</SelectItem>
                   <SelectItem value="Wheat">Wheat</SelectItem>
                   <SelectItem value="Maize">Maize</SelectItem>
@@ -189,7 +189,7 @@ export function CropsPriceTab() {
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="Bihar">Bihar</SelectItem>
                   <SelectItem value="Punjab">Punjab</SelectItem>
                   <SelectItem value="Haryana">Haryana</SelectItem>
@@ -210,7 +210,7 @@ export function CropsPriceTab() {
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="Supaul">Supaul</SelectItem>
                   <SelectItem value="Ludhiana">Ludhiana</SelectItem>
                   <SelectItem value="Kurukshetra">Kurukshetra</SelectItem>
