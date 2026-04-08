@@ -52,19 +52,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* Mobile Menu Button */}
-          {isMobile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onMenuClick}
-              className="md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          )}
-
+        <div className="flex items-center gap-2 md:gap-4 ml-auto">
           {/* Theme & Language Controls */}
           <ThemeControls />
 
@@ -89,6 +77,17 @@ export function Navbar({ onMenuClick }: NavbarProps) {
               </Link>
             </Button>
           </div>
+
+          {/* Mobile Menu Button */}
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMenuClick}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
 
           {/* User Menu */}
           <DropdownMenu>

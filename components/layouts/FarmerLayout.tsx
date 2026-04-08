@@ -28,11 +28,11 @@ export function FarmerLayout({ children }: FarmerLayoutProps) {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40 bg-black/50"
+              className="fixed inset-0 z-40 bg-black/50 md:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             {/* Mobile Sidebar */}
-            <div className="fixed left-0 top-0 z-50 h-screen overflow-y-auto">
+            <div className="fixed left-0 top-16 z-50 h-[calc(100vh-64px)] overflow-y-auto md:hidden w-64 bg-card border-r border-border">
               <Sidebar />
             </div>
           </>
