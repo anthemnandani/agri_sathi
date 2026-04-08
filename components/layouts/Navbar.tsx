@@ -30,7 +30,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <nav className="border-b border-border bg-card shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-card shadow-sm">
       <div className="flex items-center justify-between px-4 py-3 md:px-6">
         {/* Logo & Brand */}
         <Link href="/farmer/home" className="flex items-center gap-2">

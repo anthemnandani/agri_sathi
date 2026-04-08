@@ -7,12 +7,13 @@ import { MobileNav } from './MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 function SidebarWithClose({ onClose }: { onClose: () => void }) {
+  const handleNavigation = () => {
+    // Close sidebar on any navigation
+    setTimeout(() => onClose(), 50);
+  };
+
   return (
-    <div onClick={(e) => {
-      if (e.currentTarget === e.target) return;
-      const link = (e.target as HTMLElement).closest('a, button');
-      if (link) onClose();
-    }}>
+    <div onClick={handleNavigation}>
       <Sidebar />
     </div>
   );
@@ -31,7 +32,7 @@ export function FarmerLayout({ children }: FarmerLayoutProps) {
       {/* Top Navbar */}
       <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden mt-[60px]">
         {/* Desktop Sidebar */}
         {!isMobile && <Sidebar />}
 
@@ -40,11 +41,11 @@ export function FarmerLayout({ children }: FarmerLayoutProps) {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40 bg-black/50 md:hidden"
+              className="fixed inset-0 z-30 bg-black/50 md:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             {/* Mobile Sidebar */}
-            <div className="fixed left-0 top-16 z-50 h-[calc(100vh-64px)] overflow-y-auto md:hidden w-64 bg-card border-r border-border">
+            <div className="fixed left-0 top-[60px] h-[calc(100vh-60px)] overflow-y-auto md:hidden w-64 bg-card border-r border-border" style={{ zIndex: 35 }}>
               <SidebarWithClose onClose={() => setSidebarOpen(false)} />
             </div>
           </>
