@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Bell, Search, User, LogOut } from 'lucide-react';
+import { Bell, Search, User, LogOut, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,8 +14,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { ThemeControls } from './ThemeControls';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-export function Navbar() {
+interface NavbarProps {
+  onMenuClick?: () => void;
+}
+
+export function Navbar({ onMenuClick }: NavbarProps) {
+  const isMobile = useIsMobile();
   const [notifications] = useState([
     { id: 1, message: 'New product added in your area', unread: true },
     { id: 2, message: 'Weather alert: Heavy rain expected', unread: true },
@@ -47,6 +53,18 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Mobile Menu Button */}
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMenuClick}
+              className="md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
+
           {/* Theme & Language Controls */}
           <ThemeControls />
 

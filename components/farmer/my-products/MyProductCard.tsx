@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Eye, MessageSquare, Edit2, Trash2, Copy } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 interface MyProductCardProps {
   product: {
@@ -26,6 +27,9 @@ interface MyProductCardProps {
 }
 
 export function MyProductCard({ product }: MyProductCardProps) {
+  const [status, setStatus] = useState(product.status);
+  const { toast } = useToast();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Active':
@@ -37,6 +41,37 @@ export function MyProductCard({ product }: MyProductCardProps) {
       default:
         return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  const handleEdit = () => {
+    toast({
+      title: 'Edit Product',
+      description: `Editing "${product.title}"`,
+    });
+  };
+
+  const handleDuplicate = () => {
+    toast({
+      title: 'Product Duplicated',
+      description: `"${product.title}" has been duplicated`,
+    });
+  };
+
+  const handleDelete = () => {
+    toast({
+      title: 'Product Deleted',
+      description: `"${product.title}" has been removed`,
+      variant: 'destructive',
+    });
+  };
+
+  const handleStatusToggle = () => {
+    const newStatus = status === 'Active' ? 'Inactive' : 'Active';
+    setStatus(newStatus);
+    toast({
+      title: 'Status Updated',
+      description: `Product marked as ${newStatus}`,
+    });
   };
 
   return (
@@ -66,15 +101,15 @@ export function MyProductCard({ product }: MyProductCardProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleEdit}>
                 <Edit2 className="h-4 w-4 mr-2" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDuplicate}>
                 <Copy className="h-4 w-4 mr-2" />
                 Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem onClick={handleDelete} className="text-destructive">
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
@@ -83,8 +118,8 @@ export function MyProductCard({ product }: MyProductCardProps) {
         </div>
 
         {/* Status Badge */}
-        <Badge className={getStatusColor(product.status)}>
-          {product.status}
+        <Badge className={getStatusColor(status)}>
+          {status}
         </Badge>
 
         {/* Stats */}
@@ -110,9 +145,14 @@ export function MyProductCard({ product }: MyProductCardProps) {
         </div>
 
         {/* Action Buttons */}
-        {product.status === 'Active' && (
-          <Button variant="outline" className="w-full" size="sm">
+        {status === 'Active' && (
+          <Button variant="outline" className="w-full" size="sm" onClick={handleStatusToggle}>
             Mark as Inactive
+          </Button>
+        )}
+        {status === 'Inactive' && (
+          <Button variant="outline" className="w-full" size="sm" onClick={handleStatusToggle}>
+            Mark as Active
           </Button>
         )}
       </CardContent>

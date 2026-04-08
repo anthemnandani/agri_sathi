@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MyProductCard } from './MyProductCard';
 
@@ -56,12 +54,6 @@ export function MyProductsList() {
 
   return (
     <div className="space-y-4">
-      {/* Add Product Button */}
-      <Button className="gap-2">
-        <Plus className="h-4 w-4" />
-        Add New Product
-      </Button>
-
       {/* Tabs */}
       <Tabs defaultValue="active" className="w-full">
         <TabsList>
