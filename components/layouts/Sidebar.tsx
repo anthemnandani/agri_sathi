@@ -13,6 +13,7 @@ import {
   Wrench,
   Package,
   Share2,
+  Leaf,
   Settings,
   HelpCircle,
 } from 'lucide-react';
@@ -25,6 +26,7 @@ const menuItems = [
   { label: 'Posts', href: '/farmer/posts', icon: Share2 },
   { label: 'Marketplace', href: '/farmer/marketplace', icon: ShoppingBag },
   { label: 'Weather', href: '/farmer/weather', icon: Cloud },
+  { label: 'Crops', href: '/farmer/crops', icon: Leaf },
   { label: 'Communities', href: '/farmer/communities', icon: Users },
   { label: 'Expert Talk', href: '/farmer/expert-talk', icon: Stethoscope },
   { label: 'Schemes', href: '/farmer/schemes', icon: FileText },
