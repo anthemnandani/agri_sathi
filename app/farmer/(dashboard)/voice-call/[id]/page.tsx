@@ -6,11 +6,12 @@ export const metadata = {
 };
 
 interface VoiceCallPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function VoiceCallPage({ params }: VoiceCallPageProps) {
-  return <VoiceCallInterface userId={params.id} />;
+export default async function VoiceCallPage({ params }: VoiceCallPageProps) {
+  const { id } = await params;
+  return <VoiceCallInterface userId={id} />;
 }
