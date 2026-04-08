@@ -6,6 +6,18 @@ import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+function SidebarWithClose({ onClose }: { onClose: () => void }) {
+  return (
+    <div onClick={(e) => {
+      if (e.currentTarget === e.target) return;
+      const link = (e.target as HTMLElement).closest('a, button');
+      if (link) onClose();
+    }}>
+      <Sidebar />
+    </div>
+  );
+}
+
 interface FarmerLayoutProps {
   children: ReactNode;
 }
@@ -33,7 +45,7 @@ export function FarmerLayout({ children }: FarmerLayoutProps) {
             />
             {/* Mobile Sidebar */}
             <div className="fixed left-0 top-16 z-50 h-[calc(100vh-64px)] overflow-y-auto md:hidden w-64 bg-card border-r border-border">
-              <Sidebar />
+              <SidebarWithClose onClose={() => setSidebarOpen(false)} />
             </div>
           </>
         )}
