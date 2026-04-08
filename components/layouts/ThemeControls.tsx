@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Globe, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +12,12 @@ import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/lib/theme-context';
 
 export function ThemeControls() {
+  const [mounted, setMounted] = useState(false);
   const { language, setLanguage, isDark, setIsDark } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLanguageChange = (lang: 'en' | 'hi') => {
     setLanguage(lang);
@@ -21,6 +26,19 @@ export function ThemeControls() {
   const handleThemeChange = () => {
     setIsDark(!isDark);
   };
+
+  if (!mounted) {
+    return (
+      <>
+        <Button variant="ghost" size="icon" disabled>
+          <Globe className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon" disabled>
+          <Moon className="h-5 w-5" />
+        </Button>
+      </>
+    );
+  }
 
   return (
     <>
