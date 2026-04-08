@@ -11,7 +11,7 @@ import {
   Video,
   VideoOff,
   Monitor,
-  Record,
+  Disc3,
   MessageSquare,
   MoreVertical,
 } from 'lucide-react';
@@ -183,7 +183,7 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
           onClick={() => setIsRecording(!isRecording)}
           title={isRecording ? 'Stop Recording' : 'Start Recording'}
         >
-          <Record className="h-6 w-6" />
+          <Disc3 className="h-6 w-6" />
         </Button>
 
         {/* Chat */}
