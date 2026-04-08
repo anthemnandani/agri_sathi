@@ -1,24 +1,11 @@
 import React from 'react';
-import { ProfileHeader } from '@/components/farmer/profile/ProfileHeader';
-import { ProfileStats } from '@/components/farmer/profile/ProfileStats';
-import { ProfileAbout } from '@/components/farmer/profile/ProfileAbout';
+import { ProfilePageContent } from '@/components/farmer/profile/ProfilePageContent';
 
 export const metadata = {
-  title: 'My Profile - AgriSathi',
-  description: 'View and edit your farmer profile',
+  title: 'Profile - AgriSathi',
+  description: 'View farmer profile with messaging and calling options',
 };
 
 export default function ProfilePage() {
-  return (
-    <div className="space-y-6">
-      {/* Profile Header */}
-      <ProfileHeader />
-
-      {/* Profile Stats */}
-      <ProfileStats />
-
-      {/* About Section */}
-      <ProfileAbout />
-    </div>
-  );
+  return <ProfilePageContent />;
 }

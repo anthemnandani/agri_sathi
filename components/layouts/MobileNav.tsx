@@ -5,19 +5,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home,
-  Shopping,
+  ShoppingBag,
   Cloud,
   Users,
   Stethoscope,
+  Share2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { label: 'Home', href: '/farmer/home', icon: Home },
-  { label: 'Market', href: '/farmer/marketplace', icon: Shopping },
+  { label: 'Posts', href: '/farmer/posts', icon: Share2 },
+  { label: 'Market', href: '/farmer/marketplace', icon: ShoppingBag },
   { label: 'Weather', href: '/farmer/weather', icon: Cloud },
   { label: 'Community', href: '/farmer/communities', icon: Users },
-  { label: 'Expert', href: '/farmer/expert-talk', icon: Stethoscope },
 ];
 
 export function MobileNav() {

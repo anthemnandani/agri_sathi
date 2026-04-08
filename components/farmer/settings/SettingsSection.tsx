@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AccountSettings } from './AccountSettings';
 import { NotificationSettings } from './NotificationSettings';
 import { PrivacySettings } from './PrivacySettings';
+import { LanguageSettings } from './LanguageSettings';
 
 export function SettingsSection() {
   return (
@@ -13,6 +14,7 @@ export function SettingsSection() {
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="notifications">Notifications</TabsTrigger>
         <TabsTrigger value="privacy">Privacy & Safety</TabsTrigger>
+        <TabsTrigger value="language">Language</TabsTrigger>
       </TabsList>
 
       <TabsContent value="account" className="mt-6">
@@ -25,6 +27,10 @@ export function SettingsSection() {
 
       <TabsContent value="privacy" className="mt-6">
         <PrivacySettings />
+      </TabsContent>
+
+      <TabsContent value="language" className="mt-6">
+        <LanguageSettings />
       </TabsContent>
     </Tabs>
   );
