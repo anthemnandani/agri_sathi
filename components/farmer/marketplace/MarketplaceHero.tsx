@@ -34,7 +34,7 @@ export function MarketplaceHero() {
   };
 
   return (
-    <div className="relative w-full h-48 md:h-64 bg-gradient-to-r from-blue-600 via-teal-600 to-green-600 overflow-hidden rounded-lg mx-4 md:mx-6 mt-4 md:mt-6">
+    <div className="relative w-full h-48 md:h-64 bg-gradient-to-r from-blue-600 via-teal-600 to-green-600 overflow-hidden rounded-lg mx-3 sm:mx-4 md:mx-6 mt-4 md:mt-6">
       {/* Slider Content */}
       <div className="relative w-full h-full flex items-center justify-between px-4">
         {/* Left Arrow */}
