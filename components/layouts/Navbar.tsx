@@ -33,7 +33,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-card shadow-sm">
       <div className="flex items-center justify-between px-4 py-3 md:px-6">
         {/* Logo & Brand */}
-        <Link href="/farmer/home" className="flex items-center gap-2">
+        <Link href="/home" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-600 to-green-800" />
           <span className="hidden text-xl font-bold text-foreground sm:inline">
             AgriSathi
@@ -64,7 +64,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
               className="relative"
               asChild
             >
-              <Link href="/farmer/notifications">
+              <Link href="/notifications">
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
                   <Badge
@@ -87,16 +87,16 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
-                <Link href="/farmer/profile">Profile</Link>
+                <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/farmer/my-products">My Products</Link>
+                <Link href="/my-products">My Products</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/farmer/messages">Messages</Link>
+                <Link href="/messages">Messages</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/farmer/settings">Settings</Link>
+                <Link href="/settings">Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive">

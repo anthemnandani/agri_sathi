@@ -121,13 +121,13 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
         </div>
 
         <div className="flex items-center gap-1">
-          <Link href={`/farmer/voice-call/user-001`}>
+          <Link href={`/voice-call/user-001`}>
             <Button variant="ghost" size="icon" className="text-white hover:bg-green-500">
               <Phone className="h-4 w-4" />
             </Button>
           </Link>
 
-          <Link href={`/farmer/video-call/user-001`}>
+          <Link href={`/video-call/user-001`}>
             <Button variant="ghost" size="icon" className="text-white hover:bg-green-500">
               <Video className="h-4 w-4" />
             </Button>

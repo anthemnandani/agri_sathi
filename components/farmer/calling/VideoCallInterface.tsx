@@ -69,7 +69,7 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
           </div>
           <div className="flex gap-3">
             <Button 
-              onClick={() => router.push(`/farmer/messages`)} 
+              onClick={() => router.push(`/messages`)} 
               className="flex-1 bg-green-600 hover:bg-green-700"
             >
               Open Chat
@@ -210,7 +210,7 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
         </Button>
 
         {/* Chat */}
-        <Link href={`/farmer/messages?user=${userId}`}>
+        <Link href={`/messages?user=${userId}`}>
           <Button
             variant="secondary"
             size="lg"
