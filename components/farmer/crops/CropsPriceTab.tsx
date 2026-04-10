@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -260,6 +261,7 @@ export function CropsPriceTab() {
           <DialogContent className="max-w-sm">
             <DialogHeader>
               <DialogTitle>Filter Results</DialogTitle>
+              <DialogDescription className="sr-only">Filter crop prices by state, market, and date range</DialogDescription>
             </DialogHeader>
             <div className="mt-4">
               <FilterContent />
