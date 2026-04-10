@@ -62,6 +62,36 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
     }
   };
 
+  const handleEmojiClick = () => {
+    const emojis = ['😀', '😂', '❤️', '👍', '🙏', '😍', '🔥', '👏'];
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    setInputValue(inputValue + randomEmoji);
+  };
+
+  const handleDocumentClick = () => {
+    // Trigger file input
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) {
+      (fileInput as HTMLInputElement).click();
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileName = file.name;
+      setMessages([
+        ...messages,
+        {
+          id: messages.length + 1,
+          sender: 'self',
+          text: `📎 ${fileName}`,
+          timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-white/95 to-white dark:from-slate-900 dark:to-slate-950">
       {/* Chat Header - WhatsApp Style */}
@@ -118,8 +148,8 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
         </div>
       </div>
 
-      {/* Messages Area */}
-      <ScrollArea className="flex-1 p-3 md:p-4 space-y-3">
+      {/* Messages Area - Flex to avoid overlap with fixed footer */}
+      <ScrollArea className="flex-1 p-3 md:p-4 space-y-3 overflow-y-auto">
         <div className="space-y-2">
           {messages.map((message) => (
             <div
@@ -175,10 +205,16 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
         </div>
       </ScrollArea>
 
-      {/* Message Input - WhatsApp Style */}
-      <div className="p-3 md:p-4 border-t bg-white dark:bg-slate-900 shadow-lg">
+      {/* Message Input - WhatsApp Style - Fixed at bottom */}
+      <div className="flex-shrink-0 p-3 md:p-4 border-t bg-white dark:bg-slate-900 shadow-lg">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-gray-600 hover:text-green-600">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-gray-600 hover:text-green-600"
+            onClick={handleDocumentClick}
+            title="Attach file"
+          >
             <Paperclip className="h-5 w-5" />
           </Button>
 
@@ -199,6 +235,8 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
             variant="ghost"
             size="icon"
             className="text-gray-600 hover:text-green-600"
+            onClick={handleEmojiClick}
+            title="Add emoji"
           >
             <Smile className="h-5 w-5" />
           </Button>
@@ -212,6 +250,15 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        
+        {/* Hidden file input */}
+        <input
+          id="file-input"
+          type="file"
+          onChange={handleFileSelect}
+          className="hidden"
+          accept="*/*"
+        />
       </div>
     </div>
   );

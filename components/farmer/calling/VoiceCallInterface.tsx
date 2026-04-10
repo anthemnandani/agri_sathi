@@ -43,22 +43,26 @@ export function VoiceCallInterface({ userId }: VoiceCallInterfaceProps) {
   if (!callActive) {
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800">
-        <div className="absolute top-4 left-4 md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.back()}
-            className="text-white hover:bg-green-200 dark:hover:bg-green-800"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-        </div>
-        <Card className="p-8 text-center max-w-sm">
-          <h2 className="text-2xl font-bold mb-2">Call Ended</h2>
-          <p className="text-muted-foreground mb-6">Duration: {formatTime(callDuration)}</p>
-          <Button onClick={() => router.back()} className="w-full bg-green-600 hover:bg-green-700">
-            Back to Messages
-          </Button>
+        <Card className="p-8 text-center max-w-sm space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">Call Ended</h2>
+            <p className="text-muted-foreground">Duration: {formatTime(callDuration)}</p>
+          </div>
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => router.push(`/farmer/messages`)} 
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
+              Open Chat
+            </Button>
+            <Button 
+              onClick={() => router.back()} 
+              variant="outline"
+              className="flex-1"
+            >
+              Back
+            </Button>
+          </div>
         </Card>
       </div>
     );

@@ -20,7 +20,7 @@ export type PostType = 'general' | 'selling-crop' | 'selling-animal' | 'question
 export function PostCreate() {
   const [content, setContent] = useState('');
   const [postType, setPostType] = useState<PostType>('general');
-  const [attachments, setAttachments] = useState<{ id: string; type: 'image' | 'video'; name: string }[]>([]);
+  const [attachments, setAttachments] = useState<{ id: string; type: 'image' | 'video'; name: string; preview?: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
   const postTypeLabels: Record<PostType, string> = {
@@ -31,16 +31,49 @@ export function PostCreate() {
     tips: 'Farming Tips',
   };
 
-  const handleAddImage = () => {
-    const id = `img-${Date.now()}`;
-    setAttachments([...attachments, { id, type: 'image', name: 'Image' }]);
-    toast.success('Image option added');
+  const handleImageClick = () => {
+    const fileInput = document.getElementById('image-input');
+    if (fileInput) {
+      (fileInput as HTMLInputElement).click();
+    }
   };
 
-  const handleAddVideo = () => {
-    const id = `vid-${Date.now()}`;
-    setAttachments([...attachments, { id, type: 'video', name: 'Video' }]);
-    toast.success('Video option added');
+  const handleVideoClick = () => {
+    const fileInput = document.getElementById('video-input');
+    if (fileInput) {
+      (fileInput as HTMLInputElement).click();
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const id = `img-${Date.now()}`;
+        setAttachments([...attachments, { 
+          id, 
+          type: 'image', 
+          name: file.name,
+          preview: event.target?.result as string
+        }]);
+        toast.success('Image added successfully');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const id = `vid-${Date.now()}`;
+      setAttachments([...attachments, { 
+        id, 
+        type: 'video', 
+        name: file.name
+      }]);
+      toast.success('Video added successfully');
+    }
   };
 
   const handleRemoveAttachment = (id: string) => {
@@ -107,20 +140,28 @@ export function PostCreate() {
               <label className="text-sm font-medium text-foreground">
                 Media ({attachments.length})
               </label>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {attachments.map((attachment) => (
                   <div
                     key={attachment.id}
-                    className="relative aspect-square rounded-lg border-2 border-dashed border-border bg-muted/50 flex items-center justify-center group"
+                    className="relative aspect-square rounded-lg overflow-hidden border-2 border-border bg-muted/50 flex items-center justify-center group"
                   >
-                    <div className="text-center">
-                      {attachment.type === 'image' ? (
-                        <ImagePlus className="h-6 w-6 mx-auto text-muted-foreground" />
-                      ) : (
-                        <Video className="h-6 w-6 mx-auto text-muted-foreground" />
-                      )}
-                      <p className="text-xs text-muted-foreground mt-1">{attachment.name}</p>
-                    </div>
+                    {attachment.preview && attachment.type === 'image' ? (
+                      <img 
+                        src={attachment.preview} 
+                        alt={attachment.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-center w-full h-full flex flex-col items-center justify-center">
+                        {attachment.type === 'image' ? (
+                          <ImagePlus className="h-8 w-8 text-muted-foreground" />
+                        ) : (
+                          <Video className="h-8 w-8 text-muted-foreground" />
+                        )}
+                        <p className="text-xs text-muted-foreground mt-2">{attachment.name}</p>
+                      </div>
+                    )}
                     <button
                       onClick={() => handleRemoveAttachment(attachment.id)}
                       className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -139,9 +180,9 @@ export function PostCreate() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground"
+                className="text-muted-foreground hover:text-green-600"
                 disabled={loading}
-                onClick={handleAddImage}
+                onClick={handleImageClick}
               >
                 <ImagePlus className="h-4 w-4 mr-2" />
                 Add Photo
@@ -150,9 +191,9 @@ export function PostCreate() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground"
+                className="text-muted-foreground hover:text-green-600"
                 disabled={loading}
-                onClick={handleAddVideo}
+                onClick={handleVideoClick}
               >
                 <Video className="h-4 w-4 mr-2" />
                 Add Video
@@ -162,11 +203,28 @@ export function PostCreate() {
             <Button
               onClick={handlePost}
               disabled={loading || !content.trim()}
+              className="bg-green-600 hover:bg-green-700"
             >
               <Send className="h-4 w-4 mr-2" />
               {loading ? 'Posting...' : 'Post'}
             </Button>
           </div>
+
+          {/* Hidden File Inputs */}
+          <input
+            id="image-input"
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            className="hidden"
+          />
+          <input
+            id="video-input"
+            type="file"
+            accept="video/*"
+            onChange={handleVideoSelect}
+            className="hidden"
+          />
         </div>
       </CardContent>
     </Card>
