@@ -121,7 +121,7 @@ export const MapLayerControls = React.memo(function MapLayerControls({
         {/* Info Text */}
         {isExpanded && (
           <p className="text-xs text-muted-foreground mt-3 p-2 bg-muted rounded">
-            💡 Click on the map to view detailed weather information for any location
+            Tip: Click on the map to view detailed weather information for any location
           </p>
         )}
       </div>
