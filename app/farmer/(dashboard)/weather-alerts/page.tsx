@@ -7,11 +7,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Cloud, Phone } from 'lucide-react';
+import { AlertCircle, Cloud, Phone, WifiOff } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 export default function WeatherAlertsPage() {
   const [smsEnabled, setSmsEnabled] = useState(false);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -19,8 +27,15 @@ export default function WeatherAlertsPage() {
     address: '',
     registerFor: 'self',
   });
+  const [offlineFormData, setOfflineFormData] = useState({
+    name: '',
+    phone: '',
+    address: '',
+  });
   const [submitted, setSubmitted] = useState(false);
+  const [offlineSubmitted, setOfflineSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [offlineLoading, setOfflineLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,6 +55,28 @@ export default function WeatherAlertsPage() {
     setTimeout(() => {
       setSubmitted(false);
       setFormData({ name: '', phone: '', email: '', address: '', registerFor: 'self' });
+    }, 3000);
+  };
+
+  const handleOfflineInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setOfflineFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleOfflineSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOfflineLoading(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setOfflineLoading(false);
+    setOfflineSubmitted(true);
+    setTimeout(() => {
+      setOfflineSubmitted(false);
+      setOfflineFormData({ name: '', phone: '', address: '' });
+      setShowOfflineModal(false);
     }, 3000);
   };
 
@@ -267,6 +304,95 @@ export default function WeatherAlertsPage() {
             </div>
           </div>
         </TabsContent>
+
+        {/* Offline Alert Card */}
+        <div className="mt-8 mb-8">
+          <Card className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950 dark:to-yellow-950 border-orange-200 dark:border-orange-800">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <WifiOff className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Offline SMS Alerts
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Receive critical weather alerts even when you're offline. Enable SMS alerts to get important warnings directly on your phone.
+                  </p>
+                  <Dialog open={showOfflineModal} onOpenChange={setShowOfflineModal}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Enable SMS Alert
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Register for Offline SMS Alerts</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleOfflineSubmit} className="space-y-4">
+                        {offlineSubmitted && (
+                          <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>
+                              SMS alerts enabled successfully! You'll receive weather warnings via SMS.
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
+                        <div>
+                          <Label htmlFor="offline-name">Your Name</Label>
+                          <Input
+                            id="offline-name"
+                            name="name"
+                            placeholder="Enter your name"
+                            value={offlineFormData.name}
+                            onChange={handleOfflineInputChange}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="offline-phone">Phone Number</Label>
+                          <Input
+                            id="offline-phone"
+                            name="phone"
+                            type="tel"
+                            placeholder="Enter your phone number"
+                            value={offlineFormData.phone}
+                            onChange={handleOfflineInputChange}
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="offline-address">Farm Address</Label>
+                          <Input
+                            id="offline-address"
+                            name="address"
+                            placeholder="Enter your farm address"
+                            value={offlineFormData.address}
+                            onChange={handleOfflineInputChange}
+                            required
+                          />
+                        </div>
+
+                        <Button
+                          type="submit"
+                          className="w-full bg-orange-600 hover:bg-orange-700"
+                          disabled={offlineLoading}
+                        >
+                          {offlineLoading ? 'Registering...' : 'Register for SMS Alerts'}
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Safety Guide Tab */}
         <TabsContent value="safety" className="space-y-6">
