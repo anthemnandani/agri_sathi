@@ -72,6 +72,7 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
             size="icon"
             onClick={() => router.back()}
             className="text-white hover:bg-green-500 md:hidden shrink-0"
+            title="Back to messages list"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
