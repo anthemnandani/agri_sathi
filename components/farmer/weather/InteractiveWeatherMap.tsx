@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Plus, Minus, Locate } from 'lucide-react';
+import { Locate, Cloud, Zap, CloudRain } from 'lucide-react';
 import { WeatherDetailsPopup } from './WeatherDetailsPopup';
 import { MapLayerControls, LayerState } from './MapLayerControls';
 import { getWeatherData, LocationDetails, getWeatherOverlayData } from '@/utils/weather/weatherService';
@@ -15,16 +15,27 @@ interface MapMarker {
   label: string;
 }
 
+interface MapState {
+  zoom: number;
+  center: { lat: number; lng: number };
+}
+
 export function InteractiveWeatherMap() {
-  // State management
-  const [zoom, setZoom] = useState(5);
-  const [center, setCenter] = useState({ lat: 20.5937, lng: 78.9629 }); // Center of India
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<any>(null);
+  const [mapState, setMapState] = useState<MapState>({
+    zoom: 5,
+    center: { lat: 26.2, lng: 87.5 }, // Supaul, Bihar as default
+  });
+
   const [markers, setMarkers] = useState<MapMarker[]>([
     { id: '1', lat: 26.2, lng: 87.5, label: 'Supaul, Bihar' },
     { id: '2', lat: 28.7041, lng: 77.1025, label: 'Delhi' },
     { id: '3', lat: 19.076, lng: 72.8776, label: 'Mumbai' },
     { id: '4', lat: 12.9716, lng: 77.5946, label: 'Bangalore' },
+    { id: '5', lat: 23.1815, lng: 79.9864, label: 'Indore' },
   ]);
+
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null);
   const [weatherData, setWeatherData] = useState<LocationDetails | null>(null);
   const [loadingWeather, setLoadingWeather] = useState(false);
@@ -32,45 +43,10 @@ export function InteractiveWeatherMap() {
     temperature: false,
     rain: false,
     thunderstorm: false,
-    clouds: false,
+    clouds: true,
     flood: false,
   });
-  const [draggedPosition, setDraggedPosition] = useState<{ x: number; y: number } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  // Handle zoom in
-  const handleZoomIn = useCallback(() => {
-    setZoom((prev) => Math.min(prev + 1, 18));
-  }, []);
-
-  // Handle zoom out
-  const handleZoomOut = useCallback(() => {
-    setZoom((prev) => Math.max(prev - 1, 1));
-  }, []);
-
-  // Handle map click to select location
-  const handleMapClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Convert pixel coordinates to lat/lng (simplified)
-    const latRange = 15; // degrees
-    const lngRange = 30; // degrees
-    const lat = center.lat + (0.5 - y / rect.height) * latRange * Math.pow(2, -zoom + 5);
-    const lng = center.lng + (x / rect.width - 0.5) * lngRange * Math.pow(2, -zoom + 5);
-
-    fetchWeatherForLocation(lat, lng, `Location ${lat.toFixed(2)}, ${lng.toFixed(2)}`);
-  }, [center, zoom]);
-
-  // Handle marker click
-  const handleMarkerClick = useCallback(
-    (marker: MapMarker) => {
-      setSelectedMarker(marker);
-      fetchWeatherForLocation(marker.lat, marker.lng, marker.label);
-    },
-    []
-  );
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   // Fetch weather data for location
   const fetchWeatherForLocation = useCallback(async (lat: number, lng: number, label: string) => {
@@ -79,11 +55,52 @@ export function InteractiveWeatherMap() {
       const data = await getWeatherData(lat, lng);
       setWeatherData({ ...data, location: label });
     } catch (error) {
-      console.error('Error fetching weather:', error);
+      console.error('[v0] Error fetching weather:', error);
     } finally {
       setLoadingWeather(false);
     }
   }, []);
+
+  // Handle marker click
+  const handleMarkerClick = useCallback(
+    (marker: MapMarker) => {
+      setSelectedMarker(marker);
+      fetchWeatherForLocation(marker.lat, marker.lng, marker.label);
+      setMapState((prev) => ({
+        ...prev,
+        center: { lat: marker.lat, lng: marker.lng },
+        zoom: 10,
+      }));
+      if (mapRef.current) {
+        mapRef.current.setView([marker.lat, marker.lng], 10);
+      }
+    },
+    [fetchWeatherForLocation]
+  );
+
+  // Handle map click
+  const handleMapClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!mapRef.current) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const { zoom, center } = mapState;
+      
+      // Simple pixel to lat/lng conversion
+      const pixelX = e.clientX - rect.left;
+      const pixelY = e.clientY - rect.top;
+      const normalizedX = (pixelX / rect.width) - 0.5;
+      const normalizedY = 0.5 - (pixelY / rect.height);
+      
+      const latRange = 40 / Math.pow(2, zoom - 1);
+      const lngRange = 60 / Math.pow(2, zoom - 1);
+      
+      const lat = center.lat + (normalizedY * latRange);
+      const lng = center.lng + (normalizedX * lngRange);
+      
+      fetchWeatherForLocation(lat, lng, `Location ${lat.toFixed(2)}, ${lng.toFixed(2)}`);
+    },
+    [mapState, fetchWeatherForLocation]
+  );
 
   // Handle layer toggle
   const handleLayerToggle = useCallback((layer: keyof LayerState) => {
@@ -99,67 +116,101 @@ export function InteractiveWeatherMap() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setCenter({ lat: latitude, lng: longitude });
-          setZoom(10);
+          setMapState({ zoom: 10, center: { lat: latitude, lng: longitude } });
           fetchWeatherForLocation(latitude, longitude, 'Your Location');
+          if (mapRef.current) {
+            mapRef.current.setView([latitude, longitude], 10);
+          }
         },
-        (error) => {
-          console.error('Geolocation error:', error);
+        () => {
           // Use default location if permission denied
-          const defaultLat = 26.2;
-          const defaultLng = 87.5;
-          setCenter({ lat: defaultLat, lng: defaultLng });
-          fetchWeatherForLocation(defaultLat, defaultLng, 'Supaul, Bihar');
+          setMapState({ zoom: 10, center: { lat: 26.2, lng: 87.5 } });
+          fetchWeatherForLocation(26.2, 87.5, 'Supaul, Bihar');
+          if (mapRef.current) {
+            mapRef.current.setView([26.2, 87.5], 10);
+          }
         }
       );
     }
   }, [fetchWeatherForLocation]);
 
-  // Handle map drag
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDraggedPosition({ x: e.clientX, y: e.clientY });
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!isDragging || !draggedPosition) return;
-
-      const deltaX = e.clientX - draggedPosition.x;
-      const deltaY = e.clientY - draggedPosition.y;
-
-      // Update center based on drag
-      const lngChange = (-deltaX / e.currentTarget.offsetWidth) * 30 * Math.pow(2, -zoom + 5);
-      const latChange = (deltaY / e.currentTarget.offsetHeight) * 15 * Math.pow(2, -zoom + 5);
-
-      setCenter((prev) => ({
-        lat: Math.max(-85, Math.min(85, prev.lat + latChange)),
-        lng: ((prev.lng + lngChange + 180) % 360) - 180,
-      }));
-
-      setDraggedPosition({ x: e.clientX, y: e.clientY });
-    },
-    [isDragging, draggedPosition, zoom]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-    setDraggedPosition(null);
-  }, []);
-
-  // Load initial weather data on mount
+  // Initialize map with Leaflet
   useEffect(() => {
+    if (typeof window === 'undefined' || !containerRef.current) return;
+
+    const initMap = async () => {
+      try {
+        const L = await import('leaflet');
+        
+        // Clear existing map if any
+        if (mapRef.current) {
+          mapRef.current.remove();
+        }
+
+        // Create map
+        const map = L.map(containerRef.current!, {
+          center: [mapState.center.lat, mapState.center.lng],
+          zoom: mapState.zoom,
+          zoomControl: false,
+        });
+
+        // Add tile layer from OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19,
+        }).addTo(map);
+
+        // Add markers
+        markers.forEach((marker) => {
+          const leafletMarker = L.marker([marker.lat, marker.lng], {
+            title: marker.label,
+          }).addTo(map);
+
+          leafletMarker.on('click', () => {
+            handleMarkerClick(marker);
+          });
+
+          leafletMarker.bindPopup(`<div class="text-sm font-medium">${marker.label}</div>`);
+        });
+
+        // Handle map click for weather data
+        map.on('click', (e: any) => {
+          const { lat, lng } = e.latlng;
+          fetchWeatherForLocation(lat, lng, `Location ${lat.toFixed(2)}, ${lng.toFixed(2)}`);
+        });
+
+        // Update map state on move
+        map.on('moveend', () => {
+          const center = map.getCenter();
+          const zoom = map.getZoom();
+          setMapState({ zoom, center: { lat: center.lat, lng: center.lng } });
+        });
+
+        mapRef.current = map;
+        setMapLoaded(true);
+      } catch (error) {
+        console.error('[v0] Error initializing map:', error);
+      }
+    };
+
+    initMap();
     handleCurrentLocation();
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+      }
+    };
   }, []);
 
-  // Calculate visible bounds
-  const latRange = 15 * Math.pow(2, -zoom + 5);
-  const lngRange = 30 * Math.pow(2, -zoom + 5);
+  // Calculate visible bounds for weather overlays
+  const latRange = 40 / Math.pow(2, mapState.zoom - 1);
+  const lngRange = 60 / Math.pow(2, mapState.zoom - 1);
   const bounds = {
-    north: center.lat + latRange / 2,
-    south: center.lat - latRange / 2,
-    east: center.lng + lngRange / 2,
-    west: center.lng - lngRange / 2,
+    north: mapState.center.lat + latRange / 2,
+    south: mapState.center.lat - latRange / 2,
+    east: mapState.center.lng + lngRange / 2,
+    west: mapState.center.lng - lngRange / 2,
   };
 
   // Get overlay data
@@ -189,156 +240,150 @@ export function InteractiveWeatherMap() {
       {/* Map Container */}
       <Card className="border-2 border-foreground/10 overflow-hidden h-full relative">
         <div
-          className="relative w-full h-full min-h-[400px] cursor-grab active:cursor-grabbing bg-gradient-to-b from-blue-100 to-green-100 dark:from-blue-950 dark:to-green-950"
+          ref={containerRef}
+          className="relative w-full h-full min-h-[400px] md:min-h-[500px] rounded-lg bg-blue-50 dark:bg-slate-900"
           onClick={handleMapClick}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
         >
-          {/* Map Background Grid */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-            <defs>
-              <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+          {/* Weather Overlays SVG */}
+          {mapLoaded && (
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+              {Object.entries(overlayData).map(([layerType, data]) => (
+                <g key={layerType}>
+                  {(data as any).map((point: any, idx: number) => {
+                    const x = lngToPixel(point.lng, 100);
+                    const y = latToPixel(point.lat, 100);
+                    const size = Math.max(15, 40 - mapState.zoom);
+                    let color = 'rgba(0, 0, 0, 0.1)';
+                    let opacity = 0.6;
 
-          {/* Weather Overlays */}
-          {Object.entries(overlayData).map(([layerType, data]) => (
-            <svg key={layerType} className="absolute inset-0 w-full h-full pointer-events-none">
-              {(data as any).map((point: any, idx: number) => {
-                const x = lngToPixel(point.lng, 100);
-                const y = latToPixel(point.lat, 100);
-                const size = Math.max(10, 30 - zoom * 2);
-                let color = 'rgba(0, 0, 0, 0.1)';
-                let opacity = 0.6;
+                    switch (layerType) {
+                      case 'temperature':
+                        color =
+                          point.value > 30
+                            ? 'rgb(239, 68, 68)'
+                            : point.value > 25
+                              ? 'rgb(249, 115, 22)'
+                              : 'rgb(96, 165, 250)';
+                        opacity =
+                          point.intensity === 'high'
+                            ? 0.7
+                            : point.intensity === 'medium'
+                              ? 0.5
+                              : 0.3;
+                        break;
+                      case 'rain':
+                        color =
+                          point.intensity === 'heavy'
+                            ? 'rgb(29, 78, 216)'
+                            : 'rgb(96, 165, 250)';
+                        opacity = point.intensity === 'heavy' ? 0.8 : 0.5;
+                        break;
+                      case 'thunderstorm':
+                        color = 'rgb(168, 85, 247)';
+                        opacity = 0.8;
+                        break;
+                      case 'clouds':
+                        color = 'rgb(156, 163, 175)';
+                        opacity =
+                          point.intensity === 'dense'
+                            ? 0.7
+                            : point.intensity === 'moderate'
+                              ? 0.5
+                              : 0.3;
+                        break;
+                      case 'flood':
+                        color = 'rgb(239, 68, 68)';
+                        opacity = point.intensity === 'high' ? 0.8 : 0.6;
+                        break;
+                    }
 
-                switch (layerType) {
-                  case 'temperature':
-                    color = point.value > 30 ? 'rgb(239, 68, 68)' : point.value > 25 ? 'rgb(249, 115, 22)' : 'rgb(96, 165, 250)';
-                    opacity = point.intensity === 'high' ? 0.7 : point.intensity === 'medium' ? 0.5 : 0.3;
-                    break;
-                  case 'rain':
-                    color = point.intensity === 'heavy' ? 'rgb(29, 78, 216)' : 'rgb(96, 165, 250)';
-                    opacity = point.intensity === 'heavy' ? 0.8 : 0.5;
-                    break;
-                  case 'thunderstorm':
-                    color = 'rgb(168, 85, 247)';
-                    opacity = 0.8;
-                    break;
-                  case 'clouds':
-                    color = 'rgb(156, 163, 175)';
-                    opacity = point.intensity === 'dense' ? 0.7 : point.intensity === 'moderate' ? 0.5 : 0.3;
-                    break;
-                  case 'flood':
-                    color = 'rgb(239, 68, 68)';
-                    opacity = point.intensity === 'high' ? 0.8 : 0.6;
-                    break;
-                }
-
-                return (
-                  <circle
-                    key={idx}
-                    cx={`${x}%`}
-                    cy={`${y}%`}
-                    r={size}
-                    fill={color}
-                    opacity={opacity}
-                  />
-                );
-              })}
+                    return (
+                      <circle
+                        key={idx}
+                        cx={`${x}%`}
+                        cy={`${y}%`}
+                        r={size}
+                        fill={color}
+                        opacity={opacity}
+                      />
+                    );
+                  })}
+                </g>
+              ))}
             </svg>
-          ))}
+          )}
 
-          {/* Markers */}
-          {markers.map((marker) => {
-            const x = lngToPixel(marker.lng, 100);
-            const y = latToPixel(marker.lat, 100);
-            const isSelected = selectedMarker?.id === marker.id;
+          {/* Controls - Top Right */}
+          <div className="absolute top-4 right-4 z-40 flex flex-col gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleCurrentLocation}
+              className="bg-white dark:bg-slate-900 shadow-md"
+              title="Go to your current location"
+            >
+              <Locate className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline text-xs">My Location</span>
+            </Button>
+          </div>
 
-            return (
-              <div
-                key={marker.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                style={{ left: `${x}%`, top: `${y}%` }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleMarkerClick(marker);
-                }}
-              >
-                <div
-                  className={`relative ${
-                    isSelected
-                      ? 'scale-125 drop-shadow-lg'
-                      : 'hover:scale-110 transition-transform'
-                  }`}
-                >
-                  <MapPin
-                    className={`h-8 w-8 ${
-                      isSelected ? 'fill-red-500 text-red-500' : 'fill-primary text-primary'
-                    } drop-shadow`}
-                  />
-                </div>
-                {isSelected && (
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-foreground text-background px-2 py-1 rounded text-xs font-medium">
-                    {marker.label}
+          {/* Info Box - Top Left */}
+          <div className="absolute top-4 left-4 z-40 bg-white dark:bg-slate-900 rounded-lg p-3 max-w-xs border border-border shadow-md">
+            <div className="flex items-start gap-2">
+              <Cloud className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <p className="font-semibold text-foreground">Interactive Weather Map</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Click anywhere on the map or on markers to view weather details. Drag to explore different areas.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Legend - Bottom Left */}
+          {Object.values(layers).some(Boolean) && (
+            <div className="absolute bottom-24 left-4 z-40 bg-white dark:bg-slate-900 rounded-lg p-3 max-w-xs border border-border shadow-md">
+              <p className="text-xs font-semibold text-foreground mb-2">Active Layers</p>
+              <div className="space-y-1 text-xs">
+                {layers.temperature && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgb(239, 68, 68)' }} />
+                    <span className="text-muted-foreground">Temperature</span>
+                  </div>
+                )}
+                {layers.rain && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgb(29, 78, 216)' }} />
+                    <span className="text-muted-foreground">Rainfall</span>
+                  </div>
+                )}
+                {layers.thunderstorm && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgb(168, 85, 247)' }} />
+                    <span className="text-muted-foreground">Thunderstorm</span>
+                  </div>
+                )}
+                {layers.clouds && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgb(156, 163, 175)' }} />
+                    <span className="text-muted-foreground">Cloud Cover</span>
+                  </div>
+                )}
+                {layers.flood && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'rgb(239, 68, 68)' }} />
+                    <span className="text-muted-foreground">Flood Risk</span>
                   </div>
                 )}
               </div>
-            );
-          })}
-
-          {/* Center Crosshair */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-6 h-6 border-2 border-primary/50 rounded-full"></div>
-          </div>
-
-          {/* Zoom Controls */}
-          <div className="absolute top-6 right-6 flex flex-col gap-2 z-30">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleZoomIn}
-              className="h-10 w-10 p-0"
-              disabled={zoom >= 18}
-              aria-label="Zoom in"
-            >
-              <Plus className="h-5 w-5" />
-            </Button>
-            <div className="text-center text-xs font-medium px-2 py-1 bg-background/80 rounded border border-border">
-              {zoom}
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleZoomOut}
-              className="h-10 w-10 p-0"
-              disabled={zoom <= 1}
-              aria-label="Zoom out"
-            >
-              <Minus className="h-5 w-5" />
-            </Button>
-          </div>
+          )}
 
-          {/* Current Location Button */}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleCurrentLocation}
-            className="absolute top-6 left-6 z-30"
-            aria-label="Go to current location"
-          >
-            <Locate className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">My Location</span>
-          </Button>
-
-          {/* Loading State */}
+          {/* Loading Indicator */}
           {loadingWeather && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-40">
-              <div className="bg-background px-4 py-2 rounded-lg shadow-lg">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-40 rounded-lg">
+              <div className="bg-white dark:bg-slate-900 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 <p className="text-sm text-foreground">Loading weather data...</p>
               </div>
             </div>

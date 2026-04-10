@@ -11,6 +11,8 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@vercel/analytics": "1.6.1",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.3",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
     "@radix-ui/react-aspect-ratio": "1.1.8",
@@ -61,6 +63,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.0",
+    "@types/leaflet": "^1.9.8",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

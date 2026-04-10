@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'leaflet/dist/leaflet.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -122,4 +123,56 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Leaflet map theming for light and dark modes */
+.leaflet-container {
+  @apply rounded-lg;
+  font-family: inherit;
+}
+
+.leaflet-control {
+  @apply rounded-lg shadow-md;
+}
+
+.leaflet-control-zoom {
+  @apply border border-border;
+}
+
+.leaflet-control-zoom a {
+  @apply bg-background text-foreground border-border hover:bg-muted;
+}
+
+.leaflet-control-attribution {
+  @apply text-xs text-muted-foreground;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg bg-background border border-border shadow-lg;
+  border-radius: var(--radius);
+}
+
+.leaflet-popup-content {
+  @apply text-foreground;
+  margin: 0;
+}
+
+.leaflet-popup-tip {
+  @apply border-background;
+}
+
+.dark .leaflet-container {
+  @apply bg-slate-900;
+}
+
+.dark .leaflet-control-zoom a {
+  @apply bg-slate-800 text-white border-slate-700 hover:bg-slate-700;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  @apply bg-slate-800 border-slate-700;
+}
+
+.dark .leaflet-popup-content {
+  @apply text-white;
 }

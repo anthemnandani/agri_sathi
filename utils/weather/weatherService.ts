@@ -41,32 +41,41 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Mock weather data for demo purposes
 const generateMockWeatherData = (lat: number, lng: number): LocationDetails => {
-  const baseTemp = 25 + Math.sin(lng / 10) * 5;
-  const thunderstormChance = Math.random();
-  const rainChance = Math.random();
+  // Generate more realistic weather based on location
+  const baseTemp = 20 + Math.sin(lng / 10) * 8 + Math.cos(lat / 10) * 5;
+  const thunderstormChance = Math.sin(lng / 20) * 0.5 + 0.3;
+  const rainChance = Math.cos(lat / 15) * 0.5 + 0.4;
+  
+  const condition = rainChance > 0.75 ? 'Rainy' : thunderstormChance > 0.75 ? 'Thunderstorm' : rainChance > 0.5 ? 'Cloudy' : 'Clear';
+  const icons: Record<string, string> = {
+    'Clear': '☀️',
+    'Cloudy': '⛅',
+    'Rainy': '🌧️',
+    'Thunderstorm': '⛈️'
+  };
 
   return {
     location: `Location ${lat.toFixed(2)}, ${lng.toFixed(2)}`,
     lat,
     lng,
-    temperature: Math.round(baseTemp + (Math.random() - 0.5) * 10),
-    feelsLike: Math.round(baseTemp + (Math.random() - 0.5) * 12),
-    humidity: 40 + Math.random() * 50,
-    windSpeed: 5 + Math.random() * 20,
+    temperature: Math.round(baseTemp + (Math.random() - 0.5) * 8),
+    feelsLike: Math.round(baseTemp + (Math.random() - 0.5) * 10),
+    humidity: 45 + Math.random() * 45,
+    windSpeed: 3 + Math.random() * 18,
     windDirection: Math.random() * 360,
-    cloudCover: Math.random() * 100,
-    condition: rainChance > 0.7 ? 'Rainy' : thunderstormChance > 0.8 ? 'Thunderstorm' : 'Partly Cloudy',
-    icon: rainChance > 0.7 ? '🌧️' : thunderstormChance > 0.8 ? '⛈️' : '⛅',
-    uvIndex: 3 + Math.random() * 5,
-    visibility: 8 + Math.random() * 4,
-    pressure: 1010 + (Math.random() - 0.5) * 20,
-    rainProbability: rainChance * 100,
-    precipitation: rainChance > 0.5 ? Math.random() * 10 : 0,
-    thunderstorm: thunderstormChance > 0.8,
-    floodRisk: rainChance > 0.8 ? 'high' : rainChance > 0.6 ? 'medium' : 'low',
+    cloudCover: Math.random() * 95,
+    condition: condition,
+    icon: icons[condition] || '⛅',
+    uvIndex: 2 + Math.random() * 6,
+    visibility: 7 + Math.random() * 6,
+    pressure: 1008 + (Math.random() - 0.5) * 15,
+    rainProbability: Math.max(0, Math.round(rainChance * 100)),
+    precipitation: rainChance > 0.4 ? Math.random() * 8 : 0,
+    thunderstorm: thunderstormChance > 0.7,
+    floodRisk: rainChance > 0.8 ? 'high' : rainChance > 0.65 ? 'medium' : 'low',
     forecast: generateMockForecast(),
-    sunrise: '06:30',
-    sunset: '18:45',
+    sunrise: '06:15',
+    sunset: '18:30',
     lastUpdated: Date.now(),
   };
 };
