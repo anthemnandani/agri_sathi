@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
 import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
+import { InteractiveWeatherMap } from '@/components/farmer/weather/InteractiveWeatherMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -308,15 +309,10 @@ export function WeatherPageContent() {
           </CardContent>
         </Card>
 
-        {/* Map Placeholder */}
-        <Card className="border-2 border-foreground/10 overflow-hidden">
-          <div className="w-full h-full min-h-[400px] bg-gradient-to-b from-blue-300 to-green-200 relative flex items-center justify-center">
-            <div className="text-center">
-              <Cloud className="h-16 w-16 text-blue-600 mx-auto mb-3 opacity-50" />
-              <p className="text-sm text-muted-foreground">Map of India</p>
-            </div>
-          </div>
-        </Card>
+        {/* Interactive Weather Map */}
+        <div className="relative h-full min-h-[400px]">
+          <InteractiveWeatherMap />
+        </div>
       </div>
     </div>
   );
