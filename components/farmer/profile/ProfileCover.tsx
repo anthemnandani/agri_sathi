@@ -84,20 +84,20 @@ export function ProfileCover({ onTabChange }: ProfileCoverProps) {
                   {isFollowing ? 'Following' : '+ Follow'}
                 </Button>
                 
-                <Link href="/farmer/messages">
+                <Link href="/messages">
                   <Button variant="outline" className="flex-1 md:flex-none">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Message
                   </Button>
                 </Link>
 
-                <Link href={`/farmer/voice-call/${PROFILE_DATA.id}`}>
+                <Link href={`/voice-call/${PROFILE_DATA.id}`}>
                   <Button variant="outline" size="icon">
                     <Phone className="h-4 w-4" />
                   </Button>
                 </Link>
 
-                <Link href={`/farmer/video-call/${PROFILE_DATA.id}`}>
+                <Link href={`/video-call/${PROFILE_DATA.id}`}>
                   <Button variant="outline" size="icon">
                     <Video className="h-4 w-4" />
                   </Button>

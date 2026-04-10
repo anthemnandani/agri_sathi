@@ -9,7 +9,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Phone, Cloud, CloudRain, Wind, Droplets, Sun, Moon } from 'lucide-react';
+import { 
+  AlertCircle, 
+  Phone, 
+  CloudRain, 
+  Wind, 
+  Droplets, 
+  Sun, 
+  Moon, 
+  Zap,
+  MessageSquare
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -54,45 +64,52 @@ export function WeatherPageContent() {
   };
 
   const weatherAlerts = [
-    { icon: CloudRain, label: 'Chance of rain', value: '60%' },
-    { icon: AlertCircle, label: 'Lightning risk', value: 'High' },
-    { icon: Wind, label: 'Wind speed', value: '0.2 km/h' },
-    { icon: Droplets, label: 'Humidity', value: '65.8%' },
-    { icon: Sun, label: 'Sunrise', value: '5:30:23' },
-    { icon: Moon, label: 'Sunset', value: '18:10:12' },
+    { icon: CloudRain, label: 'Chance of rain', value: '0%', color: 'text-blue-500' },
+    { icon: Zap, label: 'Lightning', value: 'N/A', color: 'text-yellow-500' },
+    { icon: Wind, label: 'Wind speed', value: '0.2 KM/h', color: 'text-emerald-500' },
+    { icon: Droplets, label: 'Humidity', value: '40.67%', color: 'text-cyan-500' },
+    { icon: Sun, label: 'Sunrise', value: '07:00:23', color: 'text-orange-500' },
+    { icon: Moon, label: 'Sunset', value: '18:10:03', color: 'text-indigo-500' },
   ];
 
   return (
-    <div className="w-full space-y-6">
-      {/* Top Section - 3 Columns */}
-      <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-3">
+    <div className="w-full space-y-4 md:space-y-6">
+      {/* Top Section - 3 Columns on Desktop */}
+      <div className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
         {/* Left Column - Real Time Weather */}
-        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-xl font-bold">Real Time Weather</CardTitle>
+        <Card className="border border-border/50 bg-card shadow-sm">
+          <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
+            <CardTitle className="text-lg md:text-xl font-bold text-foreground">Real Time Weather</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
             <CurrentWeather />
           </CardContent>
         </Card>
 
         {/* Middle Column - Weather Alerts */}
-        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-xl font-bold">Weather Alerts</CardTitle>
+        <Card className="border border-border/50 bg-card shadow-sm">
+          <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <CardTitle className="text-lg md:text-xl font-bold text-foreground">Weather Stats</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-3">
+          <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
               {weatherAlerts.map((alert, idx) => {
                 const Icon = alert.icon;
                 return (
                   <div
                     key={idx}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted border border-border hover:bg-accent/50 transition"
+                    className="flex items-center gap-3 p-2.5 md:p-3 rounded-lg bg-muted/50 border border-border/30 hover:bg-muted transition-colors"
                   >
-                    <Icon className="h-6 w-6 text-primary mb-2" />
-                    <p className="text-xs text-muted-foreground text-center mb-1">{alert.label}</p>
-                    <p className="text-sm font-semibold text-foreground">{alert.value}</p>
+                    <div className={`p-1.5 md:p-2 rounded-md bg-background ${alert.color}`}>
+                      <Icon className="h-4 w-4 md:h-5 md:w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] md:text-xs text-muted-foreground truncate">{alert.label}</p>
+                      <p className="text-xs md:text-sm font-semibold text-foreground">{alert.value}</p>
+                    </div>
                   </div>
                 );
               })}
@@ -101,16 +118,21 @@ export function WeatherPageContent() {
         </Card>
 
         {/* Right Column - Offline SMS Alert */}
-        <Card className="border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-bold">Offline SMS alert</CardTitle>
+        <Card className="border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 dark:border-amber-800/50 shadow-sm">
+          <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <CardTitle className="text-lg md:text-xl font-bold text-foreground">Offline SMS alert</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">Enable SMS Alert</p>
-            <p className="text-xs text-muted-foreground">Receive critical weather alerts even when you&apos;re offline</p>
+          <CardContent className="space-y-3 px-4 pb-4 md:px-6 md:pb-6">
+            <div>
+              <p className="text-sm font-medium text-foreground">Enable SMS Alert</p>
+              <p className="text-xs text-muted-foreground mt-1">Receive critical weather alerts even offline</p>
+            </div>
             <Dialog open={showRegistrationModal} onOpenChange={setShowRegistrationModal}>
               <DialogTrigger asChild>
-                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-sm">
                   <Phone className="h-4 w-4 mr-2" />
                   Enable SMS Alert
                 </Button>
@@ -188,7 +210,7 @@ export function WeatherPageContent() {
                           value={formData.address}
                           onChange={handleInputChange}
                           required
-                          className="mt-2 w-full px-3 py-2 rounded-md border border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="mt-2 w-full px-3 py-2 rounded-md border border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-sm"
                           rows={3}
                         />
                       </div>
@@ -259,33 +281,33 @@ export function WeatherPageContent() {
                       <div>
                         <h4 className="font-semibold text-lg mb-2">Before Lightning</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Stay Informed: Monitor weather forecasts and updates through apps or radio.</li>
-                          <li>• Look for signs: Dark clouds and strong winds indicate an approaching storm.</li>
-                          <li>• Prepare Your Surroundings: Secure loose items, trees, and outdoor equipment.</li>
-                          <li>• Unplug Equipment: Disconnect power to prevent damage from lightning surges.</li>
-                          <li>• Gather Supplies: Have a dry, safe location ready for shelter.</li>
+                          <li>Stay Informed: Monitor weather forecasts and updates through apps or radio.</li>
+                          <li>Look for signs: Dark clouds and strong winds indicate an approaching storm.</li>
+                          <li>Prepare Your Surroundings: Secure loose items, trees, and outdoor equipment.</li>
+                          <li>Unplug Equipment: Disconnect power to prevent damage from lightning surges.</li>
+                          <li>Gather Supplies: Have a dry, safe location ready for shelter.</li>
                         </ul>
                       </div>
 
                       <div>
                         <h4 className="font-semibold text-lg mb-2">During Lightning</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Seek Shelter Immediately: Go to a building or enclosed car.</li>
-                          <li>• Stay Inside: Avoid windows, doors, and metal objects.</li>
-                          <li>• Minimize Risk Indoors: Stay away from electronics and plumbing.</li>
-                          <li>• Avoid Open Areas: Never stand in open fields or near isolated trees.</li>
-                          <li>• Avoid Metal Objects: Don&apos;t touch metal poles or fencing.</li>
+                          <li>Seek Shelter Immediately: Go to a building or enclosed car.</li>
+                          <li>Stay Inside: Avoid windows, doors, and metal objects.</li>
+                          <li>Minimize Risk Indoors: Stay away from electronics and plumbing.</li>
+                          <li>Avoid Open Areas: Never stand in open fields or near isolated trees.</li>
+                          <li>Avoid Metal Objects: Don&apos;t touch metal poles or fencing.</li>
                         </ul>
                       </div>
 
                       <div>
                         <h4 className="font-semibold text-lg mb-2">After Lightning</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Seek Medical Help: Check for injuries if struck.</li>
-                          <li>• Assess Damage: Inspect your property for damage.</li>
-                          <li>• Document Everything: Take photos for insurance.</li>
-                          <li>• Contact Authorities: Report any serious incidents.</li>
-                          <li>• Monitor Weather: Stay alert for follow-up storms.</li>
+                          <li>Seek Medical Help: Check for injuries if struck.</li>
+                          <li>Assess Damage: Inspect your property for damage.</li>
+                          <li>Document Everything: Take photos for insurance.</li>
+                          <li>Contact Authorities: Report any serious incidents.</li>
+                          <li>Monitor Weather: Stay alert for follow-up storms.</li>
                         </ul>
                       </div>
                     </div>
@@ -298,20 +320,24 @@ export function WeatherPageContent() {
       </div>
 
       {/* Bottom Section - 7 Day Forecast and Map */}
-      <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* 7 Day Forecast */}
-        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-xl font-bold">7 days weather forecast</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ForecastSection />
-          </CardContent>
-        </Card>
+      <div className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12">
+        {/* 7 Day Forecast - Takes less space */}
+        <div className="lg:col-span-5 xl:col-span-4">
+          <Card className="border border-border/50 bg-card shadow-sm h-full">
+            <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
+              <CardTitle className="text-lg md:text-xl font-bold text-foreground">7-days weather forecast</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
+              <ForecastSection />
+            </CardContent>
+          </Card>
+        </div>
 
-        {/* Interactive Weather Map */}
-        <div className="relative h-full min-h-[400px]">
-          <InteractiveWeatherMap />
+        {/* Interactive Weather Map - Takes more space */}
+        <div className="lg:col-span-7 xl:col-span-8">
+          <div className="relative h-[400px] md:h-[500px] lg:h-full lg:min-h-[500px] rounded-lg overflow-hidden border border-border/50 shadow-sm">
+            <InteractiveWeatherMap />
+          </div>
         </div>
       </div>
     </div>

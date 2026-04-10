@@ -13,7 +13,7 @@ export function HomeOverview() {
       title: 'Weather Alert',
       description: 'Heavy rainfall expected tomorrow in your region',
       action: 'View Details',
-      href: '/farmer/weather',
+      href: '/weather',
       color: 'from-blue-400 to-blue-600',
     },
     {
@@ -21,7 +21,7 @@ export function HomeOverview() {
       title: 'Government Schemes',
       description: 'New subsidy scheme available for wheat farmers',
       action: 'Explore Schemes',
-      href: '/farmer/schemes',
+      href: '/schemes',
       color: 'from-purple-400 to-purple-600',
     },
     {
@@ -29,7 +29,7 @@ export function HomeOverview() {
       title: 'Community Discussion',
       description: 'Join farmers discussing pesticide solutions',
       action: 'View Communities',
-      href: '/farmer/communities',
+      href: '/communities',
       color: 'from-green-400 to-green-600',
     },
     {
@@ -37,7 +37,7 @@ export function HomeOverview() {
       title: 'Expert Talk',
       description: 'Get AI diagnosis for plant diseases',
       action: 'Ask Expert',
-      href: '/farmer/expert-talk',
+      href: '/expert-talk',
       color: 'from-orange-400 to-orange-600',
     },
   ];

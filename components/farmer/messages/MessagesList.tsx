@@ -104,7 +104,7 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
 
               {/* Mobile Call Buttons - Visible on mobile */}
               <div className="flex md:hidden gap-1 flex-shrink-0">
-                <Link href={`/farmer/voice-call/${conversation.id}`}>
+                <Link href={`/voice-call/${conversation.id}`}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -115,7 +115,7 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
                     <Phone className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href={`/farmer/video-call/${conversation.id}`}>
+                <Link href={`/video-call/${conversation.id}`}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -130,7 +130,7 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
 
               {/* Desktop Call Buttons - Visible on hover only */}
               <div className="hidden md:group-hover:flex gap-1 flex-shrink-0">
-                <Link href={`/farmer/voice-call/${conversation.id}`}>
+                <Link href={`/voice-call/${conversation.id}`}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -141,7 +141,7 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
                     <Phone className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href={`/farmer/video-call/${conversation.id}`}>
+                <Link href={`/video-call/${conversation.id}`}>
                   <Button
                     variant="ghost"
                     size="sm"

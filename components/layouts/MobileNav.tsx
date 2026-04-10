@@ -14,11 +14,11 @@ import {
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { label: 'Home', href: '/farmer/home', icon: Home },
-  { label: 'Posts', href: '/farmer/posts', icon: Share2 },
-  { label: 'Market', href: '/farmer/marketplace', icon: ShoppingBag },
-  { label: 'Weather', href: '/farmer/weather', icon: Cloud },
-  { label: 'Community', href: '/farmer/communities', icon: Users },
+  { label: 'Home', href: '/home', icon: Home },
+  { label: 'Posts', href: '/posts', icon: Share2 },
+  { label: 'Market', href: '/marketplace', icon: ShoppingBag },
+  { label: 'Weather', href: '/weather', icon: Cloud },
+  { label: 'Community', href: '/communities', icon: Users },
 ];
 
 export function MobileNav() {
