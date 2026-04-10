@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Sun, CloudSun, Cloud, CloudRain, CloudSnow, CloudLightning, Droplets } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ForecastDay {
   day: string;
@@ -12,19 +13,13 @@ interface ForecastDay {
   isToday?: boolean;
 }
 
-const mockForecast: ForecastDay[] = [
-  { day: 'Today', condition: 'Cloudy', minTemp: 27, maxTemp: 33, rainChance: 70, isToday: true },
-  { day: 'Tomorrow', condition: 'Cloudy', minTemp: 27, maxTemp: 33 },
-  { day: 'Wednesday', condition: 'Partly Cloudy', minTemp: 27, maxTemp: 33 },
-  { day: 'Thursday', condition: 'Cloudy', minTemp: 27, maxTemp: 33 },
-  { day: 'Friday', condition: 'Sunny', minTemp: 27, maxTemp: 33 },
-  { day: 'Saturday', condition: 'Sunny', minTemp: 27, maxTemp: 33 },
-  { day: 'Sunday', condition: 'Rainy', minTemp: 27, maxTemp: 33 },
-];
+interface ForecastSectionProps {
+  forecast?: ForecastDay[];
+}
 
 const getWeatherIcon = (condition: string, size: string = 'h-6 w-6') => {
   const iconProps = { className: size };
-  switch (condition.toLowerCase()) {
+  switch (condition?.toLowerCase()) {
     case 'sunny':
     case 'clear':
       return <Sun {...iconProps} className={`${size} text-amber-500`} />;
@@ -44,10 +39,25 @@ const getWeatherIcon = (condition: string, size: string = 'h-6 w-6') => {
   }
 };
 
-export function ForecastSection() {
+export function ForecastSection({ forecast }: ForecastSectionProps) {
+  // Loading state
+  if (!forecast || forecast.length === 0) {
+    return (
+      <div className="space-y-1">
+        {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+          <div key={i} className="flex items-center justify-between p-2.5 md:p-3 rounded-lg">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-5 w-16" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-1">
-      {mockForecast.map((day, idx) => (
+      {forecast.map((day, idx) => (
         <div
           key={idx}
           className={`flex items-center justify-between p-2.5 md:p-3 rounded-lg transition-colors ${
@@ -66,8 +76,8 @@ export function ForecastSection() {
             )}
           </div>
 
-          {/* Rain Chance (if today) */}
-          {day.isToday && day.rainChance && (
+          {/* Rain Chance (if today and has rain chance) */}
+          {day.isToday && day.rainChance !== undefined && day.rainChance > 0 && (
             <div className="flex items-center gap-1 mx-2">
               <Droplets className="h-3 w-3 text-blue-500" />
               <span className="text-xs text-blue-500 font-medium">{day.rainChance}%</span>

@@ -39,7 +39,91 @@ export interface LocationDetails extends WeatherData {
 const weatherCache = new Map<string, { data: LocationDetails; timestamp: number }>();
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-// Mock weather data for demo purposes
+/**
+ * Fetch weather data for a specific location from API
+ * Uses cached data if available within the cache duration
+ */
+export async function getWeatherData(lat: number, lng: number): Promise<LocationDetails> {
+  const cacheKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+  const cached = weatherCache.get(cacheKey);
+
+  // Return cached data if still valid
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+
+  try {
+    // Fetch from API
+    const response = await fetch(`/api/weather?lat=${lat}&lng=${lng}`);
+    const result = await response.json();
+
+    if (result.success && result.data) {
+      const { current } = result.data;
+      
+      // Transform API response to LocationDetails format
+      const weatherData: LocationDetails = {
+        location: current.location,
+        lat: current.lat,
+        lng: current.lng,
+        temperature: current.temperature,
+        feelsLike: current.feelsLike,
+        humidity: current.humidity,
+        windSpeed: current.windSpeed,
+        windDirection: current.windDirection,
+        cloudCover: current.cloudCover,
+        condition: current.condition,
+        icon: getWeatherIcon(current.condition),
+        uvIndex: current.uvIndex,
+        visibility: current.visibility,
+        pressure: current.pressure,
+        rainProbability: current.rainProbability,
+        precipitation: current.precipitation,
+        thunderstorm: current.thunderstorm,
+        floodRisk: current.floodRisk,
+        forecast: generateMockForecast(),
+        sunrise: current.sunrise,
+        sunset: current.sunset,
+        lastUpdated: Date.now(),
+      };
+
+      // Cache the data
+      weatherCache.set(cacheKey, { data: weatherData, timestamp: Date.now() });
+
+      return weatherData;
+    }
+
+    // Fallback to mock data if API fails
+    return generateMockWeatherData(lat, lng);
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    // Fallback to mock data
+    return generateMockWeatherData(lat, lng);
+  }
+}
+
+// Get weather icon based on condition
+function getWeatherIcon(condition: string): string {
+  switch (condition?.toLowerCase()) {
+    case 'sunny':
+    case 'clear':
+      return 'sunny';
+    case 'partly cloudy':
+      return 'partly-cloudy';
+    case 'cloudy':
+      return 'cloudy';
+    case 'rainy':
+    case 'rain':
+      return 'rainy';
+    case 'snow':
+      return 'snow';
+    case 'thunderstorm':
+      return 'thunderstorm';
+    default:
+      return 'sunny';
+  }
+}
+
+// Mock weather data for fallback
 const generateMockWeatherData = (lat: number, lng: number): LocationDetails => {
   const baseTemp = 25 + Math.sin(lng / 10) * 5;
   const thunderstormChance = Math.random();
@@ -56,7 +140,7 @@ const generateMockWeatherData = (lat: number, lng: number): LocationDetails => {
     windDirection: Math.random() * 360,
     cloudCover: Math.random() * 100,
     condition: rainChance > 0.7 ? 'Rainy' : thunderstormChance > 0.8 ? 'Thunderstorm' : 'Partly Cloudy',
-    icon: rainChance > 0.7 ? '🌧️' : thunderstormChance > 0.8 ? '⛈️' : '⛅',
+    icon: rainChance > 0.7 ? 'rainy' : thunderstormChance > 0.8 ? 'thunderstorm' : 'partly-cloudy',
     uvIndex: 3 + Math.random() * 5,
     visibility: 8 + Math.random() * 4,
     pressure: 1010 + (Math.random() - 0.5) * 20,
@@ -83,38 +167,13 @@ const generateMockForecast = (): ForecastData[] => {
       time: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
       temperature: 22 + Math.random() * 8,
       condition: rainChance > 0.7 ? 'Rainy' : 'Clear',
-      icon: rainChance > 0.7 ? '🌧️' : '☀️',
+      icon: rainChance > 0.7 ? 'rainy' : 'sunny',
       rainProbability: rainChance * 100,
     });
   }
 
   return forecast;
 };
-
-/**
- * Fetch weather data for a specific location
- * Uses cached data if available within the cache duration
- */
-export async function getWeatherData(lat: number, lng: number): Promise<LocationDetails> {
-  const cacheKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
-  const cached = weatherCache.get(cacheKey);
-
-  // Return cached data if still valid
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    return cached.data;
-  }
-
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  // Generate mock weather data (in production, this would call OpenWeatherMap API)
-  const weatherData = generateMockWeatherData(lat, lng);
-
-  // Cache the data
-  weatherCache.set(cacheKey, { data: weatherData, timestamp: Date.now() });
-
-  return weatherData;
-}
 
 /**
  * Get weather data for current user location
@@ -138,8 +197,7 @@ export async function getCurrentLocationWeather(): Promise<LocationDetails | nul
           resolve(null);
         }
       },
-      (error) => {
-        console.error('Geolocation error:', error);
+      () => {
         // Return mock data for India (Bihar - Supaul) as fallback
         resolve(generateMockWeatherData(26.2, 87.5));
       }
@@ -148,7 +206,38 @@ export async function getCurrentLocationWeather(): Promise<LocationDetails | nul
 }
 
 /**
- * Get weather overlay data for map visualization
+ * Get weather overlay data from API
+ */
+export async function getWeatherOverlayDataFromAPI(
+  bounds: { north: number; south: number; east: number; west: number },
+  overlayType: 'temperature' | 'rain' | 'thunderstorm' | 'clouds' | 'flood'
+) {
+  try {
+    const params = new URLSearchParams({
+      type: overlayType,
+      north: bounds.north.toString(),
+      south: bounds.south.toString(),
+      east: bounds.east.toString(),
+      west: bounds.west.toString(),
+    });
+
+    const response = await fetch(`/api/weather/overlay?${params}`);
+    const result = await response.json();
+
+    if (result.success && result.data) {
+      return result.data.points;
+    }
+
+    // Fallback to local generation
+    return getWeatherOverlayData(bounds, overlayType);
+  } catch (error) {
+    console.error('Error fetching overlay data:', error);
+    return getWeatherOverlayData(bounds, overlayType);
+  }
+}
+
+/**
+ * Get weather overlay data for map visualization (fallback/local)
  */
 export function getWeatherOverlayData(
   bounds: { north: number; south: number; east: number; west: number },

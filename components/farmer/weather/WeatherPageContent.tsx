@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import useSWR from 'swr';
 import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
 import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
 import { InteractiveWeatherMap } from '@/components/farmer/weather/InteractiveWeatherMap';
@@ -9,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   AlertCircle, 
   Phone, 
@@ -18,7 +20,8 @@ import {
   Sun, 
   Moon, 
   Zap,
-  MessageSquare
+  MessageSquare,
+  RefreshCw
 } from 'lucide-react';
 import {
   Dialog,
@@ -28,6 +31,50 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+
+// Fetcher function for SWR
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
+// Types from API
+interface WeatherData {
+  location: string;
+  temperature: number;
+  feelsLike: number;
+  humidity: number;
+  windSpeed: number;
+  condition: string;
+  rainProbability: number;
+  thunderstorm: boolean;
+  sunrise: string;
+  sunset: string;
+}
+
+interface ForecastDay {
+  day: string;
+  condition: string;
+  minTemp: number;
+  maxTemp: number;
+  rainChance: number;
+  isToday?: boolean;
+}
+
+interface WeatherStats {
+  rainChance: number;
+  lightning: string;
+  windSpeed: number;
+  humidity: number;
+  sunrise: string;
+  sunset: string;
+}
+
+interface WeatherResponse {
+  success: boolean;
+  data: {
+    current: WeatherData;
+    forecast: ForecastDay[];
+    stats: WeatherStats;
+  };
+}
 
 export function WeatherPageContent() {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
@@ -42,6 +89,18 @@ export function WeatherPageContent() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Fetch weather data from API
+  const { data: weatherResponse, error, isLoading, mutate } = useSWR<WeatherResponse>(
+    '/api/weather?location=default',
+    fetcher,
+    {
+      refreshInterval: 300000, // Refresh every 5 minutes
+      revalidateOnFocus: false,
+    }
+  );
+
+  const weatherData = weatherResponse?.data;
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -53,24 +112,98 @@ export function WeatherPageContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setLoading(false);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', phone: '', pincode: '', address: '', occupation: '', registerFor: 'self' });
-      setShowRegistrationModal(false);
-    }, 2000);
+    
+    try {
+      const response = await fetch('/api/weather/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: '', phone: '', pincode: '', address: '', occupation: '', registerFor: 'self' });
+          setShowRegistrationModal(false);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const weatherAlerts = [
-    { icon: CloudRain, label: 'Chance of rain', value: '0%', color: 'text-blue-500' },
-    { icon: Zap, label: 'Lightning', value: 'N/A', color: 'text-yellow-500' },
-    { icon: Wind, label: 'Wind speed', value: '0.2 KM/h', color: 'text-emerald-500' },
-    { icon: Droplets, label: 'Humidity', value: '40.67%', color: 'text-cyan-500' },
-    { icon: Sun, label: 'Sunrise', value: '07:00:23', color: 'text-orange-500' },
-    { icon: Moon, label: 'Sunset', value: '18:10:03', color: 'text-indigo-500' },
-  ];
+  // Weather alerts stats from API data
+  const weatherAlerts = weatherData ? [
+    { icon: CloudRain, label: 'Chance of rain', value: `${weatherData.stats.rainChance}%`, color: 'text-blue-500' },
+    { icon: Zap, label: 'Lightning', value: weatherData.stats.lightning, color: 'text-yellow-500' },
+    { icon: Wind, label: 'Wind speed', value: `${weatherData.stats.windSpeed} KM/h`, color: 'text-emerald-500' },
+    { icon: Droplets, label: 'Humidity', value: `${weatherData.stats.humidity}%`, color: 'text-cyan-500' },
+    { icon: Sun, label: 'Sunrise', value: weatherData.stats.sunrise, color: 'text-orange-500' },
+    { icon: Moon, label: 'Sunset', value: weatherData.stats.sunset, color: 'text-indigo-500' },
+  ] : [];
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className="w-full space-y-4 md:space-y-6">
+        <div className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="border border-border/50 bg-card shadow-sm">
+              <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
+                <div className="space-y-3">
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid w-full grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-5 xl:col-span-4">
+            <Card className="border border-border/50 bg-card shadow-sm h-full">
+              <CardContent className="p-4 md:p-6">
+                <div className="space-y-2">
+                  {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="lg:col-span-7 xl:col-span-8">
+            <Skeleton className="h-[500px] w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full flex items-center justify-center min-h-[400px]">
+        <Card className="max-w-md">
+          <CardContent className="p-6 text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Failed to load weather data</h3>
+            <p className="text-muted-foreground mb-4">Please check your connection and try again.</p>
+            <Button onClick={() => mutate()}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full space-y-4 md:space-y-6">
@@ -79,10 +212,20 @@ export function WeatherPageContent() {
         {/* Left Column - Real Time Weather */}
         <Card className="border border-border/50 bg-card shadow-sm">
           <CardHeader className="pb-2 px-4 pt-4 md:px-6 md:pt-6">
-            <CardTitle className="text-lg md:text-xl font-bold text-foreground">Real Time Weather</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg md:text-xl font-bold text-foreground">Real Time Weather</CardTitle>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8"
+                onClick={() => mutate()}
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
-            <CurrentWeather />
+            <CurrentWeather data={weatherData?.current} />
           </CardContent>
         </Card>
 
@@ -328,7 +471,7 @@ export function WeatherPageContent() {
               <CardTitle className="text-lg md:text-xl font-bold text-foreground">7-days weather forecast</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 md:px-6 md:pb-6">
-              <ForecastSection />
+              <ForecastSection forecast={weatherData?.forecast} />
             </CardContent>
           </Card>
         </div>
