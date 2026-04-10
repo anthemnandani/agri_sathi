@@ -16,6 +16,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -181,6 +182,7 @@ export function PostCard({ post }: PostCardProps) {
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>Comments</DialogTitle>
+                <DialogDescription className="sr-only">View and add comments to this post</DialogDescription>
               </DialogHeader>
               <div className="max-h-80 overflow-y-auto space-y-4 mb-4">
                 {comments.map((comment) => (
