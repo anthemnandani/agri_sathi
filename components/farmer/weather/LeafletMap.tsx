@@ -253,9 +253,8 @@ export function LeafletMap() {
         // Fetch weather for user location
         await fetchWeatherForLocation(latitude, longitude, 'Your Location');
       },
-      (error) => {
-        console.error('Geolocation error:', error);
-        // Default to Supaul, Bihar
+      () => {
+        // Geolocation not available or denied - silently fall back to default location (Supaul, Bihar)
         const defaultLocation = PREDEFINED_LOCATIONS[0];
         if (mapRef.current) {
           mapRef.current.setView([defaultLocation.lat, defaultLocation.lng], 8);
