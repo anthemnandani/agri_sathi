@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,12 @@ interface ProductSectionProps {
 }
 
 export function ProductSection({ title, products }: ProductSectionProps) {
+  const router = useRouter();
+
+  const handleProductClick = (productId: string) => {
+    router.push(`/farmer/marketplace/product/${productId}`);
+  };
+
   return (
     <div className="space-y-4">
       {/* Section Header */}
@@ -34,10 +41,11 @@ export function ProductSection({ title, products }: ProductSectionProps) {
         <style>{`div::-webkit-scrollbar { display: none; }`}</style>
         <div className="flex gap-3 sm:gap-4 min-w-min">
           {products.map((product) => (
-            <div 
-              key={product.id} 
+            <button
+              key={product.id}
+              onClick={() => handleProductClick(product.id)}
               className={cn(
-                "flex-shrink-0 w-40 sm:w-48 rounded-lg overflow-hidden hover:shadow-lg transition-shadow",
+                "flex-shrink-0 w-40 sm:w-48 rounded-lg overflow-hidden hover:shadow-lg transition-all hover:scale-105 cursor-pointer text-left",
                 "bg-card border border-border"
               )}
             >
@@ -68,7 +76,7 @@ export function ProductSection({ title, products }: ProductSectionProps) {
                   </p>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
