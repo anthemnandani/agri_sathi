@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Filter, X } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +12,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface PriceData {
   id: string;
@@ -58,6 +65,7 @@ const mockPriceData: PriceData[] = [
 ];
 
 export function CropsPriceTab() {
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     dateFrom: '',
     dateTo: '',
@@ -76,10 +84,127 @@ export function CropsPriceTab() {
     );
   });
 
+  const FilterContent = () => (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+      <div>
+        <label className="text-xs font-medium text-foreground mb-2 block">
+          Date From
+        </label>
+        <Select
+          value={filters.dateFrom}
+          onValueChange={(value) =>
+            setFilters({ ...filters, dateFrom: value })
+          }
+        >
+          <SelectTrigger className="h-9 bg-background">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="today">Today</SelectItem>
+            <SelectItem value="week">Last Week</SelectItem>
+            <SelectItem value="month">Last Month</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-foreground mb-2 block">
+          Date To
+        </label>
+        <Select
+          value={filters.dateTo}
+          onValueChange={(value) =>
+            setFilters({ ...filters, dateTo: value })
+          }
+        >
+          <SelectTrigger className="h-9 bg-background">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="today">Today</SelectItem>
+            <SelectItem value="week">This Week</SelectItem>
+            <SelectItem value="month">This Month</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-foreground mb-2 block">
+          Commodity
+        </label>
+        <Select
+          value={filters.commodity}
+          onValueChange={(value) =>
+            setFilters({ ...filters, commodity: value })
+          }
+        >
+          <SelectTrigger className="h-9 bg-background">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="Paddy">Paddy</SelectItem>
+            <SelectItem value="Wheat">Wheat</SelectItem>
+            <SelectItem value="Maize">Maize</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-foreground mb-2 block">
+          State
+        </label>
+        <Select
+          value={filters.state}
+          onValueChange={(value) =>
+            setFilters({ ...filters, state: value })
+          }
+        >
+          <SelectTrigger className="h-9 bg-background">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="Bihar">Bihar</SelectItem>
+            <SelectItem value="Punjab">Punjab</SelectItem>
+            <SelectItem value="Haryana">Haryana</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-foreground mb-2 block">
+          District
+        </label>
+        <Select
+          value={filters.district}
+          onValueChange={(value) =>
+            setFilters({ ...filters, district: value })
+          }
+        >
+          <SelectTrigger className="h-9 bg-background">
+            <SelectValue placeholder="Select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="Supaul">Supaul</SelectItem>
+            <SelectItem value="Ludhiana">Ludhiana</SelectItem>
+            <SelectItem value="Kurukshetra">Kurukshetra</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex items-end">
+        <Button
+          className="w-full h-9 bg-green-600 hover:bg-green-700 text-white"
+          size="sm"
+        >
+          <Search className="h-4 w-4 mr-1" />
+          Search
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       {/* Quick Price Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
           <CardContent className="p-4">
             <div className="text-sm font-medium text-green-700">Wheat price</div>
@@ -110,151 +235,65 @@ export function CropsPriceTab() {
         </Card>
       </div>
 
-      {/* Filters Section */}
-      <Card className="bg-green-50 border-green-200">
-        <CardContent className="p-4">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-            <div>
-              <label className="text-xs font-medium text-foreground mb-2 block">
-                Date From
-              </label>
-              <Select
-                value={filters.dateFrom}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, dateFrom: value })
-                }
-              >
-                <SelectTrigger className="h-9 bg-white">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">Last Week</SelectItem>
-                  <SelectItem value="month">Last Month</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-foreground mb-2 block">
-                Date To
-              </label>
-              <Select
-                value={filters.dateTo}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, dateTo: value })
-                }
-              >
-                <SelectTrigger className="h-9 bg-white">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">This Week</SelectItem>
-                  <SelectItem value="month">This Month</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-foreground mb-2 block">
-                Commodity
-              </label>
-              <Select
-                value={filters.commodity}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, commodity: value })
-                }
-              >
-                <SelectTrigger className="h-9 bg-white">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="Paddy">Paddy</SelectItem>
-                  <SelectItem value="Wheat">Wheat</SelectItem>
-                  <SelectItem value="Maize">Maize</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-foreground mb-2 block">
-                State
-              </label>
-              <Select
-                value={filters.state}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, state: value })
-                }
-              >
-                <SelectTrigger className="h-9 bg-white">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="Bihar">Bihar</SelectItem>
-                  <SelectItem value="Punjab">Punjab</SelectItem>
-                  <SelectItem value="Haryana">Haryana</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-foreground mb-2 block">
-                District
-              </label>
-              <Select
-                value={filters.district}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, district: value })
-                }
-              >
-                <SelectTrigger className="h-9 bg-white">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="Supaul">Supaul</SelectItem>
-                  <SelectItem value="Ludhiana">Ludhiana</SelectItem>
-                  <SelectItem value="Kurukshetra">Kurukshetra</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-end">
-              <Button
-                className="w-full h-9 bg-foreground hover:bg-foreground/90"
-                size="sm"
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Filters Section - Desktop View */}
+      <div className="hidden md:block">
+        <Card className="bg-muted/50 border border-border">
+          <CardContent className="p-4">
+            <FilterContent />
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* Price Table */}
-      <div className="border rounded-lg overflow-hidden">
+      {/* Filters Section - Mobile View with Dialog */}
+      <div className="md:hidden flex justify-end">
+        <Dialog open={showFilters} onOpenChange={setShowFilters}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Filter Results</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              <FilterContent />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Price Table - Desktop */}
+      <div className="hidden md:block border border-border rounded-lg overflow-hidden">
         <table className="w-full">
-          <thead className="bg-green-600 text-white">
+          <thead className="bg-green-600 dark:bg-green-700 text-white">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold">SNO</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">
+              <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold">SNO</th>
+              <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold">
                 State
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">
+              <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold">
                 District
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">
+              <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold">
                 Market Name
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">
+              <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold">
                 Commodity
               </th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">
-                Avg Price (Rs./Quintal)
+              <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold">
+                Avg Price
               </th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">
-                Max Price (Rs./Quintal)
+              <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold">
+                Max Price
               </th>
-              <th className="px-4 py-3 text-right text-sm font-semibold">
-                Min Price (Rs./Quintal)
+              <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold">
+                Min Price
               </th>
             </tr>
           </thead>
@@ -263,30 +302,30 @@ export function CropsPriceTab() {
               filteredData.map((item, index) => (
                 <tr
                   key={item.id}
-                  className="border-t hover:bg-muted/50 transition-colors"
+                  className="border-t border-border hover:bg-muted/50 transition-colors"
                 >
-                  <td className="px-4 py-3 text-sm text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-foreground">
                     {index + 1}
                   </td>
-                  <td className="px-4 py-3 text-sm text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-foreground">
                     {item.state}
                   </td>
-                  <td className="px-4 py-3 text-sm text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-foreground">
                     {item.district}
                   </td>
-                  <td className="px-4 py-3 text-sm text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-foreground">
                     {item.marketName}
                   </td>
-                  <td className="px-4 py-3 text-sm text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-foreground">
                     {item.commodity}
                   </td>
-                  <td className="px-4 py-3 text-sm text-right text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-right text-foreground">
                     ₹{item.avgPrice}
                   </td>
-                  <td className="px-4 py-3 text-sm text-right text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-right text-foreground">
                     ₹{item.maxPrice}
                   </td>
-                  <td className="px-4 py-3 text-sm text-right text-foreground">
+                  <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-right text-foreground">
                     ₹{item.minPrice}
                   </td>
                 </tr>
@@ -300,6 +339,49 @@ export function CropsPriceTab() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Price Cards - Mobile */}
+      <div className="md:hidden space-y-3">
+        {filteredData.length > 0 ? (
+          filteredData.map((item, index) => (
+            <Card key={item.id} className="border border-border">
+              <CardContent className="p-4 space-y-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-muted-foreground">#{index + 1}</p>
+                    <p className="font-semibold text-sm text-foreground">{item.commodity}</p>
+                  </div>
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400">₹{item.avgPrice}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-muted-foreground">State</p>
+                    <p className="text-foreground font-medium">{item.state}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">District</p>
+                    <p className="text-foreground font-medium">{item.district}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Market</p>
+                    <p className="text-foreground font-medium">{item.marketName}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Price Range</p>
+                    <p className="text-foreground font-medium">₹{item.minPrice}-₹{item.maxPrice}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <CardContent className="p-8 text-center text-sm text-muted-foreground">
+              No data found. Try adjusting your filters.
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

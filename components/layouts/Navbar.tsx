@@ -30,7 +30,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <nav className="border-b border-border bg-card shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-40 border-b border-border bg-card shadow-sm">
       <div className="flex items-center justify-between px-4 py-3 md:px-6">
         {/* Logo & Brand */}
         <Link href="/farmer/home" className="flex items-center gap-2">
@@ -52,19 +52,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* Mobile Menu Button */}
-          {isMobile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onMenuClick}
-              className="md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          )}
-
+        <div className="flex items-center gap-2 md:gap-4 ml-auto">
           {/* Theme & Language Controls */}
           <ThemeControls />
 
@@ -117,6 +105,18 @@ export function Navbar({ onMenuClick }: NavbarProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Mobile Menu Button - Right of Profile Icon */}
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMenuClick}
+              className="md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       </div>
     </nav>

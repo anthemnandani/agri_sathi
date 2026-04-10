@@ -9,32 +9,22 @@ import {
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
 import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useTheme } from '@/lib/theme-context';
 
 export function ThemeControls() {
   const [mounted, setMounted] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'hi'>('en');
-  const [isDark, setIsDark] = useState(false);
-  
+  const { language, setLanguage, isDark, setIsDark } = useTheme();
+
   useEffect(() => {
-    // Load from localStorage on client side only
-    const savedLang = localStorage.getItem('language') as 'en' | 'hi' | null;
-    const savedDark = localStorage.getItem('isDark') === 'true';
-    
-    if (savedLang) setLanguage(savedLang);
-    if (savedDark) setIsDark(savedDark);
-    
     setMounted(true);
   }, []);
 
   const handleLanguageChange = (lang: 'en' | 'hi') => {
     setLanguage(lang);
-    localStorage.setItem('language', lang);
   };
 
   const handleThemeChange = () => {
-    const newDark = !isDark;
-    setIsDark(newDark);
-    localStorage.setItem('isDark', String(newDark));
+    setIsDark(!isDark);
   };
 
   if (!mounted) {

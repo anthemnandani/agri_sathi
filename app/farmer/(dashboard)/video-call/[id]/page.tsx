@@ -6,11 +6,12 @@ export const metadata = {
 };
 
 interface VideoCallPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function VideoCallPage({ params }: VideoCallPageProps) {
-  return <VideoCallInterface userId={params.id} />;
+export default async function VideoCallPage({ params }: VideoCallPageProps) {
+  const { id } = await params;
+  return <VideoCallInterface userId={id} />;
 }

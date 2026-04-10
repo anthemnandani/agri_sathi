@@ -43,7 +43,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 border-r border-border bg-card md:flex flex-col">
+    <aside className="w-64 border-r border-border bg-card flex flex-col">
       <ScrollArea className="flex-1 px-4 py-6">
         <nav className="space-y-2">
           {menuItems.map((item) => {

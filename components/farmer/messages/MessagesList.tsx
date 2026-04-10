@@ -48,17 +48,17 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
   );
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-950">
+      {/* Header - WhatsApp Style */}
+      <div className="p-4 border-b bg-gradient-to-r from-green-600 to-green-700 text-white">
         <h2 className="text-xl font-bold mb-3">Messages</h2>
         <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-3 h-4 w-4 text-white/60" />
           <Input
-            placeholder="Search conversations..."
+            placeholder="Search or start new chat..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 bg-white/20 border-0 text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:bg-white/30"
           />
         </div>
       </div>
@@ -67,44 +67,101 @@ export function MessagesList({ selectedChat, onSelectChat }: MessagesListProps) 
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-2">
           {filteredConversations.map((conversation) => (
-            <button
+            <div
               key={conversation.id}
-              onClick={() => onSelectChat(conversation.id)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 p-3 rounded-lg transition-all group cursor-pointer ${
                 selectedChat === conversation.id
                   ? 'bg-green-100 dark:bg-green-900'
-                  : 'hover:bg-accent'
+                  : 'hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
               {/* Avatar */}
-              <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+              <button
+                onClick={() => onSelectChat(conversation.id)}
+                className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-200 dark:border-slate-700"
+              >
                 <Image
                   src={conversation.avatar}
                   alt={conversation.name}
                   fill
                   className="object-cover"
                 />
-              </div>
+              </button>
 
               {/* Info */}
-              <div className="flex-1 min-w-0 text-left">
-                <p className="font-medium text-sm truncate">{conversation.name}</p>
+              <button
+                onClick={() => onSelectChat(conversation.id)}
+                className="flex-1 min-w-0 text-left"
+              >
+                <p className="font-semibold text-sm truncate text-foreground">{conversation.name}</p>
                 <div className="flex items-center gap-1">
-                  <Video className="h-3 w-3 text-muted-foreground" />
+                  <Video className="h-3 w-3 text-green-600" />
                   <p className="text-xs text-muted-foreground truncate">
                     {conversation.lastMessage}
                   </p>
                 </div>
+              </button>
+
+              {/* Mobile Call Buttons - Visible on mobile */}
+              <div className="flex md:hidden gap-1 flex-shrink-0">
+                <Link href={`/farmer/voice-call/${conversation.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Voice call"
+                  >
+                    <Phone className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href={`/farmer/video-call/${conversation.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Video call"
+                  >
+                    <Video className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Desktop Call Buttons - Visible on hover only */}
+              <div className="hidden md:group-hover:flex gap-1 flex-shrink-0">
+                <Link href={`/farmer/voice-call/${conversation.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Voice call"
+                  >
+                    <Phone className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href={`/farmer/video-call/${conversation.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Video call"
+                  >
+                    <Video className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
 
               {/* Time and Unread Badge */}
-              <div className="flex flex-col items-end gap-1">
+              <div className="hidden md:flex flex-col items-end gap-1 flex-shrink-0">
                 <p className="text-xs text-muted-foreground">{conversation.timestamp}</p>
                 {conversation.unread && (
                   <div className="w-2 h-2 bg-green-600 rounded-full" />
                 )}
               </div>
-            </button>
+            </div>
           ))}
         </div>
       </ScrollArea>
