@@ -69,78 +69,73 @@ export function WeatherPageContent() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="w-full space-y-6">
+      {/* Top Section - 3 Columns */}
+      <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Column - Real Time Weather */}
-        <div>
-          <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-bold">Real Time Weather</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <CurrentWeather />
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted lg:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold">Real Time Weather</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <CurrentWeather />
+          </CardContent>
+        </Card>
 
         {/* Middle Column - Weather Alerts */}
-        <div>
-          <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted h-full">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-bold">Weather Alerts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {weatherAlerts.map((alert, idx) => {
-                  const Icon = alert.icon;
-                  return (
-                    <div
-                      key={idx}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted border border-border hover:bg-accent/50 transition"
-                    >
-                      <Icon className="h-6 w-6 text-primary mb-2" />
-                      <p className="text-xs text-muted-foreground text-center mb-1">{alert.label}</p>
-                      <p className="text-sm font-semibold text-foreground">{alert.value}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted lg:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold">Weather Alerts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              {weatherAlerts.map((alert, idx) => {
+                const Icon = alert.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted border border-border hover:bg-accent/50 transition"
+                  >
+                    <Icon className="h-6 w-6 text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground text-center mb-1">{alert.label}</p>
+                    <p className="text-sm font-semibold text-foreground">{alert.value}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Right Column - Offline SMS Alert */}
-        <div>
-          <Card className="border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 h-full">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-bold">Offline SMS alert</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Enable SMS Alert
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Receive critical weather alerts even when you&apos;re offline
-              </p>
-              <Dialog open={showRegistrationModal} onOpenChange={setShowRegistrationModal}>
-                <DialogTrigger asChild>
-                  <Button
-                    className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-                    onClick={() => handleOfflineToggle(true)}
-                  >
-                    <Phone className="h-4 w-4 mr-2" />
-                    Enable SMS Alert
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Registration Form */}
-                    <div>
-                      <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold">Registration</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+        <Card className="border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 lg:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-bold">Offline SMS alert</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Enable SMS Alert
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Receive critical weather alerts even when you&apos;re offline
+            </p>
+            <Dialog open={showRegistrationModal} onOpenChange={setShowRegistrationModal}>
+              <DialogTrigger asChild>
+                <Button
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  onClick={() => handleOfflineToggle(true)}
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Enable SMS Alert
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Registration Form */}
+                  <div>
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold">Registration</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4 mt-6">
                         {submitted && (
                           <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
                             <AlertCircle className="h-4 w-4" />
@@ -265,10 +260,10 @@ export function WeatherPageContent() {
                           {loading ? 'Submitting...' : 'Submit'}
                         </Button>
                       </form>
-                    </div>
+                  </div>
 
-                    {/* Safety Guide */}
-                    <div className="space-y-4">
+                  {/* Safety Guide */}
+                  <div className="space-y-4">
                       <div>
                         <h3 className="text-xl font-bold mb-3">Lightning Safety</h3>
                         <p className="text-sm text-muted-foreground mb-4">
@@ -325,18 +320,18 @@ export function WeatherPageContent() {
                             </div>
                           </div>
                         </div>
-                      </div>
                     </div>
                   </div>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
-        </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* 7 Day Forecast */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Bottom Section - 2 Columns */}
+      <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* 7 Day Forecast */}
         <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
           <CardHeader className="pb-3">
             <CardTitle className="text-xl font-bold">7 days weather forecast</CardTitle>
