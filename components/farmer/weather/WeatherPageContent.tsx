@@ -3,15 +3,12 @@
 import React, { useState } from 'react';
 import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
 import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
-import { AlertsSection } from '@/components/farmer/weather/AlertsSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Cloud, Phone, WifiOff } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertCircle, Phone, WifiOff, Cloud, CloudRain, Wind, Droplets, Sun, Moon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -21,26 +18,27 @@ import {
 } from '@/components/ui/dialog';
 
 export function WeatherPageContent() {
-  const [smsEnabled, setSmsEnabled] = useState(false);
-  const [showOfflineModal, setShowOfflineModal] = useState(false);
+  const [offlineAlertsEnabled, setOfflineAlertsEnabled] = useState(false);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    email: '',
+    pincode: '',
     address: '',
+    occupation: '',
     registerFor: 'self',
   });
-  const [offlineFormData, setOfflineFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-  });
   const [submitted, setSubmitted] = useState(false);
-  const [offlineSubmitted, setOfflineSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [offlineLoading, setOfflineLoading] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOfflineToggle = (enabled: boolean) => {
+    setOfflineAlertsEnabled(enabled);
+    if (enabled) {
+      setShowRegistrationModal(true);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -51,430 +49,313 @@ export function WeatherPageContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setLoading(false);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
-      setFormData({ name: '', phone: '', email: '', address: '', registerFor: 'self' });
-    }, 3000);
+      setFormData({ name: '', phone: '', pincode: '', address: '', occupation: '', registerFor: 'self' });
+      setShowRegistrationModal(false);
+    }, 2000);
   };
 
-  const handleOfflineInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setOfflineFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleOfflineSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setOfflineLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setOfflineLoading(false);
-    setOfflineSubmitted(true);
-    setTimeout(() => {
-      setOfflineSubmitted(false);
-      setOfflineFormData({ name: '', phone: '', address: '' });
-      setShowOfflineModal(false);
-    }, 3000);
-  };
+  const weatherAlerts = [
+    { icon: CloudRain, label: 'Chance of rain', value: '60%' },
+    { icon: AlertCircle, label: 'Lightning risk', value: 'High' },
+    { icon: Wind, label: 'Wind speed', value: '0.2 km/h' },
+    { icon: Droplets, label: 'Humidity', value: '65.8%' },
+    { icon: Sun, label: 'Sunrise', value: '5:30:23' },
+    { icon: Moon, label: 'Sunset', value: '18:10:12' },
+  ];
 
   return (
-    <>
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Weather & Alerts</h1>
-        <p className="text-muted-foreground">
-          Real-time weather data and agricultural alerts for your area
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column - Real Time Weather */}
+        <div>
+          <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-bold">Real Time Weather</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <CurrentWeather />
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Current Weather */}
-      <CurrentWeather />
-
-      {/* Forecast */}
-      <ForecastSection />
-
-      {/* Alerts */}
-      <AlertsSection />
-
-      {/* Alerts Registration & Safety Guide */}
-      <Tabs defaultValue="register" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="register">Register for Alerts</TabsTrigger>
-          <TabsTrigger value="safety">Safety Guide</TabsTrigger>
-        </TabsList>
-
-        {/* Registration Tab */}
-        <TabsContent value="register" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Registration Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Sign Up for Weather Alerts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {submitted && (
-                    <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        Registration successful! You&apos;ll receive alerts via {smsEnabled ? 'SMS and Email' : 'Email'}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div>
-                    <Label htmlFor="name">Your Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      placeholder="Enter your name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="Enter your phone number"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="address">Farm Address</Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      placeholder="Enter your farm address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  {/* SMS Notification Toggle */}
-                  <Card className="bg-accent/50 border border-accent">
-                    <CardContent className="pt-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Phone className="h-5 w-5 text-primary" />
-                          <div>
-                            <Label className="cursor-pointer text-base font-medium">
-                              Enable SMS Alerts
-                            </Label>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Receive urgent weather alerts via SMS (charges may apply)
-                            </p>
-                          </div>
-                        </div>
-                        <Checkbox
-                          checked={smsEnabled}
-                          onCheckedChange={(checked) =>
-                            setSmsEnabled(checked as boolean)
-                          }
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Register For */}
-                  <div className="space-y-3">
-                    <Label>Register for</Label>
-                    <div className="space-y-2">
-                      {[
-                        { value: 'self', label: 'Myself' },
-                        { value: 'family', label: 'Myself & Family' },
-                        { value: 'community', label: 'Community' },
-                      ].map((option) => (
-                        <div key={option.value} className="flex items-center">
-                          <input
-                            type="radio"
-                            id={option.value}
-                            name="registerFor"
-                            value={option.value}
-                            checked={formData.registerFor === option.value}
-                            onChange={(e) =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                registerFor: e.target.value,
-                              }))
-                            }
-                            className="h-4 w-4"
-                          />
-                          <Label
-                            htmlFor={option.value}
-                            className="ml-2 cursor-pointer font-normal"
-                          >
-                            {option.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loading}
-                    size="lg"
-                  >
-                    {loading ? 'Registering...' : 'Register for Alerts'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-
-            {/* Information Section */}
-            <div className="space-y-6">
-              {/* Alert Types */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Cloud className="h-5 w-5" />
-                    Types of Alerts
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {[
-                    {
-                      title: 'Heavy Rainfall',
-                      description: 'Alerts for excessive rainfall and waterlogging',
-                    },
-                    {
-                      title: 'Frost/Cold Wave',
-                      description: 'Protection for frost-sensitive crops',
-                    },
-                    {
-                      title: 'Strong Winds',
-                      description: 'Warnings for damaging wind speeds',
-                    },
-                    {
-                      title: 'Lightning Risk',
-                      description: 'Safety alerts during thunderstorms',
-                    },
-                  ].map((alert, idx) => (
+        {/* Middle Column - Weather Alerts */}
+        <div>
+          <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted h-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-bold">Weather Alerts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3">
+                {weatherAlerts.map((alert, idx) => {
+                  const Icon = alert.icon;
+                  return (
                     <div
                       key={idx}
-                      className="p-3 rounded-lg bg-muted border border-border"
+                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-muted border border-border hover:bg-accent/50 transition"
                     >
-                      <p className="font-semibold text-sm text-foreground">
-                        {alert.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {alert.description}
-                      </p>
+                      <Icon className="h-6 w-6 text-primary mb-2" />
+                      <p className="text-xs text-muted-foreground text-center mb-1">{alert.label}</p>
+                      <p className="text-sm font-semibold text-foreground">{alert.value}</p>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-              {/* Benefits */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Benefits</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {[
-                    'Real-time alerts to protect your crops',
-                    'Local and specific to your area',
-                    'Actionable guidance for each alert',
-                    'Multilingual support (English & Hindi)',
-                    'Free basic alerts',
-                  ].map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <div className="h-2 w-2 rounded-full bg-primary mt-2" />
-                      <p className="text-sm text-muted-foreground">{benefit}</p>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Offline Alert Card */}
-          <Card className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950 dark:to-yellow-950 border-orange-200 dark:border-orange-800">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <WifiOff className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Offline SMS Alerts
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Receive critical weather alerts even when you&apos;re offline. Enable SMS alerts to get important warnings directly on your phone.
-                  </p>
-                  <Dialog open={showOfflineModal} onOpenChange={setShowOfflineModal}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-orange-600 hover:bg-orange-700 text-white">
-                        <Phone className="h-4 w-4 mr-2" />
-                        Enable SMS Alert
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-md">
+        {/* Right Column - Offline SMS Alert */}
+        <div>
+          <Card className="border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 h-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-bold">Offline SMS alert</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Enable SMS Alert
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Receive critical weather alerts even when you&apos;re offline
+              </p>
+              <Dialog open={showRegistrationModal} onOpenChange={setShowRegistrationModal}>
+                <DialogTrigger asChild>
+                  <Button
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                    onClick={() => handleOfflineToggle(true)}
+                  >
+                    <Phone className="h-4 w-4 mr-2" />
+                    Enable SMS Alert
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Registration Form */}
+                    <div>
                       <DialogHeader>
-                        <DialogTitle>Register for Offline SMS Alerts</DialogTitle>
+                        <DialogTitle className="text-2xl font-bold">Registration</DialogTitle>
                       </DialogHeader>
-                      <form onSubmit={handleOfflineSubmit} className="space-y-4">
-                        {offlineSubmitted && (
+                      <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+                        {submitted && (
                           <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
                             <AlertCircle className="h-4 w-4" />
                             <AlertDescription>
-                              SMS alerts enabled successfully! You&apos;ll receive weather warnings via SMS.
+                              Registration successful! You'll receive alerts via SMS.
                             </AlertDescription>
                           </Alert>
                         )}
 
                         <div>
-                          <Label htmlFor="offline-name">Your Name</Label>
+                          <Label htmlFor="name" className="text-sm font-medium">
+                            Enter your name
+                          </Label>
                           <Input
-                            id="offline-name"
+                            id="name"
                             name="name"
-                            placeholder="Enter your name"
-                            value={offlineFormData.name}
-                            onChange={handleOfflineInputChange}
+                            placeholder="Enter your name ...."
+                            value={formData.name}
+                            onChange={handleInputChange}
                             required
+                            className="mt-2"
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor="offline-phone">Phone Number</Label>
+                          <Label htmlFor="phone" className="text-sm font-medium">
+                            Enter your mobile no
+                          </Label>
                           <Input
-                            id="offline-phone"
+                            id="phone"
                             name="phone"
                             type="tel"
-                            placeholder="Enter your phone number"
-                            value={offlineFormData.phone}
-                            onChange={handleOfflineInputChange}
+                            placeholder="Enter your mobile no ...."
+                            value={formData.phone}
+                            onChange={handleInputChange}
                             required
+                            className="mt-2"
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor="offline-address">Farm Address</Label>
+                          <Label htmlFor="pincode" className="text-sm font-medium">
+                            Enter your pincode
+                          </Label>
                           <Input
-                            id="offline-address"
-                            name="address"
-                            placeholder="Enter your farm address"
-                            value={offlineFormData.address}
-                            onChange={handleOfflineInputChange}
+                            id="pincode"
+                            name="pincode"
+                            placeholder="Enter your pincode ...."
+                            value={formData.pincode}
+                            onChange={handleInputChange}
                             required
+                            className="mt-2"
                           />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="address" className="text-sm font-medium">
+                            Enter your address
+                          </Label>
+                          <textarea
+                            id="address"
+                            name="address"
+                            placeholder="Enter your address ...."
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            required
+                            className="mt-2 w-full min-h-[80px] p-2 border border-input rounded-md bg-background text-foreground"
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="occupation" className="text-sm font-medium">
+                            Occupation
+                          </Label>
+                          <Input
+                            id="occupation"
+                            name="occupation"
+                            placeholder="Occupation ...."
+                            value={formData.occupation}
+                            onChange={handleInputChange}
+                            className="mt-2"
+                          />
+                        </div>
+
+                        {/* Register For */}
+                        <div className="space-y-3">
+                          <Label className="text-sm font-medium">Register for</Label>
+                          <div className="flex items-center gap-6">
+                            {[
+                              { value: 'self', label: 'Self' },
+                              { value: 'family', label: 'Friend/Family' },
+                            ].map((option) => (
+                              <div key={option.value} className="flex items-center gap-2">
+                                <input
+                                  type="radio"
+                                  id={option.value}
+                                  name="registerFor"
+                                  value={option.value}
+                                  checked={formData.registerFor === option.value}
+                                  onChange={(e) =>
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      registerFor: e.target.value,
+                                    }))
+                                  }
+                                  className="h-4 w-4"
+                                />
+                                <Label htmlFor={option.value} className="font-normal cursor-pointer">
+                                  {option.label}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
                         </div>
 
                         <Button
                           type="submit"
-                          className="w-full bg-orange-600 hover:bg-orange-700"
-                          disabled={offlineLoading}
+                          className="w-full bg-foreground text-background hover:bg-foreground/90"
+                          disabled={loading}
+                          size="lg"
                         >
-                          {offlineLoading ? 'Registering...' : 'Register for SMS Alerts'}
+                          {loading ? 'Submitting...' : 'Submit'}
                         </Button>
                       </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
+                    </div>
+
+                    {/* Safety Guide */}
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-xl font-bold mb-3">Lightning Safety</h3>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Essential tips to stay safe before and during lightning strikes and thunderstorms.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        {/* Before Lightning */}
+                        <div>
+                          <h4 className="font-bold text-sm mb-2">Before Lightning</h4>
+                          <div className="space-y-2">
+                            <div>
+                              <p className="text-xs font-semibold text-foreground mb-1">What to Do</p>
+                              <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+                                <li>Stay Informed: Monitor weather forecasts and updates through apps or radio.</li>
+                                <li>Look for signs: Dark clouds and strong winds.</li>
+                                <li>Prepare Your Surroundings: Secure loose items.</li>
+                                <li>Unplug Equipment: Disconnect power to prevent damage from power surges.</li>
+                                <li>Gather Supplies: Have a dry, safe location ready.</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-foreground mb-1">What Not to Do</p>
+                              <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+                                <li>Don&apos;t ignore weather alerts or warning signs.</li>
+                                <li>Avoid planning outdoor activities if lightning is forecasted.</li>
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* During Lightning */}
+                        <div className="border-t pt-4">
+                          <h4 className="font-bold text-sm mb-2">During Lightning</h4>
+                          <div className="space-y-2">
+                            <div>
+                              <p className="text-xs font-semibold text-foreground mb-1">What to Do</p>
+                              <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+                                <li>Seek Shelter Immediately: Go to a building or car.</li>
+                                <li>Stay Inside: Avoid windows and doors.</li>
+                                <li>Minimize Risk Indoors: Stay away from electronics and walls.</li>
+                                <li>If Outdoors: Crouch down with feet together and minimize contact with the ground.</li>
+                              </ol>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-foreground mb-1">What Not to Do</p>
+                              <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+                                <li>Avoid Open Areas: Never stand in open fields.</li>
+                                <li>Avoid Metal Objects: Don&apos;t touch metal poles or fencing.</li>
+                                <li>Stay away From Water: Avoid swimming or boating in pools.</li>
+                                <li>Don&apos;t Use Phones: Avoid using wired electronics and appliances.</li>
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      </div>
 
-        {/* Safety Guide Tab */}
-        <TabsContent value="safety" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Lightning Safety Guide</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h3 className="font-semibold text-lg mb-3">Before Lightning</h3>
-                <div className="space-y-2">
-                  {[
-                    'Stay Informed: Monitor weather forecasts and updates',
-                    'Look for signs: Dark clouds and strong winds',
-                    'Prepare Your Surroundings: Secure loose items',
-                    'Unplug Equipment: Disconnect power to prevent damage',
-                    'Gather Supplies: Have a dry, safe location ready',
-                  ].map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <span className="font-bold text-primary min-w-fit">
-                        {idx + 1}.
-                      </span>
-                      <p className="text-sm text-muted-foreground">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* 7 Day Forecast */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border-2 border-foreground/10 bg-gradient-to-br from-background to-muted">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl font-bold">7 days weather forecast</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ForecastSection />
+          </CardContent>
+        </Card>
 
-              <div className="border-t border-border pt-6">
-                <h3 className="font-semibold text-lg mb-3">During Lightning</h3>
-                <div className="space-y-2">
-                  {[
-                    'Seek Shelter Immediately: Go to a building or car',
-                    'Stay Inside: Avoid windows, doors, and metal objects',
-                    'Minimize Risk Indoors: Stay away from electronics',
-                    'Avoid Open Areas: Never stand in open fields',
-                    'Avoid Metal Objects: Don&apos;t touch metal poles or fencing',
-                  ].map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <span className="font-bold text-destructive min-w-fit">
-                        {idx + 1}.
-                      </span>
-                      <p className="text-sm text-muted-foreground">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-border pt-6">
-                <h3 className="font-semibold text-lg mb-3">After Lightning</h3>
-                <div className="space-y-2">
-                  {[
-                    'Seek Medical Help: Check for injuries if struck',
-                    'Assess Damage: Inspect your property for damage',
-                    'Document Everything: Take photos for insurance',
-                    'Contact Authorities: Report any serious incidents',
-                    'Monitor Weather: Stay alert for follow-up storms',
-                  ].map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <span className="font-bold text-green-600 min-w-fit">
-                        {idx + 1}.
-                      </span>
-                      <p className="text-sm text-muted-foreground">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </>
+        {/* Map Placeholder */}
+        <Card className="border-2 border-foreground/10 overflow-hidden">
+          <div className="w-full h-full min-h-[400px] bg-gradient-to-b from-blue-300 to-green-200 relative flex items-center justify-center">
+            <div className="text-center">
+              <Cloud className="h-16 w-16 text-blue-600 mx-auto mb-3 opacity-50" />
+              <p className="text-sm text-muted-foreground">Map of India</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 }
