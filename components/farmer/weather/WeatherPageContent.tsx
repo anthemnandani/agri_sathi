@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
+import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
+import { AlertsSection } from '@/components/farmer/weather/AlertsSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +20,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-export default function WeatherAlertsPage() {
+export function WeatherPageContent() {
   const [smsEnabled, setSmsEnabled] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -81,15 +84,25 @@ export default function WeatherAlertsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Weather Alerts</h1>
+        <h1 className="text-3xl font-bold text-foreground">Weather & Alerts</h1>
         <p className="text-muted-foreground">
-          Register for real-time weather alerts and critical agricultural warnings
+          Real-time weather data and agricultural alerts for your area
         </p>
       </div>
 
+      {/* Current Weather */}
+      <CurrentWeather />
+
+      {/* Forecast */}
+      <ForecastSection />
+
+      {/* Alerts */}
+      <AlertsSection />
+
+      {/* Alerts Registration & Safety Guide */}
       <Tabs defaultValue="register" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="register">Register for Alerts</TabsTrigger>
@@ -110,7 +123,7 @@ export default function WeatherAlertsPage() {
                     <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
-                        Registration successful! You'll receive alerts via {smsEnabled ? 'SMS and Email' : 'Email'}
+                        Registration successful! You&apos;ll receive alerts via {smsEnabled ? 'SMS and Email' : 'Email'}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -303,10 +316,8 @@ export default function WeatherAlertsPage() {
               </Card>
             </div>
           </div>
-        </TabsContent>
 
-        {/* Offline Alert Card */}
-        <div className="mt-8 mb-8">
+          {/* Offline Alert Card */}
           <Card className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950 dark:to-yellow-950 border-orange-200 dark:border-orange-800">
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
@@ -318,7 +329,7 @@ export default function WeatherAlertsPage() {
                     Offline SMS Alerts
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Receive critical weather alerts even when you're offline. Enable SMS alerts to get important warnings directly on your phone.
+                    Receive critical weather alerts even when you&apos;re offline. Enable SMS alerts to get important warnings directly on your phone.
                   </p>
                   <Dialog open={showOfflineModal} onOpenChange={setShowOfflineModal}>
                     <DialogTrigger asChild>
@@ -336,7 +347,7 @@ export default function WeatherAlertsPage() {
                           <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200">
                             <AlertCircle className="h-4 w-4" />
                             <AlertDescription>
-                              SMS alerts enabled successfully! You'll receive weather warnings via SMS.
+                              SMS alerts enabled successfully! You&apos;ll receive weather warnings via SMS.
                             </AlertDescription>
                           </Alert>
                         )}
@@ -392,7 +403,7 @@ export default function WeatherAlertsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </TabsContent>
 
         {/* Safety Guide Tab */}
         <TabsContent value="safety" className="space-y-6">
@@ -464,6 +475,6 @@ export default function WeatherAlertsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </>
   );
 }
