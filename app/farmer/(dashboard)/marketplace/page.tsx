@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MarketplaceHero } from '@/components/farmer/marketplace/MarketplaceHero';
 import { CategoryTabs } from '@/components/farmer/marketplace/CategoryTabs';
 import { ProductSection } from '@/components/farmer/marketplace/ProductSection';
 
 export default function MarketplacePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const categories = [
     { id: 'all', label: 'All' },
@@ -16,45 +19,46 @@ export default function MarketplacePage() {
     { id: 'cattle', label: 'Cattle' },
   ];
 
-  const productSections = [
-    {
-      title: 'Vegetables seeds',
-      category: 'seeds',
-      products: [
-        { id: '1', image: '🌱', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '2', image: '🌱', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '3', image: '🌱', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '10', image: '🌱', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '11', image: '🌱', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-      ],
-    },
-    {
-      title: 'Fruit seeds',
-      category: 'seeds',
-      products: [
-        { id: '4', image: '🍎', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '5', image: '🍎', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '6', image: '🍎', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '12', image: '🍎', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '13', image: '🍎', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-      ],
-    },
-    {
-      title: 'Flower seeds',
-      category: 'seeds',
-      products: [
-        { id: '7', image: '🌸', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '8', image: '🌸', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '9', image: '🌸', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '14', image: '🌸', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-        { id: '15', image: '🌸', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15 },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const url = selectedCategory === 'all' 
+          ? '/api/products'
+          : `/api/products?category=${selectedCategory}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const result = await response.json();
+        setProducts(result.data || []);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('[v0] Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredSections = selectedCategory === 'all' 
-    ? productSections 
-    : productSections.filter(section => section.category === selectedCategory);
+    fetchProducts();
+  }, [selectedCategory]);
+
+  // Group products by section
+  const productSections = products.reduce((acc: any, product: any) => {
+    const existingSection = acc.find((s: any) => s.title === product.section);
+    if (existingSection) {
+      existingSection.products.push(product);
+    } else {
+      acc.push({
+        title: product.section,
+        category: product.category,
+        products: [product],
+      });
+    }
+    return acc;
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -66,9 +70,19 @@ export default function MarketplacePage() {
 
       {/* Product Sections */}
       <div className="space-y-8 px-3 sm:px-4 md:px-6 py-8">
-        {filteredSections.map((section) => (
-          <ProductSection key={section.title} title={section.title} products={section.products} />
-        ))}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">{error}</div>
+        ) : (
+          productSections.map((section: any) => (
+            <ProductSection key={section.title} title={section.title} products={section.products} />
+          ))
+        )}
       </div>
     </div>
   );

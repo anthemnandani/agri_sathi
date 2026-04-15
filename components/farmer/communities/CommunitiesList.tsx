@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CommunityCard } from './CommunityCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,70 +9,47 @@ interface CommunitiesListProps {
   compact?: boolean;
 }
 
-const mockCommunities = [
-  {
-    id: '1',
-    name: 'Wheat Farmers Network',
-    description:
-      'Connect with wheat farmers, share crop diseases, best practices, and market prices.',
-    members: 2345,
-    icon: '🌾',
-    category: 'Crops',
-    joined: false,
-  },
-  {
-    id: '2',
-    name: 'Organic Farming Community',
-    description:
-      'Dedicated to organic and sustainable farming practices. Share techniques and products.',
-    members: 1856,
-    icon: '🌱',
-    category: 'Farming Methods',
-    joined: true,
-  },
-  {
-    id: '3',
-    name: 'Youth Farmers Initiative',
-    description:
-      'For young farmers starting their agricultural journey. Mentorship and modern techniques.',
-    members: 945,
-    icon: '👨‍🌾',
-    category: 'Demographics',
-    joined: false,
-  },
-  {
-    id: '4',
-    name: 'Equipment & Tools',
-    description:
-      'Discussion about farm equipment, rentals, and technology adoption for modern farming.',
-    members: 1234,
-    icon: '⚙️',
-    category: 'Equipment',
-    joined: true,
-  },
-  {
-    id: '5',
-    name: 'Dairy Farmers Co-operative',
-    description:
-      'Cattle management, dairy production, and milk market discussions for dairy farmers.',
-    members: 1567,
-    icon: '🐄',
-    category: 'Livestock',
-    joined: false,
-  },
-  {
-    id: '6',
-    name: 'Vegetable Growers Guild',
-    description:
-      'Growing vegetables, pest management, seasonal planning, and distribution channels.',
-    members: 2100,
-    icon: '🥬',
-    category: 'Crops',
-    joined: false,
-  },
-];
-
 export function CommunitiesList({ compact = false }: CommunitiesListProps) {
+  const [communities, setCommunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCommunities = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/communities');
+        if (!response.ok) {
+          throw new Error('Failed to fetch communities');
+        }
+        const result = await response.json();
+        setCommunities(result.data || []);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('[v0] Error fetching communities:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCommunities();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className={compact ? '' : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'}>
+        {Array.from({ length: compact ? 3 : 6 }).map((_, i) => (
+          <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">{error}</div>;
+  }
+
   if (compact) {
     return (
       <Card>
@@ -85,7 +62,7 @@ export function CommunitiesList({ compact = false }: CommunitiesListProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          {mockCommunities.slice(0, 3).map((community) => (
+          {communities.slice(0, 3).map((community: any) => (
             <div
               key={community.id}
               className="rounded-lg overflow-hidden hover:shadow-md transition-shadow"
@@ -118,12 +95,12 @@ export function CommunitiesList({ compact = false }: CommunitiesListProps) {
           All Communities
         </h2>
         <p className="text-sm text-muted-foreground">
-          {mockCommunities.length} communities available
+          {communities.length} communities available
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {mockCommunities.map((community) => (
+        {communities.map((community: any) => (
           <CommunityCard key={community.id} community={community} />
         ))}
       </div>

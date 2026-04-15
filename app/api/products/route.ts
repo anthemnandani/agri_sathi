@@ -1,0 +1,170 @@
+import { NextResponse } from 'next/server';
+
+const mockProducts = [
+  {
+    id: '1',
+    image: '🌱',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Vegetables seeds',
+  },
+  {
+    id: '2',
+    image: '🌱',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Vegetables seeds',
+  },
+  {
+    id: '3',
+    image: '🌱',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Vegetables seeds',
+  },
+  {
+    id: '10',
+    image: '🌱',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Vegetables seeds',
+  },
+  {
+    id: '11',
+    image: '🌱',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Vegetables seeds',
+  },
+  {
+    id: '4',
+    image: '🍎',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Fruit seeds',
+  },
+  {
+    id: '5',
+    image: '🍎',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Fruit seeds',
+  },
+  {
+    id: '6',
+    image: '🍎',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Fruit seeds',
+  },
+  {
+    id: '12',
+    image: '🍎',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Fruit seeds',
+  },
+  {
+    id: '13',
+    image: '🍎',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Fruit seeds',
+  },
+  {
+    id: '7',
+    image: '🌸',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Flower seeds',
+  },
+  {
+    id: '8',
+    image: '🌸',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Flower seeds',
+  },
+  {
+    id: '9',
+    image: '🌸',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Flower seeds',
+  },
+  {
+    id: '14',
+    image: '🌸',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Flower seeds',
+  },
+  {
+    id: '15',
+    image: '🌸',
+    name: 'Exfoliated Vermiculite - 1 kg',
+    price: 200,
+    originalPrice: 240,
+    discount: 15,
+    category: 'seeds',
+    section: 'Flower seeds',
+  },
+];
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get('category');
+
+  let filtered = mockProducts;
+
+  if (category && category !== 'all') {
+    filtered = mockProducts.filter(p => p.category === category);
+  }
+
+  return NextResponse.json({
+    success: true,
+    data: filtered,
+  });
+}
