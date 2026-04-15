@@ -99,7 +99,73 @@ export default function RentalToolsPage() {
             >
               <Filter className="h-5 w-5" />
             </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 p-4 md:p-6">
+        {/* Filters Sidebar */}
+        {(!isMobile || showFilters) && (
+          <div className={isMobile ? 'col-span-4 mb-4' : 'col-span-1'}>
+            <FilterSidebar
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedLocation={selectedLocation}
+              onLocationChange={setSelectedLocation}
+              priceRange={priceRange}
+              onPriceChange={setPriceRange}
+            />
+          </div>
         )}
+
+        {/* Tools Grid */}
+        <div className={isMobile ? 'col-span-4' : 'col-span-3'}>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-64 bg-muted rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : filteredTools.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredTools.map((tool) => (
+                  <RentalToolCard key={tool.id} tool={tool} />
+                ))}
+              </div>
+              
+              {/* Pagination */}
+              <div className="mt-6 flex justify-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Previous
+                </Button>
+                <span className="px-4 py-2 text-sm text-muted-foreground">
+                  Page {page}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={filteredTools.length < 12}
+                >
+                  Next
+                </Button>
+              </div>
+            </>
+          ) : (
+            <Card className="p-8 text-center">
+              <div className="text-4xl mb-3">🚜</div>
+              <h3 className="font-semibold text-lg mb-2">No tools found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your filters or search query
+              </p>
+            </Card>
+          )}
+        </div>
       </div>
 
       {/* Floating Action Button */}
