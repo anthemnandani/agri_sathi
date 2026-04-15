@@ -1,12 +1,11 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { MessagingCenter } from '@/components/farmer/messages/MessagingCenter';
 
-export const metadata = {
-  title: 'Messages - AgriSathi',
-  description: 'Chat with other farmers and experts',
-};
-
 export default function MessagesPage() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header - Hidden on mobile to save space */}
@@ -19,7 +18,7 @@ export default function MessagesPage() {
 
       {/* Messaging Interface */}
       <div className="flex-1 overflow-hidden">
-        <MessagingCenter />
+        <MessagingCenter onChatOpen={setIsChatOpen} isChatOpen={isChatOpen} />
       </div>
     </div>
   );

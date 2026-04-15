@@ -25,6 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { CallEndModal } from './CallEndModal';
 
 interface VideoCallInterfaceProps {
   userId: string;
@@ -37,6 +38,7 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [callActive, setCallActive] = useState(true);
+  const [showEndModal, setShowEndModal] = useState(false);
 
   useEffect(() => {
     if (!callActive) return;
@@ -59,36 +61,16 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (!callActive) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-gray-900">
-        <Card className="p-8 text-center max-w-sm bg-white dark:bg-slate-900 space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold">Call Ended</h2>
-            <p className="text-muted-foreground">Duration: {formatTime(callDuration)}</p>
-          </div>
-          <div className="flex gap-3">
-            <Button 
-              onClick={() => router.push(`/farmer/messages`)} 
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              Open Chat
-            </Button>
-            <Button 
-              onClick={() => router.back()} 
-              variant="outline"
-              className="flex-1"
-            >
-              Back
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!callActive) {
+      setShowEndModal(true);
+    }
+  }, [callActive]);
 
   return (
-    <div className="h-screen bg-gray-900 text-white flex flex-col">
+    <>
+      <CallEndModal isOpen={showEndModal} callDuration={callDuration} userId={userId} />
+      <div className="h-screen bg-gray-900 text-white flex flex-col">
       {/* Header with Timer and Back Button */}
       <div className="p-4 flex items-center justify-between">
         <Button
@@ -241,5 +223,6 @@ export function VideoCallInterface({ userId }: VideoCallInterfaceProps) {
         </DropdownMenu>
       </div>
     </div>
+    </>
   );
 }
