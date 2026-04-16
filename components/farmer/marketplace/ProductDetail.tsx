@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Star, Check, Truck, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, Star, Check, Truck, ShieldCheck, MapPin, Phone, MessageSquare, Wrench, Calendar, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 const productDatabase: Record<string, any> = {
@@ -15,27 +16,55 @@ const productDatabase: Record<string, any> = {
     originalPrice: 240,
     discount: 22,
     rating: 4.5,
-    reviews: 3,
+    reviews: 142,
     image: '🥬',
     images: ['🥬', '🌱', '🥬', '🥕'],
     description: 'Apollo Chinese Cabbage is a fresh, premium leafy vegetable with a crisp texture and mild sweetness. Perfect for salads, stir-fries, and soups, it adds crunch and essential nutrients to your meals.',
+    longDescription: 'Apollo Chinese Cabbage F1 is a premium quality hybrid seed variety developed for Indian farmers. It offers excellent field holding capacity and strong disease resistance. The variety is suitable for spring and early summer planting and produces uniform, high-quality heads with bright green external color and light yellow internal color. Perfect for commercial cultivation and high-value crop production.',
+    category: 'Seeds',
     originCountry: 'India',
-    specifications: [
-      'Head weight: approximately 5.5lbs, moderate head height',
-      'Bright green external color, light yellow internal color',
-      'Suitable for harvest - spring to early summer'
-    ],
+    sku: 'ACB-F1-250',
+    inStock: true,
+    stockQuantity: 45,
+    specifications: {
+      'Head Weight': '5.5 lbs',
+      'Maturity': '65 days',
+      'Plant Height': 'Moderate',
+      'External Color': 'Bright green',
+      'Internal Color': 'Light yellow',
+      'Suitable Season': 'Spring to early summer'
+    },
     features: [
-      'Excellent field holding • Harvest flexibility',
-      'Strong tolerance to heat • Tolerant to heat spikes',
-      'Strong resistance to Clubroot • Reduced disease pressure'
+      'Excellent field holding and harvest flexibility',
+      'Strong tolerance to heat and heat spikes',
+      'Strong resistance to Clubroot disease',
+      'Reduced disease pressure in humid climates',
+      'Uniform head size and quality',
+      'High market value'
     ],
-    harvesting: 'Approximately 65 days after sowing. Note: Chinese Cabbage requires vernalization. Bud differentiation and bolting results from low temperatures of 5°C for a week or 10°C for two weeks. For spring harvest, transplant seedlings with 5-7 true leaves raised at 23-24°C during the day',
+    harvesting: 'Approximately 65 days after sowing. Note: Chinese Cabbage requires vernalization. Bud differentiation and bolting results from low temperatures of 5°C for a week or 10°C for two weeks. For spring harvest, transplant seedlings with 5-7 true leaves raised at 23-24°C during the day.',
+    usage: 'Fresh consumption, salads, stir-fries, soups. Can be stored for extended periods in cool conditions.',
+    seller: {
+      name: 'AgroSeeds India',
+      rating: 4.7,
+      reviews: 287,
+      joinedDate: '2019',
+      location: 'Punjab',
+      responseTime: '2-4 hours',
+      contact: '+91-9876543210'
+    },
+    benefits: [
+      'Original verified seeds',
+      'High germination rate',
+      'Certified by agricultural department',
+      'Free delivery on orders above ₹500',
+      '30-day replacement guarantee'
+    ],
     similarProducts: [
       { id: '2', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15, image: '🌱' },
-      { id: '3', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15, image: '🌱' },
-      { id: '4', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15, image: '🌱' },
-      { id: '5', name: 'Exfoliated Vermiculite - 1 kg', price: 200, originalPrice: 240, discount: 15, image: '🌱' },
+      { id: '3', name: 'NPK Fertilizer - 5 kg', price: 280, originalPrice: 350, discount: 20, image: '🌾' },
+      { id: '4', name: 'Organic Pesticide - 500 ml', price: 150, originalPrice: 200, discount: 25, image: '🧪' },
+      { id: '5', name: 'Garden Soil - 10 kg', price: 320, originalPrice: 400, discount: 20, image: '🪨' },
     ]
   }
 };
@@ -45,7 +74,11 @@ for (let i = 2; i <= 15; i++) {
   productDatabase[String(i)] = {
     ...productDatabase['1'],
     id: String(i),
-    image: i <= 3 ? '🌱' : i <= 6 ? '🍎' : '🌸'
+    image: i <= 3 ? '🌱' : i <= 6 ? '🍎' : '🌸',
+    seller: {
+      ...productDatabase['1'].seller,
+      name: `Seller ${i}`
+    }
   };
 }
 
@@ -81,12 +114,13 @@ export function ProductDetail({ productId }: ProductDetailProps) {
         </button>
       </div>
 
-      <div className="px-3 sm:px-4 md:px-6 py-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mb-12">
-          {/* Product Images - Left Side */}
-          <div className="space-y-4">
+      <div className="px-3 sm:px-4 md:px-6 py-8 max-w-7xl mx-auto">
+        {/* Main Product Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+          {/* Left Column - Product Images */}
+          <div className="md:col-span-2 space-y-4">
             {/* Main Image */}
-            <div className="relative w-full aspect-square bg-muted rounded-xl flex items-center justify-center overflow-hidden border border-border">
+            <div className="relative w-full aspect-square bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900 dark:to-green-950 rounded-xl flex items-center justify-center overflow-hidden border border-border">
               <div className="text-9xl">{product.images[selectedImage]}</div>
               {product.discount > 0 && (
                 <Badge className="absolute top-4 left-4 bg-orange-500 text-white text-base px-3 py-1">
@@ -103,7 +137,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                   onClick={() => setSelectedImage(idx)}
                   className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex items-center justify-center border-2 transition-all text-4xl sm:text-5xl ${
                     selectedImage === idx
-                      ? 'border-green-600 bg-muted'
+                      ? 'border-green-600 bg-green-50 dark:bg-green-950'
                       : 'border-border hover:border-green-600'
                   }`}
                 >
@@ -113,140 +147,218 @@ export function ProductDetail({ productId }: ProductDetailProps) {
             </div>
           </div>
 
-          {/* Product Info - Right Side */}
-          <div className="space-y-6">
-            {/* Title and Rating */}
-            <div className="space-y-3">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-                {product.name}
-              </h1>
-              
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
+          {/* Right Column - Quick Info & Action */}
+          <div className="space-y-4">
+            {/* Price & Stock Card */}
+            <Card className="p-6 space-y-4 bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+              {/* Price */}
+              <div>
+                <div className="text-4xl font-bold text-green-600 mb-1">
+                  ₹{product.price}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground line-through">
+                    ₹{product.originalPrice}
+                  </span>
+                  <Badge className="bg-orange-500 text-white text-xs">
+                    Save ₹{product.originalPrice - product.price}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Stock Status */}
+              <div className="border-t border-green-200 dark:border-green-800 pt-3">
+                <p className="text-xs text-muted-foreground mb-1">Stock Available</p>
+                <p className="text-lg font-semibold text-green-600">{product.stockQuantity} in stock</p>
+              </div>
+
+              {/* Rating */}
+              <div className="flex items-center gap-2 border-t border-green-200 dark:border-green-800 pt-3">
+                <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                      className={`h-4 w-4 ${
+                        i < Math.floor(product.rating)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-muted-foreground">{product.reviews} reviews</span>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {product.description}
-            </p>
-
-            {/* Price Section */}
-            <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Price</div>
-              <div className="flex items-center gap-3">
-                <span className="text-3xl sm:text-4xl font-bold text-foreground">
-                  ${product.price}
-                </span>
-                <span className="text-lg text-muted-foreground line-through">
-                  ${product.originalPrice}
+                <span className="text-sm font-semibold">
+                  {product.rating} ({product.reviews} reviews)
                 </span>
               </div>
-            </div>
 
-            {/* Benefits */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Check className="h-5 w-5 text-green-600" />
-                <span className="text-sm">Country of Origin {product.originCountry}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="h-5 w-5 text-green-600" />
-                <span className="text-sm">Secure Payments</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Truck className="h-5 w-5 text-green-600" />
-                <span className="text-sm">Free Delivery</span>
-              </div>
-            </div>
-
-            {/* Quantity and Action Buttons */}
-            <div className="space-y-4 pt-4">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium">Quantity:</span>
-                <div className="flex items-center border border-border rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 hover:bg-muted transition-colors"
-                  >
-                    −
-                  </button>
-                  <span className="px-6 py-2 font-medium border-l border-r border-border">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-3 py-2 hover:bg-muted transition-colors"
-                  >
-                    +
-                  </button>
+              {/* Action Buttons */}
+              <div className="space-y-3 pt-3">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium">Quantity:</span>
+                  <div className="flex items-center border border-green-600 rounded-lg bg-white dark:bg-slate-950">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 py-2 hover:bg-green-100 dark:hover:bg-green-900 transition-colors"
+                    >
+                      −
+                    </button>
+                    <span className="px-6 py-2 font-medium border-l border-r border-green-600">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="px-3 py-2 hover:bg-green-100 dark:hover:bg-green-900 transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex gap-3">
                 <Button
                   onClick={handleAddToCart}
                   variant="outline"
-                  className="flex-1 h-12 text-base border-2 border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-950"
+                  className="w-full h-12 text-base border-2 border-green-600 text-green-600 hover:bg-green-100 dark:hover:bg-green-900"
                 >
                   Add to Cart
                 </Button>
                 <Button
                   onClick={handleBuyNow}
-                  className="flex-1 h-12 text-base bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full h-12 text-base bg-green-600 hover:bg-green-700 text-white font-semibold"
                 >
                   Buy Now
                 </Button>
               </div>
-            </div>
+            </Card>
+
+            {/* Benefits Card */}
+            <Card className="p-4 space-y-3">
+              <h3 className="font-semibold text-foreground">Why Choose This?</h3>
+              {product.benefits.map((benefit: string, idx: number) => (
+                <div key={idx} className="flex items-start gap-3">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-muted-foreground">{benefit}</span>
+                </div>
+              ))}
+            </Card>
           </div>
         </div>
 
-        {/* Product Description Section */}
+        {/* Seller Info Card */}
+        <Card className="p-6 mb-12 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Seller Name & Rating */}
+            <div>
+              <h3 className="text-sm text-muted-foreground mb-2">Sold by</h3>
+              <p className="text-lg font-semibold text-foreground">{product.seller.name}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-3 w-3 ${
+                        i < Math.floor(product.seller.rating)
+                          ? 'fill-yellow-400 text-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-muted-foreground">{product.seller.rating} ({product.seller.reviews} reviews)</span>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <h3 className="text-sm text-muted-foreground mb-2">Location</h3>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-foreground">{product.seller.location}</span>
+              </div>
+            </div>
+
+            {/* Response Time */}
+            <div>
+              <h3 className="text-sm text-muted-foreground mb-2">Response Time</h3>
+              <p className="text-sm font-medium text-foreground">{product.seller.responseTime}</p>
+            </div>
+
+            {/* Contact Actions */}
+            <div className="space-y-2">
+              <a href={`tel:${product.seller.contact}`} className="block">
+                <Button variant="outline" className="w-full gap-2 text-sm h-9">
+                  <Phone className="h-4 w-4" />
+                  Call Seller
+                </Button>
+              </a>
+              <Button variant="outline" className="w-full gap-2 text-sm h-9">
+                <MessageSquare className="h-4 w-4" />
+                Message
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Product Details Tabs */}
         <div className="border-t border-border pt-12 space-y-8">
+          {/* Description */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Tag className="h-6 w-6 text-green-600" />
+              About This Product
+            </h2>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {product.longDescription}
+            </p>
+          </div>
+
           {/* Specifications */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Product Description</h2>
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold">Specifications:</h3>
-              <ul className="space-y-2">
-                {product.specifications.map((spec: string, idx: number) => (
-                  <li key={idx} className="flex gap-3 text-sm text-muted-foreground">
-                    <span className="text-green-600 font-bold">•</span>
-                    {spec}
-                  </li>
-                ))}
-              </ul>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Wrench className="h-6 w-6 text-green-600" />
+              Specifications
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {Object.entries(product.specifications).map(([key, value]) => (
+                <div key={key} className="border border-border rounded-lg p-4">
+                  <p className="text-xs text-muted-foreground font-medium capitalize mb-1">
+                    {key}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">{String(value)}</p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Features */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Features:</h3>
-            <ul className="space-y-2">
+            <h2 className="text-xl font-bold">Key Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {product.features.map((feature: string, idx: number) => (
-                <li key={idx} className="flex gap-3 text-sm text-muted-foreground">
-                  <span className="text-green-600 font-bold">•</span>
-                  {feature}
-                </li>
+                <div key={idx} className="flex gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
+                  <span className="text-sm text-foreground">{feature}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {/* Harvesting */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Harvesting:</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {product.harvesting}
-            </p>
+          {/* Harvesting & Usage */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-green-600" />
+                Harvesting Guidelines
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {product.harvesting}
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">Usage & Storage</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {product.usage}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -262,7 +374,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                   onClick={() => router.push(`/farmer/marketplace/product/${similar.id}`)}
                   className="flex-shrink-0 w-40 sm:w-48 rounded-lg overflow-hidden hover:shadow-lg transition-all hover:scale-105 cursor-pointer bg-card border border-border"
                 >
-                  <div className="relative w-full aspect-square bg-muted flex items-center justify-center text-5xl">
+                  <div className="relative w-full aspect-square bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900 dark:to-green-950 flex items-center justify-center text-5xl">
                     {similar.image}
                     {similar.discount > 0 && (
                       <Badge className="absolute top-2 left-2 bg-orange-500 text-white text-xs">
