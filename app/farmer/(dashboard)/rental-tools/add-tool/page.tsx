@@ -23,7 +23,7 @@ export default function AddRentalToolPage() {
     description: '',
     price: '',
     specifications: '',
-    availability: [],
+    availability: [] as string[],
     location: '',
     contact: '',
   });

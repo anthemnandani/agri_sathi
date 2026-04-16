@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Upload, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const TOOL_CATEGORIES = [
@@ -19,6 +19,13 @@ const TOOL_CATEGORIES = [
 const TOOL_CONDITIONS = ['New', 'Excellent', 'Good', 'Fair'];
 const AVAILABILITY_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+interface MediaFile {
+  id: string;
+  file: File;
+  preview: string;
+  type: 'image' | 'video' | 'document';
+}
+
 interface AddToolFormProps {
   onToolAdded: (tool: any) => void;
 }
@@ -26,6 +33,9 @@ interface AddToolFormProps {
 export function AddToolForm({ onToolAdded }: AddToolFormProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -60,6 +70,53 @@ export function AddToolForm({ onToolAdded }: AddToolFormProps) {
 
   const handleConditionSelect = (condition: string) => {
     setFormData((prev) => ({ ...prev, condition }));
+  };
+
+  const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    files.forEach((file) => {
+      const fileType = getFileType(file.type);
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const newMedia: MediaFile = {
+          id: `${Date.now()}-${Math.random()}`,
+          file: file,
+          preview: event.target?.result as string,
+          type: fileType,
+        };
+        setMediaFiles((prev) => [...prev, newMedia]);
+        toast.success(`${fileType.charAt(0).toUpperCase() + fileType.slice(1)} added!`);
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const getFileType = (mimeType: string): 'image' | 'video' | 'document' => {
+    if (mimeType.startsWith('image/')) return 'image';
+    if (mimeType.startsWith('video/')) return 'video';
+    return 'document';
+  };
+
+  const handleRemoveMedia = (id: string) => {
+    setMediaFiles((prev) => prev.filter((m) => m.id !== id));
+    if (currentMediaIndex >= mediaFiles.length - 1) {
+      setCurrentMediaIndex(Math.max(0, currentMediaIndex - 1));
+    }
+  };
+
+  const handlePrevMedia = () => {
+    setCurrentMediaIndex((prev) => (prev > 0 ? prev - 1 : mediaFiles.length - 1));
+  };
+
+  const handleNextMedia = () => {
+    setCurrentMediaIndex((prev) => (prev < mediaFiles.length - 1 ? prev + 1 : 0));
   };
 
   const isStep1Valid = formData.name.trim() && formData.category;
@@ -148,7 +205,7 @@ export function AddToolForm({ onToolAdded }: AddToolFormProps) {
         ))}
       </div>
 
-      {/* Step 1: Basic Information */}
+      {/* Step 1: Basic Information & Media Upload */}
       {step === 1 && (
         <Card className="p-6 space-y-6">
           <div className="space-y-3">
@@ -205,6 +262,129 @@ export function AddToolForm({ onToolAdded }: AddToolFormProps) {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Media Upload Section */}
+          <div className="space-y-4 bg-green-50 dark:bg-green-950 p-5 rounded-lg border-2 border-dashed border-green-300 dark:border-green-700">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-foreground">
+                Tool Photos/Videos/Documents
+              </label>
+              <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                {mediaFiles.length} files
+              </Badge>
+            </div>
+
+            {/* Media Slider */}
+            {mediaFiles.length > 0 && (
+              <div className="space-y-3">
+                <div className="relative bg-black rounded-lg overflow-hidden aspect-video flex items-center justify-center">
+                  {mediaFiles[currentMediaIndex].type === 'image' && (
+                    <img
+                      src={mediaFiles[currentMediaIndex].preview}
+                      alt="preview"
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                  {mediaFiles[currentMediaIndex].type === 'video' && (
+                    <video
+                      src={mediaFiles[currentMediaIndex].preview}
+                      controls
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                  {mediaFiles[currentMediaIndex].type === 'document' && (
+                    <div className="flex flex-col items-center justify-center gap-2 text-white">
+                      <Upload className="h-12 w-12" />
+                      <p className="text-sm">{mediaFiles[currentMediaIndex].file.name}</p>
+                    </div>
+                  )}
+
+                  {/* Navigation Arrows */}
+                  {mediaFiles.length > 1 && (
+                    <>
+                      <button
+                        onClick={handlePrevMedia}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-all"
+                      >
+                        <ChevronUp className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={handleNextMedia}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-all"
+                      >
+                        <ChevronDown className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Media Counter */}
+                  <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+                    {currentMediaIndex + 1} / {mediaFiles.length}
+                  </div>
+                </div>
+
+                {/* Thumbnails */}
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {mediaFiles.map((media, idx) => (
+                    <div
+                      key={media.id}
+                      className={`relative flex-shrink-0 h-16 w-16 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
+                        idx === currentMediaIndex ? 'border-green-600' : 'border-gray-300'
+                      }`}
+                      onClick={() => setCurrentMediaIndex(idx)}
+                    >
+                      {media.type === 'image' && (
+                        <img
+                          src={media.preview}
+                          alt="thumbnail"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {media.type === 'video' && (
+                        <div className="w-full h-full bg-gray-700 flex items-center justify-center text-white text-2xl">
+                          ▶
+                        </div>
+                      )}
+                      {media.type === 'document' && (
+                        <div className="w-full h-full bg-blue-200 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xl">
+                          📄
+                        </div>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveMedia(media.id);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full transition-all"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Upload Button */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full py-3 border-2 border-dashed border-green-400 dark:border-green-600 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/50 transition-all flex items-center justify-center gap-2 text-foreground"
+            >
+              <Upload className="h-4 w-4" />
+              <span className="font-medium">Click to upload or drag & drop</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*,video/*,.pdf,.doc,.docx"
+              onChange={handleMediaUpload}
+              className="hidden"
+            />
+            <p className="text-xs text-muted-foreground text-center">
+              Upload photos, videos, or documents of your tool (JPG, PNG, MP4, PDF, etc.)
+            </p>
           </div>
 
           <div className="flex justify-end">
