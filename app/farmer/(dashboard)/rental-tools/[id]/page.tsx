@@ -183,7 +183,7 @@ export default function ToolDetailPage({
           </Card>
 
           {/* Reviews */}
-          <ReviewSection toolId={params.id} />
+          <ReviewSection toolId={toolId} />
         </div>
 
         {/* Right Column - Booking Card and Owner Info */}
