@@ -153,7 +153,7 @@ export function MyToolsList({ tools, isLoading, onDelete, onToggle }: MyToolsLis
                     onClick={() => setExpandedToolId(isExpanded ? null : tool.id)}
                     className="w-full flex items-center justify-between text-sm font-medium text-foreground hover:text-green-600 transition-colors"
                   >
-                    <span>📸 {tool.media.length} File{tool.media.length !== 1 ? 's' : ''}</span>
+                    <span>📸 {tool.media?.length || 0} File{(tool.media?.length || 0) !== 1 ? 's' : ''}</span>
                     {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </button>
 
