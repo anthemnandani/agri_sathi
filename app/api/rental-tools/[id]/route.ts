@@ -12,7 +12,7 @@ export async function GET(
       category: 'tractor',
       price: 500,
       rating: 4.8,
-      reviews: 24,
+      reviewCount: 24,
       image: '🚜',
       owner: {
         id: 'owner1',
@@ -41,7 +41,7 @@ export async function GET(
       },
       images: ['🚜', '🔧', '⚙️'],
       amenities: ['Free delivery', 'Operator training', 'Insurance included'],
-      reviews: [
+      reviewsList: [
         {
           id: 'r1',
           user: 'Farmer Harjit',
@@ -71,7 +71,7 @@ export async function GET(
       category: 'harvester',
       price: 800,
       rating: 4.6,
-      reviews: 18,
+      reviewCount: 18,
       image: '🌾',
       owner: {
         id: 'owner2',
@@ -100,7 +100,7 @@ export async function GET(
       },
       images: ['🌾', '🚜', '🔧'],
       amenities: ['Trained operator', 'Fuel provided', 'Same day delivery'],
-      reviews: [
+      reviewsList: [
         {
           id: 'r1',
           user: 'Punjab Farms',

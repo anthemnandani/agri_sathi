@@ -68,8 +68,10 @@ export async function POST(request: Request) {
   // Mock review creation
   const newReview = {
     id: `r${Date.now()}`,
-    ...body,
+    user: body.user,
+    rating: body.rating,
     date: 'just now',
+    comment: body.comment,
     verified: false,
   };
 

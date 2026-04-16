@@ -67,7 +67,11 @@ export function ReviewSection({ toolId }: ReviewSectionProps) {
 
       if (response.ok) {
         const result = await response.json();
-        setReviews([result.data, ...reviews]);
+        if (result.data && typeof result.data === 'object' && !Array.isArray(result.data)) {
+          setReviews([result.data, ...reviews]);
+        } else if (Array.isArray(result.data)) {
+          setReviews([...result.data, ...reviews]);
+        }
         setFormData({ rating: 5, comment: '', user: '' });
         setShowForm(false);
       }

@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { RentalToolsTab } from './RentalToolsTab';
 
 interface ProfileTabsProps {
   activeTab: string;
@@ -107,6 +108,8 @@ export function ProfileTabs({ activeTab }: ProfileTabsProps) {
             </CardContent>
           </Card>
         );
+      case 'rental tools':
+        return <RentalToolsTab />;
       default:
         return null;
     }
