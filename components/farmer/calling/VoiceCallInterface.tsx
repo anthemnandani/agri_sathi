@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CallEndModal } from './CallEndModal';
 
 interface VoiceCallInterfaceProps {
   userId: string;
@@ -18,6 +19,7 @@ export function VoiceCallInterface({ userId }: VoiceCallInterfaceProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [callActive, setCallActive] = useState(true);
+  const [showEndModal, setShowEndModal] = useState(false);
 
   useEffect(() => {
     if (!callActive) return;
@@ -27,6 +29,12 @@ export function VoiceCallInterface({ userId }: VoiceCallInterfaceProps) {
     }, 1000);
 
     return () => clearInterval(interval);
+  }, [callActive]);
+
+  useEffect(() => {
+    if (!callActive) {
+      setShowEndModal(true);
+    }
   }, [callActive]);
 
   const formatTime = (seconds: number) => {
@@ -40,35 +48,9 @@ export function VoiceCallInterface({ userId }: VoiceCallInterfaceProps) {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (!callActive) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800">
-        <Card className="p-8 text-center max-w-sm space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold">Call Ended</h2>
-            <p className="text-muted-foreground">Duration: {formatTime(callDuration)}</p>
-          </div>
-          <div className="flex gap-3">
-            <Button 
-              onClick={() => router.push(`/farmer/messages`)} 
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              Open Chat
-            </Button>
-            <Button 
-              onClick={() => router.back()} 
-              variant="outline"
-              className="flex-1"
-            >
-              Back
-            </Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
   return (
+    <>
+      <CallEndModal isOpen={showEndModal} callDuration={callDuration} userId={userId} />
     <div className="h-screen bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 flex flex-col">
       {/* Header with Back Button */}
       <div className="p-4 flex items-center">
@@ -157,5 +139,6 @@ export function VoiceCallInterface({ userId }: VoiceCallInterfaceProps) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

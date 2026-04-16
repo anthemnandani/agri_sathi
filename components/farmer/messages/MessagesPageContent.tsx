@@ -6,16 +6,22 @@ import { ChatWindow } from './ChatWindow';
 import { Card } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export function MessagesPageContent() {
+interface MessagesPageContentProps {
+  onChatOpen?: (isOpen: boolean) => void;
+}
+
+export function MessagesPageContent({ onChatOpen }: MessagesPageContentProps = {}) {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   const handleSelectChat = (chatId: string) => {
     setSelectedChat(chatId);
+    onChatOpen?.(true);
   };
 
   const handleBackToList = () => {
     setSelectedChat(null);
+    onChatOpen?.(false);
   };
 
   return (
@@ -28,7 +34,7 @@ export function MessagesPageContent() {
       {/* Chat Window - Right Content */}
       <div className={`${selectedChat || !isMobile ? 'flex' : 'hidden'} md:col-span-2 flex-col overflow-hidden`}>
         {selectedChat ? (
-          <ChatWindow chatId={selectedChat} />
+          <ChatWindow chatId={selectedChat} onBack={handleBackToList} />
         ) : (
           <Card className="h-full flex items-center justify-center border-0">
             <div className="text-center space-y-4">

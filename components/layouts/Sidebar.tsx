@@ -16,6 +16,7 @@ import {
   Leaf,
   Settings,
   HelpCircle,
+  Tractor,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ const menuItems = [
   { label: 'Home', href: '/farmer/home', icon: Home },
   { label: 'Posts', href: '/farmer/posts', icon: Share2 },
   { label: 'Marketplace', href: '/farmer/marketplace', icon: ShoppingBag },
+  { label: 'Rental Tools', href: '/farmer/rental-tools', icon: Tractor },
   { label: 'Weather', href: '/farmer/weather', icon: Cloud },
   { label: 'Crops', href: '/farmer/crops', icon: Leaf },
   { label: 'Communities', href: '/farmer/communities', icon: Users },

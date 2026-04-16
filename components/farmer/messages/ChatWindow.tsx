@@ -42,7 +42,7 @@ interface ChatWindowProps {
   chatId: string;
 }
 
-export function ChatWindow({ chatId }: ChatWindowProps) {
+export function ChatWindow({ chatId, onBack }: ChatWindowProps & { onBack?: () => void }) {
   const router = useRouter();
   const [messages, setMessages] = useState(CHAT_MESSAGES);
   const [inputValue, setInputValue] = useState('');
@@ -93,14 +93,14 @@ export function ChatWindow({ chatId }: ChatWindowProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-white/95 to-white dark:from-slate-900 dark:to-slate-950">
+    <div className="flex flex-col h-screen md:h-full bg-gradient-to-br from-white/95 to-white dark:from-slate-900 dark:to-slate-950">
       {/* Chat Header - WhatsApp Style */}
       <div className="flex items-center justify-between p-3 md:p-4 border-b bg-gradient-to-r from-green-600 to-green-700 text-white shadow-md">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.back()}
+            onClick={() => onBack?.()}
             className="text-white hover:bg-green-500 md:hidden shrink-0"
             title="Back to messages list"
           >

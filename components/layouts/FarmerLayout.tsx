@@ -1,10 +1,11 @@
 'use client';
 
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { usePathname } from 'next/navigation';
 
 function SidebarWithClose({ onClose }: { onClose: () => void }) {
   const handleNavigation = () => {
@@ -25,7 +26,14 @@ interface FarmerLayoutProps {
 
 export function FarmerLayout({ children }: FarmerLayoutProps) {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  useEffect(() => {
+    // Show mobile nav unless in messages page
+    setIsChatOpen(pathname === '/farmer/messages' || pathname.includes('/farmer/messages'));
+  }, [pathname]);
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -59,8 +67,8 @@ export function FarmerLayout({ children }: FarmerLayoutProps) {
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      {isMobile && <MobileNav />}
+      {/* Mobile Bottom Navigation - Hidden on messages page */}
+      {isMobile && !isChatOpen && <MobileNav />}
     </div>
   );
 }
