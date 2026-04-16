@@ -43,10 +43,18 @@ export default function ToolDetailPage({
     const fetchTool = async () => {
       try {
         setLoading(true);
+        console.log('[v0] Fetching tool with ID:', params.id);
         const response = await fetch(`/api/rental-tools/${params.id}`);
+        console.log('[v0] API response status:', response.status);
+        
         if (response.ok) {
           const result = await response.json();
+          console.log('[v0] API response data:', result);
           setTool(result.data);
+        } else {
+          console.error('[v0] API returned status:', response.status);
+          const errorData = await response.json();
+          console.error('[v0] Error response:', errorData);
         }
       } catch (error) {
         console.error('[v0] Error fetching tool:', error);
@@ -76,6 +84,7 @@ export default function ToolDetailPage({
         <Card className="p-8 text-center max-w-md">
           <div className="text-4xl mb-4">❌</div>
           <h2 className="text-xl font-semibold text-foreground mb-2">Tool not found</h2>
+          <p className="text-sm text-muted-foreground mb-4">The rental tool you are looking for does not exist.</p>
           <Link href="/farmer/rental-tools">
             <Button className="mt-4 bg-green-600 hover:bg-green-700">
               Back to listing
@@ -121,32 +130,36 @@ export default function ToolDetailPage({
           </Card>
 
           {/* Specifications */}
-          <Card className="p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Specifications</h3>
-            <div className="grid grid-cols-2 gap-4">
-              {Object.entries(tool.specifications).map(([key, value]) => (
-                <div key={key} className="border-b border-border pb-3">
-                  <p className="text-xs text-muted-foreground capitalize">
-                    {key.replace(/([A-Z])/g, ' $1')}
-                  </p>
-                  <p className="text-sm font-semibold text-foreground">{value}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
+          {tool.specifications && (
+            <Card className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Specifications</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {Object.entries(tool.specifications).map(([key, value]) => (
+                  <div key={key} className="border-b border-border pb-3">
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {key.replace(/([A-Z])/g, ' $1')}
+                    </p>
+                    <p className="text-sm font-semibold text-foreground">{String(value)}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* Amenities */}
-          <Card className="p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">What&apos;s included</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {tool.amenities.map((amenity, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm text-foreground">{amenity}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
+          {tool.amenities && tool.amenities.length > 0 && (
+            <Card className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">What&apos;s included</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {tool.amenities.map((amenity, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm text-foreground">{amenity}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* Availability */}
           <Card className="p-6 space-y-4">

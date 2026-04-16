@@ -2,7 +2,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   // Mock tool data with reviews
   const mockToolsMap: Record<string, any> = {
@@ -119,14 +119,20 @@ export async function GET(
     },
   };
 
+  console.log('[v0] API: Looking for tool ID:', id);
+  console.log('[v0] Available IDs:', Object.keys(mockToolsMap));
+  
   const tool = mockToolsMap[id];
 
   if (!tool) {
+    console.log('[v0] Tool not found for ID:', id);
     return Response.json(
       { success: false, error: 'Tool not found' },
       { status: 404 }
     );
   }
+  
+  console.log('[v0] Found tool:', tool.name);
 
   return Response.json({
     success: true,
