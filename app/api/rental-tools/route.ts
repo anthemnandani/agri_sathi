@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       category: 'tractor',
       price: 500,
       rating: 4.8,
-      reviews: 24,
+      reviewCount: 24,
       image: '🚜',
       owner: {
         id: 'owner1',
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       category: 'harvester',
       price: 800,
       rating: 4.6,
-      reviews: 18,
+      reviewCount: 18,
       image: '🌾',
       owner: {
         id: 'owner2',
@@ -66,7 +66,7 @@ export async function GET(request: Request) {
       category: 'cultivator',
       price: 250,
       rating: 4.7,
-      reviews: 31,
+      reviewCount: 31,
       image: '⚙️',
       owner: {
         id: 'owner3',
@@ -93,7 +93,7 @@ export async function GET(request: Request) {
       category: 'irrigation',
       price: 150,
       rating: 4.9,
-      reviews: 42,
+      reviewCount: 42,
       image: '💧',
       owner: {
         id: 'owner4',
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
       category: 'thresher',
       price: 300,
       rating: 4.5,
-      reviews: 15,
+      reviewCount: 15,
       image: '🌽',
       owner: {
         id: 'owner5',
@@ -147,7 +147,7 @@ export async function GET(request: Request) {
       category: 'sprayer',
       price: 100,
       rating: 4.4,
-      reviews: 28,
+      reviewCount: 28,
       image: '🔫',
       owner: {
         id: 'owner6',
@@ -174,7 +174,7 @@ export async function GET(request: Request) {
       category: 'baler',
       price: 450,
       rating: 4.7,
-      reviews: 22,
+      reviewCount: 22,
       image: '📦',
       owner: {
         id: 'owner7',
@@ -201,7 +201,7 @@ export async function GET(request: Request) {
       category: 'tractor',
       price: 350,
       rating: 4.8,
-      reviews: 35,
+      reviewCount: 35,
       image: '🚜',
       owner: {
         id: 'owner8',

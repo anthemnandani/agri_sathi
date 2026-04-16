@@ -14,7 +14,7 @@ interface Tool {
   image: string;
   price: number;
   rating: number;
-  reviews: number;
+  reviewCount: number;
   description: string;
   longDescription: string;
   specifications: Record<string, string | number>;
@@ -212,7 +212,7 @@ export default function ToolDetailPage({
                 ))}
               </div>
               <span className="text-sm font-semibold text-foreground">
-                {tool.rating} ({tool.reviews} reviews)
+                {tool.rating} ({tool.reviewCount} reviews)
               </span>
             </div>
 
