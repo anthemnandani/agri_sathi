@@ -33,17 +33,27 @@ interface Tool {
 export default function ToolDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const [tool, setTool] = useState<Tool | null>(null);
   const [loading, setLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [toolId, setToolId] = useState<string>('');
+
+  useEffect(() => {
+    const getToolId = async () => {
+      const { id } = await params;
+      setToolId(id);
+    };
+    getToolId();
+  }, [params]);
 
   useEffect(() => {
     const fetchTool = async () => {
+      if (!toolId) return;
       try {
         setLoading(true);
-        const response = await fetch(`/api/rental-tools/${params.id}`);
+        const response = await fetch(`/api/rental-tools/${toolId}`);
         
         if (response.ok) {
           const result = await response.json();
@@ -57,7 +67,7 @@ export default function ToolDetailPage({
     };
 
     fetchTool();
-  }, [params.id]);
+  }, [toolId]);
 
   if (loading) {
     return (
