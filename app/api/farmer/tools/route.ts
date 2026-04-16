@@ -20,6 +20,12 @@ const mockTools = [
     power: '15 HP',
     fuelType: 'Diesel',
     year: 2020,
+    media: [
+      { type: 'image', url: '/images/rotavator-1.jpg', name: 'Front View' },
+      { type: 'image', url: '/images/rotavator-2.jpg', name: 'Side View' },
+      { type: 'video', url: '/videos/rotavator-demo.mp4', name: 'Demo Video' },
+    ],
+    notes: 'Well-maintained machine, good condition. Can be delivered within 5 km radius.',
   },
   {
     id: 'tool-2',
@@ -39,6 +45,11 @@ const mockTools = [
     power: null,
     fuelType: null,
     year: 2022,
+    media: [
+      { type: 'image', url: '/images/drip-kit-1.jpg', name: 'Kit Overview' },
+      { type: 'document', url: '/docs/drip-kit-manual.pdf', name: 'User Manual' },
+    ],
+    notes: 'Complete 1-acre setup with all components. Installation support included.',
   },
 ];
 

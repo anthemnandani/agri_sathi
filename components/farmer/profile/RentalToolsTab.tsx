@@ -5,16 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Wrench, BookOpen } from 'lucide-react';
+import { Plus, Wrench, BookOpen, Bell } from 'lucide-react';
 import { MyRentalsList } from './rental-tools/MyRentalsList';
 import { MyToolsList } from './rental-tools/MyToolsList';
 import { AddToolForm } from './rental-tools/AddToolForm';
+import { BookingRequestsTab } from './rental-tools/BookingRequestsTab';
 import { toast } from 'sonner';
 
 export function RentalToolsTab() {
-  const [activeView, setActiveView] = useState<'rentals' | 'mytools' | 'addtool'>('rentals');
+  const [activeView, setActiveView] = useState<'rentals' | 'mytools' | 'bookings' | 'addtool'>('rentals');
   const [myRentals, setMyRentals] = useState<any[]>([]);
   const [myTools, setMyTools] = useState<any[]>([]);
+  const [bookingRequests, setBookingRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch user's rentals and tools on mount
@@ -25,9 +27,10 @@ export function RentalToolsTab() {
   const fetchRentalsAndTools = async () => {
     try {
       setIsLoading(true);
-      const [rentalsRes, toolsRes] = await Promise.all([
+      const [rentalsRes, toolsRes, bookingsRes] = await Promise.all([
         fetch('/api/farmer/rentals'),
         fetch('/api/farmer/tools'),
+        fetch('/api/farmer/booking-requests'),
       ]);
 
       if (rentalsRes.ok) {
@@ -39,8 +42,13 @@ export function RentalToolsTab() {
         const toolsData = await toolsRes.json();
         setMyTools(toolsData.data || []);
       }
+
+      if (bookingsRes.ok) {
+        const bookingsData = await bookingsRes.json();
+        setBookingRequests(bookingsData.data || []);
+      }
     } catch (error) {
-      console.error('[v0] Error fetching rentals/tools:', error);
+      console.error('[v0] Error fetching rentals/tools/bookings:', error);
       toast.error('Failed to load rental information');
     } finally {
       setIsLoading(false);
@@ -62,6 +70,22 @@ export function RentalToolsTab() {
     setMyTools(
       myTools.map((tool) =>
         tool.id === toolId ? { ...tool, status: isActive ? 'active' : 'inactive' } : tool
+      )
+    );
+  };
+
+  const handleBookingApproved = (requestId: string) => {
+    setBookingRequests(
+      bookingRequests.map((req) =>
+        req.id === requestId ? { ...req, status: 'approved' } : req
+      )
+    );
+  };
+
+  const handleBookingRejected = (requestId: string) => {
+    setBookingRequests(
+      bookingRequests.map((req) =>
+        req.id === requestId ? { ...req, status: 'rejected' } : req
       )
     );
   };
@@ -105,10 +129,10 @@ export function RentalToolsTab() {
       {/* Main Tab Navigation */}
       <Tabs
         value={activeView}
-        onValueChange={(value) => setActiveView(value as 'rentals' | 'mytools' | 'addtool')}
+        onValueChange={(value) => setActiveView(value as 'rentals' | 'mytools' | 'bookings' | 'addtool')}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-4 mb-6">
           <TabsTrigger value="rentals" className="flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
             <span className="hidden sm:inline">My Rentals</span>
@@ -118,6 +142,14 @@ export function RentalToolsTab() {
             <Wrench className="h-4 w-4" />
             <span className="hidden sm:inline">My Tools</span>
             <span className="sm:hidden">Tools</span>
+          </TabsTrigger>
+          <TabsTrigger value="bookings" className="relative flex items-center gap-2">
+            <Wrench className="h-4 w-4" />
+            <span className="hidden sm:inline">Booking Requests</span>
+            <span className="sm:hidden">Requests</span>
+            {bookingRequests.filter((r) => r.status === 'pending').length > 0 && (
+              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="addtool" className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
@@ -169,6 +201,28 @@ export function RentalToolsTab() {
                 isLoading={isLoading}
                 onDelete={handleToolDeleted}
                 onToggle={handleToolToggled}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Booking Requests Tab */}
+        <TabsContent value="bookings" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Booking Requests</CardTitle>
+              <CardDescription>
+                {bookingRequests.filter((r) => r.status === 'pending').length > 0
+                  ? `You have ${bookingRequests.filter((r) => r.status === 'pending').length} pending request${bookingRequests.filter((r) => r.status === 'pending').length !== 1 ? 's' : ''}`
+                  : 'No pending booking requests'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BookingRequestsTab
+                bookingRequests={bookingRequests}
+                isLoading={isLoading}
+                onApprove={handleBookingApproved}
+                onReject={handleBookingRejected}
               />
             </CardContent>
           </Card>
