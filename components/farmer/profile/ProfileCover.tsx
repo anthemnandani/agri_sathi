@@ -125,7 +125,7 @@ export function ProfileCover({ onTabChange }: ProfileCoverProps) {
 
         {/* Tabs */}
         <div className="flex gap-6 border-t pt-4 overflow-x-auto">
-          {['Bio', 'Crops', 'Communities', 'Posts', 'Market Place'].map((tab) => (
+          {['Bio', 'Crops', 'Communities', 'Posts', 'Market Place', 'Rental Tools'].map((tab) => (
             <button
               key={tab}
               onClick={() => onTabChange(tab.toLowerCase())}
