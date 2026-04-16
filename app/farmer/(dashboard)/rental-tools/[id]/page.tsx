@@ -43,18 +43,11 @@ export default function ToolDetailPage({
     const fetchTool = async () => {
       try {
         setLoading(true);
-        console.log('[v0] Fetching tool with ID:', params.id);
         const response = await fetch(`/api/rental-tools/${params.id}`);
-        console.log('[v0] API response status:', response.status);
         
         if (response.ok) {
           const result = await response.json();
-          console.log('[v0] API response data:', result);
           setTool(result.data);
-        } else {
-          console.error('[v0] API returned status:', response.status);
-          const errorData = await response.json();
-          console.error('[v0] Error response:', errorData);
         }
       } catch (error) {
         console.error('[v0] Error fetching tool:', error);
