@@ -1,133 +1,97 @@
 import { NextResponse } from 'next/server';
-
-const mockMembers = [
-  {
-    id: '1',
-    communityId: '1',
-    userId: 'user-1',
-    user: {
-      id: 'user-1',
-      name: 'राज कुमार',
-      email: 'raj@agrisathi.com',
-      phone: '9876543210',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-      role: 'farmer',
-    },
-    role: 'admin',
-    joinedAt: new Date('2024-01-15'),
-    isBanned: false,
-  },
-  {
-    id: '2',
-    communityId: '1',
-    userId: 'user-2',
-    user: {
-      id: 'user-2',
-      name: 'प्रिया शर्मा',
-      email: 'priya@agrisathi.com',
-      phone: '9876543211',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
-      role: 'farmer',
-    },
-    role: 'member',
-    joinedAt: new Date('2024-02-01'),
-    isBanned: false,
-  },
-  {
-    id: '3',
-    communityId: '1',
-    userId: 'user-3',
-    user: {
-      id: 'user-3',
-      name: 'मोहन पटेल',
-      email: 'mohan@agrisathi.com',
-      phone: '9876543212',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
-      role: 'farmer',
-    },
-    role: 'moderator',
-    joinedAt: new Date('2024-02-10'),
-    isBanned: false,
-  },
-  {
-    id: '4',
-    communityId: '1',
-    userId: 'user-4',
-    user: {
-      id: 'user-4',
-      name: 'सुमit्रा वर्मा',
-      email: 'sumitra@agrisathi.com',
-      phone: '9876543213',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
-      role: 'farmer',
-    },
-    role: 'member',
-    joinedAt: new Date('2024-02-15'),
-    isBanned: false,
-  },
-  {
-    id: '5',
-    communityId: '1',
-    userId: 'user-5',
-    user: {
-      id: 'user-5',
-      name: 'विनय सिंह',
-      email: 'vinay@agrisathi.com',
-      phone: '9876543214',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
-      role: 'farmer',
-    },
-    role: 'member',
-    joinedAt: new Date('2024-03-01'),
-    isBanned: false,
-  },
-];
+import { allFarmers } from '@/lib/mock-communities-enhanced';
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const communityId = params.id;
-  const { searchParams } = new URL(request.url);
-  const role = searchParams.get('role');
-  const search = searchParams.get('search');
+  try {
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search')?.toLowerCase();
+    const role = searchParams.get('role');
 
-  let members = mockMembers.filter(m => m.communityId === communityId);
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  if (role) {
-    members = members.filter(m => m.role === role);
-  }
+    let members = allFarmers.map((farmer) => ({
+      id: farmer.id,
+      communityId: params.id,
+      userId: farmer.id,
+      user: {
+        id: farmer.id,
+        name: farmer.name,
+        avatar: farmer.avatar,
+        role: 'farmer',
+        location: farmer.location,
+      },
+      role: farmer.role,
+      joinedAt: farmer.joinedAt,
+      isBanned: false,
+    }));
 
-  if (search) {
-    members = members.filter(m =>
-      m.user.name.toLowerCase().includes(search.toLowerCase()) ||
-      m.user.email.toLowerCase().includes(search.toLowerCase())
+    // Filter by search
+    if (search) {
+      members = members.filter((m) =>
+        m.user.name.toLowerCase().includes(search)
+      );
+    }
+
+    // Filter by role
+    if (role) {
+      members = members.filter((m) => m.role === role);
+    }
+
+    // Sort by role (admin first, then moderator, then members)
+    const roleOrder = { admin: 0, moderator: 1, member: 2 };
+    members.sort(
+      (a, b) =>
+        (roleOrder[a.role as keyof typeof roleOrder] || 2) -
+        (roleOrder[b.role as keyof typeof roleOrder] || 2)
+    );
+
+    return NextResponse.json({
+      success: true,
+      data: members,
+      total: members.length,
+      communityId: params.id,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('[API] Error fetching members:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch members' },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({
-    success: true,
-    data: members,
-  });
 }
 
-export async function POST(
+export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const body = await request.json();
-  const communityId = params.id;
+  try {
+    const body = await request.json();
+    const { userId, action } = body; // action: 'promote', 'demote', 'ban', 'unban'
 
-  const newMember = {
-    id: Date.now().toString(),
-    communityId,
-    ...body,
-    joinedAt: new Date(),
-  };
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
-  return NextResponse.json({
-    success: true,
-    data: newMember,
-    message: 'Joined community successfully',
-  });
+    return NextResponse.json({
+      success: true,
+      data: {
+        userId,
+        communityId: params.id,
+        action,
+        updatedAt: new Date().toISOString(),
+      },
+      message: `सदस्य ${action} किया गया`,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('[API] Error updating member:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update member' },
+      { status: 500 }
+    );
+  }
 }

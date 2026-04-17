@@ -1,20 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Settings, Bell, MoreVertical, Users, Globe, Lock } from 'lucide-react';
+import { ArrowLeft, Bell, Users, Globe, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getCategoryIcon, getCategoryColor } from '@/lib/community-icons';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { CommunityActionMenu } from './CommunityActionMenu';
 import Link from 'next/link';
 
 interface CommunityHeaderProps {
   communityId: string;
+  onMembersClick?: () => void;
+  onMediaClick?: () => void;
+  onDocumentsClick?: () => void;
+  onLeave?: () => void;
 }
 
 export function CommunityHeader({ communityId }: CommunityHeaderProps) {
@@ -97,33 +96,18 @@ export function CommunityHeader({ communityId }: CommunityHeaderProps) {
 
         {/* Right - Actions */}
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-9 w-9" title="Notifications">
+          <Button variant="ghost" size="icon" className="h-9 w-9" title="सूचनाएं">
             <Bell className="h-5 w-5" />
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="cursor-pointer">
-                <Settings className="h-4 w-4 mr-2" />
-                <span>Community Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Bell className="h-4 w-4 mr-2" />
-                <span>Notification Preferences</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <span>View Community Rules</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive cursor-pointer focus:text-destructive">
-                <span>Leave Community</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <CommunityActionMenu
+            communityId={communityId}
+            communityName={community.name}
+            onMembersClick={onMembersClick || (() => {})}
+            onMediaClick={onMediaClick || (() => {})}
+            onDocumentsClick={onDocumentsClick || (() => {})}
+            onLeave={onLeave || (() => {})}
+          />
         </div>
       </div>
 
