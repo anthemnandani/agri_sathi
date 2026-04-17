@@ -1,19 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Settings, Bell, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Bell, Users, Globe, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { getCategoryIcon, getCategoryColor } from '@/lib/community-icons';
+import { CommunityActionMenu } from './CommunityActionMenu';
 import Link from 'next/link';
 
 interface CommunityHeaderProps {
   communityId: string;
+  onMembersClick?: () => void;
+  onMediaClick?: () => void;
+  onDocumentsClick?: () => void;
+  onLeave?: () => void;
 }
 
 export function CommunityHeader({ communityId }: CommunityHeaderProps) {
@@ -44,69 +44,79 @@ export function CommunityHeader({ communityId }: CommunityHeaderProps) {
     );
   }
 
+  const categoryColor = getCategoryColor(community.category);
+  const categoryIcon = getCategoryIcon(community.category);
+
   return (
-    <div className="border-b bg-card sticky top-0 z-40">
+    <div className="border-b bg-card sticky top-0 z-40 shadow-sm">
       <div className="px-4 py-3 sm:px-6 flex items-center justify-between gap-4">
         {/* Left - Back and Title */}
-        <div className="flex items-center gap-4 min-w-0 flex-1">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           <Link href="/farmer/communities">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-lg font-semibold truncate">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <h2 className="text-lg sm:text-xl font-bold truncate text-foreground">
                 {community.name}
               </h2>
-              <Badge variant="outline" className="text-xs hidden sm:inline">
-                {community.members} members
+              <Badge className={`text-xs font-semibold ${categoryColor.bg} ${categoryColor.text}`}>
+                <span className="mr-1">{categoryIcon}</span>
+                {community.category}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {community.language} • {community.private ? 'Private' : 'Public'}
-            </p>
+            <div className="flex items-center gap-3 flex-wrap text-xs">
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Users className="h-3.5 w-3.5" />
+                <span className="font-medium">{community.members} members</span>
+              </div>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <span className="text-xs">🌐</span>
+                <span>{community.language}</span>
+              </div>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                {community.private ? (
+                  <>
+                    <Lock className="h-3.5 w-3.5" />
+                    <span>Private</span>
+                  </>
+                ) : (
+                  <>
+                    <Globe className="h-3.5 w-3.5" />
+                    <span>Public</span>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Right - Actions */}
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" title="Notifications">
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" className="h-9 w-9" title="सूचनाएं">
             <Bell className="h-5 w-5" />
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Settings className="h-4 w-4 mr-2" />
-                <span>Community Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Mute Notifications</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>View Rules</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">
-                <span>Leave Community</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <CommunityActionMenu
+            communityId={communityId}
+            communityName={community.name}
+            onMembersClick={onMembersClick || (() => {})}
+            onMediaClick={onMediaClick || (() => {})}
+            onDocumentsClick={onDocumentsClick || (() => {})}
+            onLeave={onLeave || (() => {})}
+          />
         </div>
       </div>
 
       {/* Cover Image Banner */}
       {community.coverImage && (
-        <div className="h-12 bg-cover bg-center relative overflow-hidden" style={{
+        <div className="h-16 sm:h-20 bg-cover bg-center relative overflow-hidden bg-gradient-to-r from-primary/30 to-accent/30" style={{
           backgroundImage: `url(${community.coverImage})`,
         }}>
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-black/5" />
         </div>
       )}
     </div>
