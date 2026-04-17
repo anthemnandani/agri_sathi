@@ -157,39 +157,39 @@ export function MyToolsList({ tools, isLoading, onDelete, onToggle }: MyToolsLis
                     {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </button>
 
-                  {isExpanded && (
+                  {isExpanded && tool.media && tool.media.length > 0 && (
                     <div className="space-y-2 mt-3">
                       {/* Media Display */}
                       <div className="bg-black rounded-lg overflow-hidden aspect-video flex items-center justify-center relative">
-                        {tool.media[currentMediaIndex].type === 'image' && (
+                        {tool.media[currentMediaIndex]?.type === 'image' && (
                           <img
-                            src={tool.media[currentMediaIndex].url}
-                            alt={tool.media[currentMediaIndex].name}
+                            src={tool.media[currentMediaIndex]?.url || ''}
+                            alt={tool.media[currentMediaIndex]?.name || 'preview'}
                             className="w-full h-full object-contain"
                           />
                         )}
-                        {tool.media[currentMediaIndex].type === 'video' && (
+                        {tool.media[currentMediaIndex]?.type === 'video' && (
                           <video
-                            src={tool.media[currentMediaIndex].url}
+                            src={tool.media[currentMediaIndex]?.url || ''}
                             controls
                             className="w-full h-full object-contain"
                           />
                         )}
-                        {tool.media[currentMediaIndex].type === 'document' && (
+                        {tool.media[currentMediaIndex]?.type === 'document' && (
                           <div className="flex flex-col items-center gap-2 text-white">
                             <span className="text-4xl">📄</span>
-                            <p className="text-sm">{tool.media[currentMediaIndex].name}</p>
+                            <p className="text-sm">{tool.media[currentMediaIndex]?.name}</p>
                           </div>
                         )}
 
                         {/* Navigation */}
-                        {tool.media.length > 1 && (
+                        {tool.media && tool.media.length > 1 && (
                           <>
                             <button
                               onClick={() =>
                                 setMediaIndex((prev) => ({
                                   ...prev,
-                                  [tool.id]: (currentMediaIndex - 1 + tool.media.length) % tool.media.length,
+                                  [tool.id]: (currentMediaIndex - 1 + (tool.media?.length || 0)) % (tool.media?.length || 1),
                                 }))
                               }
                               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full"
@@ -200,7 +200,7 @@ export function MyToolsList({ tools, isLoading, onDelete, onToggle }: MyToolsLis
                               onClick={() =>
                                 setMediaIndex((prev) => ({
                                   ...prev,
-                                  [tool.id]: (currentMediaIndex + 1) % tool.media.length,
+                                  [tool.id]: (currentMediaIndex + 1) % (tool.media?.length || 1),
                                 }))
                               }
                               className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full"
@@ -211,13 +211,13 @@ export function MyToolsList({ tools, isLoading, onDelete, onToggle }: MyToolsLis
                         )}
 
                         <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
-                          {currentMediaIndex + 1} / {tool.media.length}
+                          {currentMediaIndex + 1} / {tool.media?.length || 0}
                         </div>
                       </div>
 
                       {/* Thumbnails */}
                       <div className="flex gap-2 overflow-x-auto">
-                        {tool.media.map((media, idx) => (
+                        {tool.media?.map((media, idx) => (
                           <button
                             key={idx}
                             onClick={() => setMediaIndex((prev) => ({ ...prev, [tool.id]: idx }))}
