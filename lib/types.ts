@@ -170,6 +170,13 @@ export interface Community {
   createdBy: string;
   createdAt: Date;
   private: boolean;
+  category: 'crop' | 'location' | 'problem' | 'other';
+  language: string;
+  status: 'pending' | 'approved' | 'rejected';
+  coverImage?: string;
+  rules?: string;
+  moderationLevel: 'strict' | 'moderate' | 'relaxed';
+  joined?: boolean;
 }
 
 export interface CommunityMember {
@@ -179,6 +186,58 @@ export interface CommunityMember {
   user: User;
   role: 'admin' | 'moderator' | 'member';
   joinedAt: Date;
+  isBanned?: boolean;
+  muteExpiry?: Date;
+}
+
+export interface CommunityChat {
+  id: string;
+  communityId: string;
+  senderId: string;
+  sender: User;
+  content: string;
+  type: 'text' | 'image' | 'voice' | 'document';
+  image?: string;
+  voiceUrl?: string;
+  documentUrl?: string;
+  documentName?: string;
+  replies?: number;
+  isPinned?: boolean;
+  requiresApproval?: boolean;
+  approved?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  replyTo?: string;
+}
+
+export interface CommunityReport {
+  id: string;
+  communityId: string;
+  messageId?: string;
+  reportedUserId?: string;
+  reportedBy: string;
+  reason: 'spam' | 'abusive' | 'fake_info' | 'off_topic' | 'other';
+  description: string;
+  status: 'pending' | 'reviewed' | 'resolved';
+  createdAt: Date;
+}
+
+export interface CommunityPoll {
+  id: string;
+  communityId: string;
+  createdBy: string;
+  question: string;
+  options: PollOption[];
+  status: 'active' | 'closed';
+  createdAt: Date;
+  closesAt: Date;
+}
+
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: number;
+  voted?: boolean;
 }
 
 // Message Types
