@@ -20,6 +20,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { getCategoryIcon, getCategoryColor } from '@/lib/community-icons';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 
 interface FormData {
   name: string;
@@ -94,12 +96,26 @@ export function CreateCommunityForm() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-6 px-4">
+    <div className="max-w-3xl mx-auto py-6 px-4 space-y-6">
+      {/* Header */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-3xl">🌾</span>
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Create Your Community</h1>
+        </div>
+        <p className="text-base text-muted-foreground max-w-2xl">
+          Build a thriving community where farmers connect, share knowledge, exchange experiences, and solve farming challenges together.
+        </p>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Create a New Community</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Start a community for farmers to connect, share knowledge, and solve problems together
+          <CardTitle className="text-xl flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 text-primary" />
+            Community Details
+          </CardTitle>
+          <p className="text-sm text-muted-foreground mt-2">
+            All communities go through admin approval before becoming publicly visible
           </p>
         </CardHeader>
 
@@ -142,30 +158,49 @@ export function CreateCommunityForm() {
               </p>
             </div>
 
-            {/* Category */}
-            <div className="space-y-2">
-              <Label htmlFor="category" className="text-base font-semibold">
-                Category *
-              </Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, category: value }))
-                }
-              >
-                <SelectTrigger id="category">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="crop">Crop/Commodity</SelectItem>
-                  <SelectItem value="location">Location/Region</SelectItem>
-                  <SelectItem value="problem">Problem/Challenge</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                Choose the primary focus of your community
-              </p>
+            {/* Category - Card-based Selection */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold block">Category *</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {['crop', 'location', 'problem', 'other'].map((cat) => {
+                  const isSelected = formData.category === cat;
+                  const color = getCategoryColor(cat);
+                  const icon = getCategoryIcon(cat);
+                  const labels: Record<string, string> = {
+                    crop: 'Crop/Commodity',
+                    location: 'Location/Region',
+                    problem: 'Problem/Challenge',
+                    other: 'Other Topics',
+                  };
+                  const descriptions: Record<string, string> = {
+                    crop: 'Discuss specific crops, cultivation techniques',
+                    location: 'Connect with farmers in your region',
+                    problem: 'Share and solve farming challenges',
+                    other: 'General farming discussions',
+                  };
+
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setFormData((prev) => ({ ...prev, category: cat }))}
+                      className={`p-4 rounded-lg border-2 transition-all text-left ${
+                        isSelected
+                          ? 'border-primary bg-primary/5'
+                          : `${color.border} bg-card hover:shadow-md`
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl mt-1">{icon}</span>
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm text-foreground">{labels[cat]}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{descriptions[cat]}</p>
+                        </div>
+                        {isSelected && <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Language */}
@@ -252,7 +287,7 @@ export function CreateCommunityForm() {
             </Alert>
 
             {/* Submit Button */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-6 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
@@ -263,10 +298,15 @@ export function CreateCommunityForm() {
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                 disabled={loading}
               >
-                {loading ? 'Creating...' : 'Create Community'}
+                {loading ? 'Creating Community...' : (
+                  <>
+                    Create Community
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </>
+                )}
               </Button>
             </div>
           </form>

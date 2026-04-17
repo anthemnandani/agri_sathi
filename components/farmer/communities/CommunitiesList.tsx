@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { Search, Filter, Sparkles } from 'lucide-react';
+import { getCategoryIcon } from '@/lib/community-icons';
 
 interface CommunitiesListProps {
   compact?: boolean;
@@ -126,95 +128,184 @@ export function CommunitiesList({ compact = false }: CommunitiesListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="space-y-4">
-        <div className="flex flex-col gap-4">
-          {/* Search */}
+      {/* Hero Section with Search */}
+      <div className="space-y-4 mb-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+              Discover Communities
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl">
+            Connect with farmers in your area, learn about crops, and solve problems together. Find communities that match your interests.
+          </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search communities by name or topic..."
+            placeholder="Search by community name, topic, or region..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full"
+            className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base rounded-lg border-2 border-border focus:border-primary transition-colors"
           />
+        </div>
+      </div>
 
+      {/* Filters */}
+      <div className="space-y-4 bg-card rounded-lg p-4 sm:p-6 border border-border">
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Filters</h3>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Category Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Category</label>
+          <div className="space-y-3">
+            <label className="text-sm font-semibold text-foreground">Category</label>
             <div className="flex flex-wrap gap-2">
-              <Badge
-                variant={selectedCategory === null ? 'default' : 'outline'}
-                className="cursor-pointer"
+              <button
                 onClick={() => setSelectedCategory(null)}
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                  selectedCategory === null
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
               >
-                All
-              </Badge>
+                All Categories
+              </button>
               {categories.map((cat) => (
-                <Badge
+                <button
                   key={cat}
-                  variant={selectedCategory === cat ? 'default' : 'outline'}
-                  className="cursor-pointer capitalize"
                   onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1 ${
+                    selectedCategory === cat
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
                 >
-                  {cat}
-                </Badge>
+                  <span>{getCategoryIcon(cat)}</span>
+                  <span className="capitalize">{cat}</span>
+                </button>
               ))}
             </div>
           </div>
 
           {/* Language Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Language</label>
+          <div className="space-y-3">
+            <label className="text-sm font-semibold text-foreground">Language</label>
             <div className="flex flex-wrap gap-2">
-              <Badge
-                variant={selectedLanguage === null ? 'default' : 'outline'}
-                className="cursor-pointer"
+              <button
                 onClick={() => setSelectedLanguage(null)}
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                  selectedLanguage === null
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
               >
-                All
-              </Badge>
+                All Languages
+              </button>
               {languages.map((lang) => (
-                <Badge
+                <button
                   key={lang}
-                  variant={selectedLanguage === lang ? 'default' : 'outline'}
-                  className="cursor-pointer"
                   onClick={() => setSelectedLanguage(lang)}
+                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                    selectedLanguage === lang
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
                 >
-                  {lang}
-                </Badge>
+                  🌐 {lang}
+                </button>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Clear Filters Button */}
+        {(selectedCategory || selectedLanguage || searchTerm) && (
+          <div className="pt-3 border-t border-border">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedCategory(null);
+                setSelectedLanguage(null);
+              }}
+              className="text-xs"
+            >
+              Clear All Filters
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Results */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">
-            Communities ({filteredCommunities.length})
-          </h2>
-          <Link href="/farmer/communities/create">
-            <Button className="bg-green-600 hover:bg-green-700">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+              {filteredCommunities.length > 0 && (
+                <span className="text-primary">{filteredCommunities.length}</span>
+              )}
+              {filteredCommunities.length > 0 ? ' Communities Found' : 'No Communities Found'}
+            </h2>
+            {filteredCommunities.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-1">
+                Choose a community to join and start learning
+              </p>
+            )}
+          </div>
+          <Link href="/farmer/communities/create" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
               Create Community
             </Button>
           </Link>
         </div>
 
         {filteredCommunities.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">No communities found matching your filters</p>
-              <Button variant="outline" onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory(null);
-                setSelectedLanguage(null);
-              }}>
-                Clear Filters
-              </Button>
+          <Card className="bg-muted/30 border-border">
+            <CardContent className="py-12 sm:py-16 text-center">
+              <div className="space-y-4">
+                <div className="text-4xl sm:text-6xl">🌾</div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
+                    No communities found
+                  </h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
+                    {searchTerm || selectedCategory || selectedLanguage
+                      ? 'Try adjusting your filters to find what you&apos;re looking for'
+                      : 'No communities available yet. Be the first to create one!'}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  {(searchTerm || selectedCategory || selectedLanguage) && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory(null);
+                        setSelectedLanguage(null);
+                      }}
+                      className="text-xs sm:text-sm"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                  <Link href="/farmer/communities/create" className="flex-1 sm:flex-none">
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-xs sm:text-sm">
+                      Create a Community
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {filteredCommunities.map((community: any) => (
               <CommunityCard key={community.id} community={community} />
             ))}

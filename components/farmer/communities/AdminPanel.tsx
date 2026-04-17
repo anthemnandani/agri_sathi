@@ -12,6 +12,9 @@ import {
   Clock,
   TrendingUp,
   Flag,
+  Activity,
+  BarChart3,
+  Zap,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -130,53 +133,84 @@ export function AdminPanel({ communityId }: AdminPanelProps) {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <Zap className="h-5 w-5 text-primary" />
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Admin Dashboard</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">Manage your community settings and moderation</p>
+      </div>
+
       {/* Stats Overview */}
       {stats && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Active Members (24h)
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="border-border hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3 border-b border-border">
+              <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                Active Members
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.activeMembers24h}</div>
-              <p className="text-xs text-muted-foreground">
-                of {stats.totalMembers} total
-              </p>
+            <CardContent className="pt-4">
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl sm:text-4xl font-bold text-primary">{stats.activeMembers24h}</div>
+                  <div className="text-xs text-muted-foreground">/ {stats.totalMembers}</div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {Math.round((stats.activeMembers24h / stats.totalMembers) * 100)}% active in 24h
+                </p>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
+          <Card className="border-border hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3 border-b border-border">
+              <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-accent" />
                 Messages (24h)
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.messagesLast24h}</div>
-              <p className="text-xs text-muted-foreground">
-                Total: {stats.totalMessages}
-              </p>
+            <CardContent className="pt-4">
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl sm:text-4xl font-bold text-accent">{stats.messagesLast24h}</div>
+                  <div className="text-xs text-muted-foreground">total {stats.totalMessages}</div>
+                </div>
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-accent rounded-full transition-all"
+                    style={{
+                      width: `${Math.min((stats.messagesLast24h / stats.totalMessages) * 100, 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-red-600" />
+          <Card className="border-border hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3 border-b border-border">
+              <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive" />
                 Pending Actions
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats.joinRequestsPending + stats.reportsPending}
+            <CardContent className="pt-4">
+              <div className="space-y-2">
+                <div className="text-3xl sm:text-4xl font-bold text-destructive">
+                  {stats.joinRequestsPending + stats.reportsPending}
+                </div>
+                <div className="space-y-1 text-xs">
+                  <p className="text-muted-foreground">
+                    <span className="font-semibold text-destructive">{stats.reportsPending}</span> reports
+                  </p>
+                  <p className="text-muted-foreground">
+                    <span className="font-semibold text-primary">{stats.joinRequestsPending}</span> join requests
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {stats.reportsPending} reports, {stats.joinRequestsPending} requests
-              </p>
             </CardContent>
           </Card>
         </div>

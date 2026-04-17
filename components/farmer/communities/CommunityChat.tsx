@@ -1,13 +1,19 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Send, Plus, Image, Mic, FileText, Pin } from 'lucide-react';
+import { Send, Plus, Image, Mic, FileText, Pin, MoreVertical, Reply, Trash2, Flag, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface CommunityMessage {
   id: string;
@@ -34,21 +40,36 @@ interface CommunityMessageProps {
 }
 
 function MessageItem({ message, onReply, onPin }: CommunityMessageProps) {
-  const isAdmin = message.sender.role === 'farmer'; // Simplified for demo
+  const getRoleColor = (role: string) => {
+    if (role === 'admin') return 'text-amber-600 dark:text-amber-400 font-bold';
+    if (role === 'moderator') return 'text-blue-600 dark:text-blue-400 font-bold';
+    return 'text-foreground';
+  };
+
+  const isAdmin = message.sender.role === 'admin' || message.sender.role === 'moderator';
 
   return (
-    <div className="flex gap-3 mb-4 group hover:bg-muted/50 p-2 rounded-lg transition-colors">
+    <div className="flex gap-3 py-3 group hover:bg-muted/40 px-3 rounded-lg transition-colors border border-transparent hover:border-border">
       {/* Avatar */}
-      <Avatar className="h-8 w-8 flex-shrink-0">
+      <Avatar className="h-9 w-9 flex-shrink-0 border-2 border-border">
         <AvatarImage src={message.sender.avatar} />
-        <AvatarFallback>{message.sender.name[0]}</AvatarFallback>
+        <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+          {message.sender.name[0]}
+        </AvatarFallback>
       </Avatar>
 
       {/* Message Content */}
       <div className="flex-1 min-w-0">
         {/* Header */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-sm">{message.sender.name}</span>
+        <div className="flex items-center gap-2 flex-wrap mb-1">
+          <span className={`font-semibold text-sm ${getRoleColor(message.sender.role)}`}>
+            {message.sender.name}
+          </span>
+          {isAdmin && (
+            <Badge variant="outline" className="text-xs font-semibold bg-primary/10 text-primary border-primary/20">
+              {message.sender.role === 'admin' ? '👑 Admin' : '🛡️ Moderator'}
+            </Badge>
+          )}
           <span className="text-xs text-muted-foreground">
             {new Date(message.createdAt).toLocaleTimeString([], {
               hour: '2-digit',
@@ -56,77 +77,101 @@ function MessageItem({ message, onReply, onPin }: CommunityMessageProps) {
             })}
           </span>
           {!message.approved && (
-            <Badge variant="outline" className="text-xs">
-              Pending Approval
+            <Badge variant="outline" className="text-xs bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800">
+              ⏳ Pending Approval
+            </Badge>
+          )}
+          {message.isPinned && (
+            <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/20">
+              📌 Pinned
             </Badge>
           )}
         </div>
 
         {/* Message Body */}
         {message.type === 'text' && (
-          <p className="text-sm text-foreground mt-1 break-words">{message.content}</p>
+          <p className="text-sm text-foreground mt-1 break-words leading-relaxed">{message.content}</p>
         )}
 
         {message.type === 'image' && (
-          <div className="mt-2">
+          <div className="mt-2 space-y-2">
             <img
               src={message.image}
               alt="Message image"
-              className="max-w-xs rounded-lg max-h-64 object-cover"
+              className="max-w-sm rounded-lg max-h-80 object-cover border border-border"
             />
-            {message.content && <p className="text-sm mt-2">{message.content}</p>}
+            {message.content && <p className="text-sm text-foreground">{message.content}</p>}
           </div>
         )}
 
         {message.type === 'voice' && (
-          <div className="mt-2 flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8">
-              <Mic className="h-4 w-4 mr-2" />
-              Voice Message
+          <div className="mt-2 flex items-center gap-3 bg-muted px-3 py-2 rounded-lg w-fit">
+            <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-primary">
+              <Mic className="h-4 w-4" />
             </Button>
-            <span className="text-xs text-muted-foreground">0:45</span>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">Voice Message</p>
+              <p className="text-xs text-muted-foreground">0:45</p>
+            </div>
           </div>
         )}
 
         {message.type === 'document' && (
-          <div className="mt-2 flex items-center gap-2 p-2 bg-muted rounded">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{message.content}</span>
+          <div className="mt-2 flex items-center gap-3 p-3 bg-muted rounded-lg border border-border w-fit">
+            <FileText className="h-5 w-5 text-primary flex-shrink-0" />
+            <span className="text-sm font-medium text-foreground">{message.content}</span>
           </div>
         )}
 
         {/* Replies Count */}
         {message.replies > 0 && (
-          <button className="text-xs text-blue-600 mt-1 hover:underline">
+          <button className="text-xs font-semibold text-primary mt-2 hover:underline flex items-center gap-1">
+            <MessageCircle className="h-3 w-3" />
             {message.replies} {message.replies === 1 ? 'reply' : 'replies'}
           </button>
         )}
       </div>
 
       {/* Actions */}
-      <div className="hidden group-hover:flex items-center gap-1 flex-shrink-0">
+      <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
         {onReply && (
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
             onClick={() => onReply(message)}
-            title="Reply"
+            title="Reply to message"
           >
-            ↪️
+            <Reply className="h-4 w-4" />
           </Button>
         )}
-        {onPin && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={() => onPin(message)}
-            title="Pin message"
-          >
-            <Pin className="h-3 w-3" />
-          </Button>
-        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            {onPin && (
+              <DropdownMenuItem onClick={() => onPin(message)} className="cursor-pointer">
+                <Pin className="h-4 w-4 mr-2" />
+                {message.isPinned ? 'Unpin' : 'Pin Message'}
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem className="cursor-pointer">
+              <Trash2 className="h-4 w-4 mr-2 text-destructive" />
+              <span className="text-destructive">Delete</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Flag className="h-4 w-4 mr-2" />
+              Report
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
