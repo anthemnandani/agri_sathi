@@ -343,7 +343,7 @@ export function InteractiveWeatherMap() {
             </div>
           )}
         </div>
-      </Card>
+      </div>
 
       {/* Layer Controls */}
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
