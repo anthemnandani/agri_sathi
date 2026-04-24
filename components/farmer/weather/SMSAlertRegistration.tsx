@@ -43,16 +43,31 @@ export function SMSAlertRegistration() {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
-    
-    // Redirect back to weather page after success
-    setTimeout(() => {
-      router.push('/farmer/(dashboard)/weather');
-    }, 2000);
+    try {
+      const response = await fetch('/api/weather/sms-alert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to register for SMS alerts');
+      }
+
+      setLoading(false);
+      setSubmitted(true);
+      
+      // Redirect back to weather page after success
+      setTimeout(() => {
+        router.push('/farmer/(dashboard)/weather');
+      }, 2000);
+    } catch (error) {
+      console.error('Error registering for SMS alerts:', error);
+      setLoading(false);
+      // TODO: Show error message to user
+    }
   };
 
   const handleBack = () => {
