@@ -16,22 +16,22 @@ interface ForecastCardProps {
 
 export function ForecastCard({ forecast }: ForecastCardProps) {
   return (
-    <div className="border border-border rounded-lg p-4 text-center hover:bg-accent transition-colors">
-      <p className="text-sm font-medium text-foreground mb-3">{forecast.date}</p>
+    <div className="border border-border rounded-lg p-2 sm:p-3 md:p-4 text-center hover:bg-accent transition-colors">
+      <p className="text-xs sm:text-sm font-medium text-foreground mb-2">{forecast.date}</p>
       
-      <div className="text-4xl mb-3">{forecast.icon}</div>
+      <div className="text-3xl sm:text-4xl mb-2">{forecast.icon}</div>
       
-      <p className="text-xs text-muted-foreground mb-3">{forecast.condition}</p>
+      <p className="text-xs text-muted-foreground mb-2 line-clamp-1">{forecast.condition}</p>
       
-      <div className="flex justify-center gap-4 mb-3">
+      <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 mb-2">
         <div>
           <p className="text-xs text-muted-foreground">Min</p>
-          <p className="font-semibold text-foreground">{forecast.minTemp}°</p>
+          <p className="text-sm sm:text-base font-semibold text-foreground">{forecast.minTemp}°</p>
         </div>
         <div className="w-px bg-border"></div>
         <div>
           <p className="text-xs text-muted-foreground">Max</p>
-          <p className="font-semibold text-foreground">{forecast.maxTemp}°</p>
+          <p className="text-sm sm:text-base font-semibold text-foreground">{forecast.maxTemp}°</p>
         </div>
       </div>
 

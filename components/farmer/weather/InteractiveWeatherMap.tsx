@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Plus, Minus, Locate } from 'lucide-react';
 import { WeatherDetailsPopup } from './WeatherDetailsPopup';
@@ -17,8 +16,8 @@ interface MapMarker {
 
 export function InteractiveWeatherMap() {
   // State management
-  const [zoom, setZoom] = useState(5);
-  const [center, setCenter] = useState({ lat: 20.5937, lng: 78.9629 }); // Center of India
+  const [zoom, setZoom] = useState(8);
+  const [center, setCenter] = useState({ lat: 26.2, lng: 87.5 }); // Default to user location (Bihar, Supaul)
   const [markers, setMarkers] = useState<MapMarker[]>([
     { id: '1', lat: 26.2, lng: 87.5, label: 'Supaul, Bihar' },
     { id: '2', lat: 28.7041, lng: 77.1025, label: 'Delhi' },
@@ -187,9 +186,9 @@ export function InteractiveWeatherMap() {
   return (
     <div className="relative w-full h-full">
       {/* Map Container */}
-      <Card className="border-2 border-foreground/10 overflow-hidden h-full relative">
+      <div className="border-2 border-foreground/10 overflow-hidden h-full relative rounded-lg">
         <div
-          className="relative w-full h-full min-h-[400px] cursor-grab active:cursor-grabbing bg-gradient-to-b from-blue-100 to-green-100 dark:from-blue-950 dark:to-green-950"
+          className="relative w-full h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] cursor-grab active:cursor-grabbing bg-gradient-to-b from-blue-100 to-green-100 dark:from-blue-950 dark:to-green-950"
           onClick={handleMapClick}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -297,16 +296,16 @@ export function InteractiveWeatherMap() {
           </div>
 
           {/* Zoom Controls */}
-          <div className="absolute top-6 right-6 flex flex-col gap-2 z-30">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-col gap-2 z-30">
             <Button
               size="sm"
               variant="outline"
               onClick={handleZoomIn}
-              className="h-10 w-10 p-0"
+              className="h-9 sm:h-10 w-9 sm:w-10 p-0"
               disabled={zoom >= 18}
               aria-label="Zoom in"
             >
-              <Plus className="h-5 w-5" />
+              <Plus className="h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
             <div className="text-center text-xs font-medium px-2 py-1 bg-background/80 rounded border border-border">
               {zoom}
@@ -315,11 +314,11 @@ export function InteractiveWeatherMap() {
               size="sm"
               variant="outline"
               onClick={handleZoomOut}
-              className="h-10 w-10 p-0"
+              className="h-9 sm:h-10 w-9 sm:w-10 p-0"
               disabled={zoom <= 1}
               aria-label="Zoom out"
             >
-              <Minus className="h-5 w-5" />
+              <Minus className="h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
           </div>
 
@@ -328,10 +327,10 @@ export function InteractiveWeatherMap() {
             size="sm"
             variant="outline"
             onClick={handleCurrentLocation}
-            className="absolute top-6 left-6 z-30"
+            className="absolute top-4 left-4 sm:top-6 sm:left-6 z-30 text-xs sm:text-sm"
             aria-label="Go to current location"
           >
-            <Locate className="h-4 w-4 mr-2" />
+            <Locate className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">My Location</span>
           </Button>
 
