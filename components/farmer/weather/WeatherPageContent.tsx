@@ -80,7 +80,7 @@ export function WeatherPageContent() {
         </Card>
 
         {/* Right Column - Offline SMS Alert */}
-        <Card className="border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 md:col-span-2 lg:col-span-1">
+        <Card className="border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 md:col-span-2 lg:col-span-1">
           <CardHeader className="pb-2 sm:pb-3">
             <CardTitle className="text-base sm:text-lg font-bold">Offline SMS alert</CardTitle>
           </CardHeader>
@@ -89,7 +89,7 @@ export function WeatherPageContent() {
             <p className="text-xs text-muted-foreground">Receive critical weather alerts even when you&apos;re offline</p>
             <Button 
               onClick={handleEnableSMSAlert}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm sm:text-base"
+              className="w-full bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base"
             >
               <Phone className="h-4 w-4 mr-2" />
               Enable SMS Alert

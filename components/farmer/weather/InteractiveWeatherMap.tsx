@@ -147,9 +147,7 @@ export function InteractiveWeatherMap() {
   }, []);
 
   // Load initial weather data on mount
-  useEffect(() => {
-    handleCurrentLocation();
-  }, []);
+
 
   // Calculate visible bounds
   const latRange = 15 * Math.pow(2, -zoom + 5);
