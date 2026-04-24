@@ -1,37 +1,23 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserLocation } from '@/hooks/useUserLocation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
 
 export function SMSAlertRegistration() {
   const router = useRouter();
-  const { userLocation } = useUserLocation();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    pincode: '',
-    address: '',
+    pincode: '800001',
+    address: 'Bihar, Supaul',
     occupation: '',
     registerFor: 'self',
   });
-
-  // Populate form with user data when available
-  useEffect(() => {
-    if (userLocation) {
-      setFormData((prev) => ({
-        ...prev,
-        pincode: userLocation.pincode || prev.pincode,
-        address: userLocation.location || prev.address,
-      }));
-    }
-  }, [userLocation]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 

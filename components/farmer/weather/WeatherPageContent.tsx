@@ -2,17 +2,20 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserLocation } from '@/hooks/useUserLocation';
 import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
 import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
 import { InteractiveWeatherMap } from '@/components/farmer/weather/InteractiveWeatherMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Phone, Cloud, CloudRain, Wind, Droplets, Sun, Moon, AlertCircle, MapPin } from 'lucide-react';
+import { Phone, CloudRain, Wind, Droplets, Sun, Moon, AlertCircle, MapPin } from 'lucide-react';
+
+const userLocation = {
+  location: 'Bihar, Supaul',
+  pincode: '800001',
+};
 
 export function WeatherPageContent() {
   const router = useRouter();
-  const { userLocation, loading } = useUserLocation();
 
   const handleEnableSMSAlert = () => {
     router.push('/farmer/(dashboard)/weather/sms-alert-registration');
@@ -26,14 +29,6 @@ export function WeatherPageContent() {
     { icon: Sun, label: 'Sunrise', value: '5:30:23' },
     { icon: Moon, label: 'Sunset', value: '18:10:12' },
   ];
-
-  if (loading) {
-    return (
-      <div className="w-full space-y-6">
-        <div className="h-96 bg-muted rounded-lg animate-pulse" />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-6 px-0 sm:px-2">

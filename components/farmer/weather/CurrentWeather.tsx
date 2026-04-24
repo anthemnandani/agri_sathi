@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Cloud, Droplets, Wind, Eye } from 'lucide-react';
-import { useUserLocation } from '@/hooks/useUserLocation';
-import { getWeatherData } from '@/utils/weather/weatherService';
 
 interface WeatherData {
   location: string;
@@ -17,61 +15,47 @@ interface WeatherData {
 }
 
 export function CurrentWeather() {
-  const { userLocation, loading: locationLoading } = useUserLocation();
   const [weather, setWeather] = useState<WeatherData>({
-    location: 'Loading...',
-    temperature: 0,
-    condition: 'Loading...',
-    feelsLike: 0,
-    humidity: 0,
-    windSpeed: 0,
-    visibility: 0,
-    uv: 0,
+    location: 'Bihar, Supaul',
+    temperature: 28,
+    condition: 'Partly Cloudy',
+    feelsLike: 31,
+    humidity: 65,
+    windSpeed: 15,
+    visibility: 10,
+    uv: 7,
   });
-  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadWeather = async () => {
+      setIsLoading(true);
       try {
-        if (userLocation && userLocation.latitude && userLocation.longitude) {
-          const data = await getWeatherData(userLocation.latitude, userLocation.longitude);
-          setWeather({
-            location: userLocation.location || data.location,
-            temperature: data.temperature,
-            condition: data.condition,
-            feelsLike: data.feelsLike,
-            humidity: data.humidity,
-            windSpeed: data.windSpeed,
-            visibility: data.visibility,
-            uv: Math.round(data.uvIndex),
-          });
-        } else {
-          // Fallback to default location
-          const data = await getWeatherData(26.2, 87.5);
-          setWeather({
-            location: 'Bihar, Supaul',
-            temperature: data.temperature,
-            condition: data.condition,
-            feelsLike: data.feelsLike,
-            humidity: data.humidity,
-            windSpeed: data.windSpeed,
-            visibility: data.visibility,
-            uv: Math.round(data.uvIndex),
-          });
-        }
+        // Simulate async weather data loading
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        
+        // In production, fetch real weather data here
+        setWeather({
+          location: 'Bihar, Supaul',
+          temperature: 28,
+          condition: 'Partly Cloudy',
+          feelsLike: 31,
+          humidity: 65,
+          windSpeed: 15,
+          visibility: 10,
+          uv: 7,
+        });
       } catch (error) {
-        console.error('Error loading weather:', error);
+        console.error('[v0] Error loading weather:', error);
       } finally {
-        setWeatherLoading(false);
+        setIsLoading(false);
       }
     };
 
-    if (!locationLoading) {
-      loadWeather();
-    }
-  }, [userLocation, locationLoading]);
+    loadWeather();
+  }, []);
 
-  if (weatherLoading || locationLoading) {
+  if (isLoading) {
     return (
       <div className="w-full space-y-4 animate-pulse">
         <div className="h-4 bg-muted rounded w-2/3" />
