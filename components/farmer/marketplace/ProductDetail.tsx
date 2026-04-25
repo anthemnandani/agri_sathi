@@ -123,7 +123,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
             <div className="relative w-full aspect-square bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900 dark:to-green-950 rounded-xl flex items-center justify-center overflow-hidden border border-border">
               <div className="text-9xl">{product.images[selectedImage]}</div>
               {product.discount > 0 && (
-                <Badge className="absolute top-4 left-4 bg-orange-500 text-white text-base px-3 py-1">
+                <Badge className="absolute top-4 left-4 bg-green-600 text-white text-base px-3 py-1">
                   {product.discount}% OFF
                 </Badge>
               )}
@@ -160,7 +160,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                   <span className="text-sm text-muted-foreground line-through">
                     ₹{product.originalPrice}
                   </span>
-                  <Badge className="bg-orange-500 text-white text-xs">
+                  <Badge className="bg-green-600 text-white text-xs">
                     Save ₹{product.originalPrice - product.price}
                   </Badge>
                 </div>
@@ -377,7 +377,7 @@ export function ProductDetail({ productId }: ProductDetailProps) {
                   <div className="relative w-full aspect-square bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900 dark:to-green-950 flex items-center justify-center text-5xl">
                     {similar.image}
                     {similar.discount > 0 && (
-                      <Badge className="absolute top-2 left-2 bg-orange-500 text-white text-xs">
+                      <Badge className="absolute top-2 left-2 bg-green-600 text-white text-xs">
                         {similar.discount}% OFF
                       </Badge>
                     )}

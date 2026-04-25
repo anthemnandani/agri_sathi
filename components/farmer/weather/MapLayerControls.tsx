@@ -49,7 +49,7 @@ const LAYER_CONFIG = [
     id: 'flood' as const,
     label: 'Flood Risk',
     icon: AlertTriangle,
-    color: 'text-orange-500',
+    color: 'text-red-500',
     description: 'Flood warning zones',
   },
 ];

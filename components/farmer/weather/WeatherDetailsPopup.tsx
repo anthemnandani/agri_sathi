@@ -124,8 +124,8 @@ export const WeatherDetailsPopup = React.memo(function WeatherDetailsPopup({
                 </div>
               )}
               {weatherData.floodRisk === 'high' && (
-                <div className="p-2 sm:p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800">
-                  <p className="text-xs sm:text-sm text-orange-700 dark:text-orange-400">High Flood Risk</p>
+                <div className="p-2 sm:p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+                  <p className="text-xs sm:text-sm text-red-700 dark:text-red-400">High Flood Risk</p>
                 </div>
               )}
               {weatherData.rainProbability > 70 && (

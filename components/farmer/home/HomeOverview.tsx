@@ -38,7 +38,7 @@ export function HomeOverview() {
       description: 'Get AI diagnosis for plant diseases',
       action: 'Ask Expert',
       href: '/farmer/expert-talk',
-      color: 'from-orange-400 to-orange-600',
+      color: 'from-green-400 to-green-600',
     },
   ];
 

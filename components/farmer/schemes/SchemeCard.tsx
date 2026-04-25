@@ -38,8 +38,8 @@ export function SchemeCard({ scheme }: SchemeCardProps) {
     'Insurance': 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
     'Equipment': 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-200',
     'Technology': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200',
-    'Marketing': 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-200',
-    'Infrastructure': 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200',
+    'Marketing': 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200',
+    'Infrastructure': 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
   };
 
   const handleApply = () => {

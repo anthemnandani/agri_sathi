@@ -73,7 +73,7 @@ const events: Event[] = [
 const statusColors = {
   Upcoming: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
   'Going on': 'bg-green-100 text-green-700 hover:bg-green-200',
-  Ongoing: 'bg-orange-100 text-orange-700 hover:bg-orange-200',
+  Ongoing: 'bg-green-100 text-green-700 hover:bg-green-200',
 };
 
 export function AgricultureEventsSection() {

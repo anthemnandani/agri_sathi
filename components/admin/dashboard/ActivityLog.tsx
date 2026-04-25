@@ -56,7 +56,7 @@ const getIcon = (type: string) => {
     case 'alert':
       return <AlertCircle className={`${baseClass} text-amber-600`} />;
     case 'flag':
-      return <AlertCircle className={`${baseClass} text-orange-600`} />;
+      return <AlertCircle className={`${baseClass} text-red-600`} />;
     case 'suspension':
       return <AlertCircle className={`${baseClass} text-red-600`} />;
     default:
