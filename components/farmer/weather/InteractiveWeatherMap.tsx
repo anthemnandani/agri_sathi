@@ -135,7 +135,9 @@ export function InteractiveWeatherMap() {
   }, []);
 
   // Load initial weather data on mount
-
+  useEffect(() => {
+    handleCurrentLocation();
+  }, [handleCurrentLocation]);
 
   // Calculate visible bounds
   const latRange = 15 * Math.pow(2, -zoom + 5);
@@ -243,33 +245,60 @@ export function InteractiveWeatherMap() {
             const x = lngToPixel(marker.lng, 100);
             const y = latToPixel(marker.lat, 100);
             const isSelected = selectedMarker?.id === marker.id;
+            const isDefaultLocation = marker.id === '1'; // Supaul, Bihar
 
             return (
               <div
                 key={marker.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
                 style={{ left: `${x}%`, top: `${y}%` }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleMarkerClick(marker);
                 }}
               >
+                {/* Pulse Ring for Current Location */}
+                {isDefaultLocation && (
+                  <div className="absolute inset-0 animate-pulse">
+                    <div className="w-12 h-12 rounded-full border-2 border-green-400/60 dark:border-green-500/60"></div>
+                  </div>
+                )}
+
+                {/* Marker Pin */}
                 <div
-                  className={`relative ${
+                  className={`relative transition-all ${
                     isSelected
+                      ? 'scale-150 drop-shadow-2xl'
+                      : isDefaultLocation
                       ? 'scale-125 drop-shadow-lg'
-                      : 'hover:scale-110 transition-transform'
+                      : 'scale-100 hover:scale-125 drop-shadow transition-transform'
                   }`}
                 >
                   <MapPin
-                    className={`h-8 w-8 ${
-                      isSelected ? 'fill-red-500 text-red-500' : 'fill-primary text-primary'
-                    } drop-shadow`}
+                    className={`h-10 w-10 ${
+                      isSelected
+                        ? 'fill-red-600 text-red-700'
+                        : isDefaultLocation
+                        ? 'fill-green-600 text-green-700'
+                        : 'fill-blue-500 text-blue-600'
+                    } drop-shadow-md`}
                   />
                 </div>
-                {isSelected && (
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-foreground text-background px-2 py-1 rounded text-xs font-medium">
+
+                {/* Label Tooltip */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <div className="bg-foreground text-background px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold whitespace-nowrap shadow-lg">
                     {marker.label}
+                    {isDefaultLocation && <span className="block text-xs">(Your Area)</span>}
+                  </div>
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-foreground"></div>
+                </div>
+
+                {/* Selected Label */}
+                {isSelected && (
+                  <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-12 bg-background border-2 border-primary px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap shadow-lg z-50">
+                    {marker.label}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-background border-r-2 border-b-2 border-primary"></div>
                   </div>
                 )}
               </div>
@@ -281,8 +310,8 @@ export function InteractiveWeatherMap() {
             <div className="w-6 h-6 border-2 border-primary/50 rounded-full"></div>
           </div>
 
-          {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-col gap-2 z-30">
+          {/* Zoom Controls - Moved to avoid conflict with layer controls */}
+          <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 flex flex-col gap-2 z-30">
             <Button
               size="sm"
               variant="outline"
