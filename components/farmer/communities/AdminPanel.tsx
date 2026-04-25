@@ -309,7 +309,7 @@ export function AdminPanel({ communityId }: AdminPanelProps) {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-amber-600"
+                      className="text-green-600"
                       onClick={() => toast.info('Mute feature coming soon')}
                     >
                       <Clock className="h-4 w-4" />
@@ -466,7 +466,7 @@ export function AdminPanel({ communityId }: AdminPanelProps) {
                     {i % 2 === 0 ? (
                       <Trash2 className="h-4 w-4 text-red-600" />
                     ) : (
-                      <Ban className="h-4 w-4 text-amber-600" />
+                      <Ban className="h-4 w-4 text-green-600" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

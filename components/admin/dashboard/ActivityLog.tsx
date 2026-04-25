@@ -54,7 +54,7 @@ const getIcon = (type: string) => {
     case 'approval':
       return <CheckCircle className={`${baseClass} text-green-600`} />;
     case 'alert':
-      return <AlertCircle className={`${baseClass} text-amber-600`} />;
+      return <AlertCircle className={`${baseClass} text-green-600`} />;
     case 'flag':
       return <AlertCircle className={`${baseClass} text-red-600`} />;
     case 'suspension':
@@ -88,7 +88,7 @@ export default function ActivityLog() {
               <div className="flex flex-col items-end gap-2 flex-shrink-0">
                 <Badge
                   variant={activity.status === 'success' ? 'outline' : 'secondary'}
-                  className={activity.status === 'warning' ? 'bg-amber-100 text-amber-800' : ''}
+                  className={activity.status === 'warning' ? 'bg-green-100 text-green-800' : ''}
                 >
                   {activity.status}
                 </Badge>

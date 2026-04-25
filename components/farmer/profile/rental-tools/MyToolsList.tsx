@@ -248,9 +248,9 @@ export function MyToolsList({ tools, isLoading, onDelete, onToggle }: MyToolsLis
 
               {/* Additional Info */}
               {tool.notes && (
-                <div className="bg-amber-50 dark:bg-amber-950 p-3 rounded border border-amber-200 dark:border-amber-800">
-                  <p className="text-xs font-medium text-amber-800 dark:text-amber-300 mb-1">ℹ️ Notes:</p>
-                  <p className="text-sm text-amber-700 dark:text-amber-200">{tool.notes}</p>
+                <div className="bg-green-50 dark:bg-green-950 p-3 rounded border border-green-200 dark:border-green-800">
+                  <p className="text-xs font-medium text-green-800 dark:text-green-300 mb-1">ℹ️ Notes:</p>
+                  <p className="text-sm text-green-700 dark:text-green-200">{tool.notes}</p>
                 </div>
               )}
 

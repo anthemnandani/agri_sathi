@@ -63,7 +63,7 @@ export const WeatherDetailsPopup = React.memo(function WeatherDetailsPopup({
 
             <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
               <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
-                <Eye className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-amber-500 flex-shrink-0" />
+                <Eye className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-blue-500 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Visibility</p>
               </div>
               <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.visibility)} km</p>
@@ -96,9 +96,9 @@ export const WeatherDetailsPopup = React.memo(function WeatherDetailsPopup({
 
           {/* Sun Times */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div className="p-2 sm:p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+            <div className="p-2 sm:p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800">
               <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
-                <Sun className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-amber-600 flex-shrink-0" />
+                <Sun className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-yellow-600 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Sunrise</p>
               </div>
               <p className="text-xs sm:text-sm font-semibold text-foreground">{weatherData.sunrise}</p>

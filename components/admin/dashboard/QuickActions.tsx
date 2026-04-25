@@ -30,7 +30,7 @@ const actions = [
     label: 'View Reports',
     href: '/admin/reports',
     icon: FileText,
-    color: 'amber',
+    color: 'green',
     description: 'Analytics & insights',
   },
 ];
@@ -39,7 +39,7 @@ const colorClasses = {
   emerald: 'hover:bg-emerald-100/20 text-emerald-600',
   blue: 'hover:bg-blue-100/20 text-blue-600',
   purple: 'hover:bg-purple-100/20 text-purple-600',
-  amber: 'hover:bg-amber-100/20 text-amber-600',
+  green: 'hover:bg-green-100/20 text-green-600',
 };
 
 export default function QuickActions() {

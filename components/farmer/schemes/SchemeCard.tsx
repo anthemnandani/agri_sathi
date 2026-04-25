@@ -89,7 +89,7 @@ export function SchemeCard({ scheme }: SchemeCardProps) {
             isExpired
               ? 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
               : isExpiring
-                ? 'bg-amber-50 border-amber-200 dark:bg-amber-950 dark:border-amber-800'
+                ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800'
                 : 'bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800'
           )}
         >
@@ -99,7 +99,7 @@ export function SchemeCard({ scheme }: SchemeCardProps) {
               isExpired
                 ? 'text-red-600 dark:text-red-400'
                 : isExpiring
-                  ? 'text-amber-600 dark:text-amber-400'
+                  ? 'text-yellow-600 dark:text-yellow-400'
                   : 'text-blue-600 dark:text-blue-400'
             )}
           />
@@ -113,7 +113,7 @@ export function SchemeCard({ scheme }: SchemeCardProps) {
                 isExpired
                   ? 'text-red-700 dark:text-red-300'
                   : isExpiring
-                    ? 'text-amber-700 dark:text-amber-300'
+                    ? 'text-yellow-700 dark:text-yellow-300'
                     : 'text-blue-700 dark:text-blue-300'
               )}
             >

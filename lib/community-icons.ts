@@ -22,9 +22,9 @@ export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border:
     border: 'border-blue-200 dark:border-blue-800',
   },
   problem: {
-    bg: 'bg-amber-50 dark:bg-amber-950',
-    text: 'text-amber-700 dark:text-amber-300',
-    border: 'border-amber-200 dark:border-amber-800',
+    bg: 'bg-green-50 dark:bg-green-950',
+    text: 'text-green-700 dark:text-green-300',
+    border: 'border-green-200 dark:border-green-800',
   },
   other: {
     bg: 'bg-purple-50 dark:bg-purple-950',
