@@ -92,26 +92,14 @@ export function InteractiveWeatherMap() {
     }));
   }, []);
 
-  // Handle current location
+  // Handle current location - Always use user's default location from their profile
   const handleCurrentLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCenter({ lat: latitude, lng: longitude });
-          setZoom(10);
-          fetchWeatherForLocation(latitude, longitude, 'Your Location');
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          // Use default location if permission denied
-          const defaultLat = 26.2;
-          const defaultLng = 87.5;
-          setCenter({ lat: defaultLat, lng: defaultLng });
-          fetchWeatherForLocation(defaultLat, defaultLng, 'Supaul, Bihar');
-        }
-      );
-    }
+    // Always use the user's default location (Bihar, Supaul) from their profile
+    const defaultLat = 26.2;
+    const defaultLng = 87.5;
+    setCenter({ lat: defaultLat, lng: defaultLng });
+    setZoom(10);
+    fetchWeatherForLocation(defaultLat, defaultLng, 'Supaul, Bihar');
   }, [fetchWeatherForLocation]);
 
   // Handle map drag
