@@ -99,8 +99,14 @@ export function InteractiveWeatherMap() {
     const defaultLng = 87.5;
     setCenter({ lat: defaultLat, lng: defaultLng });
     setZoom(10);
+    setSelectedMarker({ id: '1', lat: defaultLat, lng: defaultLng, label: 'Supaul, Bihar' });
     fetchWeatherForLocation(defaultLat, defaultLng, 'Supaul, Bihar');
   }, [fetchWeatherForLocation]);
+
+  // Load initial data on component mount
+  useEffect(() => {
+    handleCurrentLocation();
+  }, [handleCurrentLocation]);
 
   // Handle map drag
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -194,51 +200,76 @@ export function InteractiveWeatherMap() {
           </svg>
 
           {/* Weather Overlays */}
-          {Object.entries(overlayData).map(([layerType, data]) => (
-            <svg key={layerType} className="absolute inset-0 w-full h-full pointer-events-none">
-              {(data as any).map((point: any, idx: number) => {
-                const x = lngToPixel(point.lng, 100);
-                const y = latToPixel(point.lat, 100);
-                const size = Math.max(10, 30 - zoom * 2);
-                let color = 'rgba(0, 0, 0, 0.1)';
-                let opacity = 0.6;
+          {Object.entries(overlayData).map(([layerType, data]) => {
+            // Only show enabled layers
+            if (!layers[layerType as keyof LayerState]) {
+              return null;
+            }
+            
+            return (
+              <svg key={layerType} className="absolute inset-0 w-full h-full pointer-events-none opacity-75">
+                {(data as any).map((point: any, idx: number) => {
+                  const x = lngToPixel(point.lng, 100);
+                  const y = latToPixel(point.lat, 100);
+                  const size = Math.max(12, 35 - zoom * 2);
+                  let color = 'rgba(0, 0, 0, 0.1)';
+                  let opacity = 0.6;
+                  let strokeColor = 'rgba(0, 0, 0, 0.2)';
 
-                switch (layerType) {
-                  case 'temperature':
-                    color = point.value > 30 ? 'rgb(239, 68, 68)' : point.value > 25 ? 'rgb(249, 115, 22)' : 'rgb(96, 165, 250)';
-                    opacity = point.intensity === 'high' ? 0.7 : point.intensity === 'medium' ? 0.5 : 0.3;
-                    break;
-                  case 'rain':
-                    color = point.intensity === 'heavy' ? 'rgb(29, 78, 216)' : 'rgb(96, 165, 250)';
-                    opacity = point.intensity === 'heavy' ? 0.8 : 0.5;
-                    break;
-                  case 'thunderstorm':
-                    color = 'rgb(168, 85, 247)';
-                    opacity = 0.8;
-                    break;
-                  case 'clouds':
-                    color = 'rgb(156, 163, 175)';
-                    opacity = point.intensity === 'dense' ? 0.7 : point.intensity === 'moderate' ? 0.5 : 0.3;
-                    break;
-                  case 'flood':
-                    color = 'rgb(239, 68, 68)';
-                    opacity = point.intensity === 'high' ? 0.8 : 0.6;
-                    break;
-                }
+                  switch (layerType) {
+                    case 'temperature':
+                      color = point.value > 30 ? 'rgb(239, 68, 68)' : point.value > 25 ? 'rgb(249, 115, 22)' : 'rgb(96, 165, 250)';
+                      opacity = point.intensity === 'high' ? 0.8 : point.intensity === 'medium' ? 0.6 : 0.4;
+                      strokeColor = point.value > 30 ? 'rgb(220, 38, 38)' : point.value > 25 ? 'rgb(234, 88, 12)' : 'rgb(59, 130, 246)';
+                      break;
+                    case 'rain':
+                      color = point.intensity === 'heavy' ? 'rgb(29, 78, 216)' : 'rgb(96, 165, 250)';
+                      opacity = point.intensity === 'heavy' ? 0.85 : 0.6;
+                      strokeColor = point.intensity === 'heavy' ? 'rgb(15, 23, 42)' : 'rgb(59, 130, 246)';
+                      break;
+                    case 'thunderstorm':
+                      color = 'rgb(168, 85, 247)';
+                      opacity = 0.85;
+                      strokeColor = 'rgb(126, 34, 206)';
+                      break;
+                    case 'clouds':
+                      color = 'rgb(156, 163, 175)';
+                      opacity = point.intensity === 'dense' ? 0.75 : point.intensity === 'moderate' ? 0.55 : 0.35;
+                      strokeColor = 'rgb(107, 114, 128)';
+                      break;
+                    case 'flood':
+                      color = 'rgb(239, 68, 68)';
+                      opacity = point.intensity === 'high' ? 0.85 : 0.65;
+                      strokeColor = 'rgb(220, 38, 38)';
+                      break;
+                  }
 
-                return (
-                  <circle
-                    key={idx}
-                    cx={`${x}%`}
-                    cy={`${y}%`}
-                    r={size}
-                    fill={color}
-                    opacity={opacity}
-                  />
-                );
-              })}
-            </svg>
-          ))}
+                  return (
+                    <g key={idx}>
+                      {/* Outer glow effect */}
+                      <circle
+                        cx={`${x}%`}
+                        cy={`${y}%`}
+                        r={size * 1.2}
+                        fill={color}
+                        opacity={opacity * 0.3}
+                      />
+                      {/* Main circle */}
+                      <circle
+                        cx={`${x}%`}
+                        cy={`${y}%`}
+                        r={size}
+                        fill={color}
+                        opacity={opacity}
+                        stroke={strokeColor}
+                        strokeWidth="1.5"
+                      />
+                    </g>
+                  );
+                })}
+              </svg>
+            );
+          })}
 
           {/* Markers */}
           {markers.map((marker) => {
@@ -349,6 +380,18 @@ export function InteractiveWeatherMap() {
             <span className="hidden sm:inline">My Location</span>
           </Button>
 
+          {/* Help Guide */}
+          {!weatherData && !loadingWeather && (
+            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-background/95 backdrop-blur border-2 border-green-500/50 rounded-lg px-4 py-3 shadow-lg max-w-sm z-30">
+              <p className="text-xs sm:text-sm text-foreground font-semibold text-center mb-1">
+                Welcome to Weather Map
+              </p>
+              <p className="text-xs text-muted-foreground text-center">
+                Click any location or select from quick access buttons below to view weather details
+              </p>
+            </div>
+          )}
+
           {/* Loading State */}
           {loadingWeather && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-40">
@@ -357,6 +400,28 @@ export function InteractiveWeatherMap() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Quick Location Buttons - For Farmers */}
+      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-30 flex flex-col gap-2 max-w-xs">
+        <div className="bg-background/95 backdrop-blur border-2 border-foreground/10 rounded-lg p-3 shadow-lg">
+          <p className="text-xs font-semibold text-foreground mb-2">Quick Access</p>
+          <div className="grid grid-cols-2 gap-2">
+            {markers.map((marker) => (
+              <button
+                key={marker.id}
+                onClick={() => handleMarkerClick(marker)}
+                className={`text-xs px-2 py-1.5 rounded-md font-medium transition ${
+                  selectedMarker?.id === marker.id
+                    ? 'bg-accent text-accent-foreground border border-accent'
+                    : 'bg-muted text-foreground hover:bg-muted/80 border border-border'
+                }`}
+              >
+                {marker.label.split(',')[0]}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
