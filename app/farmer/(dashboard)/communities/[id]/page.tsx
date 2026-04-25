@@ -14,11 +14,6 @@ import { Users, Lock } from 'lucide-react';
 import { mockCommunityDetail, mockMediaItems, mockDocuments } from '@/lib/mock-communities-enhanced';
 import { toast } from 'sonner';
 
-export const metadata = {
-  title: 'Community - AgriSathi',
-  description: 'Community group chat and discussion',
-};
-
 export default function CommunityDetailPage({
   params,
 }: {

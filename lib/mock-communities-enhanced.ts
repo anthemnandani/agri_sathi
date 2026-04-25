@@ -179,7 +179,7 @@ export const generateMockMessages = () => {
       message.content = messageTemplates[Math.floor(Math.random() * messageTemplates.length)];
     } else if (messageType === 'image') {
       const imageNum = Math.floor(Math.random() * 10) + 1;
-      message.image = `https://images.unsplash.com/photo-${1500595046` + imageNum}?w=400&h=400&fit=crop`;
+      message.image = `https://images.unsplash.com/photo-1500595046?w=400&h=400&fit=crop`;
       message.content = mediaMessages[Math.floor(Math.random() * 3)].description;
     } else if (messageType === 'document') {
       message.content = mediaMessages[Math.floor(Math.random() * 2) + 3].description;
