@@ -21,7 +21,7 @@ export const getCategoryGradient = (category: string): string => {
     harvester: 'from-yellow-100 to-yellow-200',
     cultivator: 'from-blue-100 to-blue-200',
     irrigation: 'from-cyan-100 to-cyan-200',
-    thresher: 'from-orange-100 to-orange-200',
+    thresher: 'from-green-100 to-green-200',
     sprayer: 'from-purple-100 to-purple-200',
     baler: 'from-indigo-100 to-indigo-200',
   };

@@ -39,7 +39,7 @@ export default function AdminDashboard() {
           change="+23.1%"
           trend="up"
           icon={ShoppingCart}
-          color="amber"
+          color="green"
         />
         <StatsCard
           title="Community Posts"

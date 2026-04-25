@@ -30,18 +30,18 @@ interface PinnedMessagesProps {
 
 function PinnedMessageItem({ message }: { message: PinnedMessage }) {
   return (
-    <div className="p-3 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/20 rounded-lg border-l-4 border-amber-500 dark:border-amber-600 shadow-sm hover:shadow-md transition-shadow">
+    <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/20 rounded-lg border-l-4 border-green-500 dark:border-green-600 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center gap-2 mb-2">
-        <Pin className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-        <span className="text-xs font-bold text-amber-700 dark:text-amber-200 uppercase tracking-wide">
+        <Pin className="h-4 w-4 text-green-600 dark:text-green-400" />
+        <span className="text-xs font-bold text-green-700 dark:text-green-200 uppercase tracking-wide">
           Important Update
         </span>
       </div>
 
       <div className="flex gap-2.5">
-        <Avatar className="h-7 w-7 flex-shrink-0 border border-amber-200 dark:border-amber-800">
+        <Avatar className="h-7 w-7 flex-shrink-0 border border-green-200 dark:border-green-800">
           <AvatarImage src={message.sender.avatar} />
-          <AvatarFallback className="bg-amber-100 text-amber-700 text-xs font-semibold">
+          <AvatarFallback className="bg-green-100 text-green-700 text-xs font-semibold">
             {message.sender.name[0]}
           </AvatarFallback>
         </Avatar>
@@ -58,7 +58,7 @@ function PinnedMessageItem({ message }: { message: PinnedMessage }) {
               <img
                 src={message.image}
                 alt="Pinned"
-                className="h-24 w-24 object-cover rounded-md border border-amber-200 dark:border-amber-800"
+                className="h-24 w-24 object-cover rounded-md border border-green-200 dark:border-green-800"
               />
             </div>
           )}
@@ -119,7 +119,7 @@ export function PinnedMessages({ communityId }: PinnedMessagesProps) {
       <Card className="flex flex-col min-h-0 border-border">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Pin className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <Pin className="h-5 w-5 text-green-600 dark:text-green-400" />
             Important Updates
           </CardTitle>
         </CardHeader>
@@ -137,7 +137,7 @@ export function PinnedMessages({ communityId }: PinnedMessagesProps) {
         <CollapsibleTrigger className="w-full">
           <div className="flex items-center justify-between p-4 hover:bg-muted/40 transition-colors border-b border-border">
             <div className="flex items-center gap-2">
-              <Pin className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <Pin className="h-5 w-5 text-green-600 dark:text-green-400" />
               <CardTitle className="text-base">Important Updates</CardTitle>
               <Badge variant="secondary" className="ml-2 text-xs">
                 {pinnedMessages.length}

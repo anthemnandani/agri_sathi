@@ -37,7 +37,7 @@ const getStatusColor = (status: string) => {
     case 'approved':
       return 'bg-emerald-100 text-emerald-800';
     case 'pending':
-      return 'bg-amber-100 text-amber-800';
+      return 'bg-green-100 text-green-800';
     case 'rejected':
       return 'bg-red-100 text-red-800';
     default:
@@ -99,8 +99,8 @@ export default function PostModal({ post, isOpen, onClose }: PostModalProps) {
 
           {/* Moderation Actions */}
           {post.status === 'pending' && (
-            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-lg p-4">
-              <p className="text-sm font-medium text-amber-900 dark:text-amber-200 mb-3">
+            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg p-4">
+              <p className="text-sm font-medium text-green-900 dark:text-green-200 mb-3">
                 Moderation Required
               </p>
               <div className="grid grid-cols-2 gap-2">

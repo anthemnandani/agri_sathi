@@ -33,7 +33,7 @@ interface CommunityMembersProps {
 
 function MemberItem({ member }: { member: Member }) {
   const getRoleBadgeColor = (role: string) => {
-    if (role === 'admin') return 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-200';
+    if (role === 'admin') return 'bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200';
     if (role === 'moderator') return 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200';
     return 'bg-muted text-muted-foreground';
   };
@@ -63,7 +63,7 @@ function MemberItem({ member }: { member: Member }) {
             </AvatarFallback>
           </Avatar>
           {member.role === 'admin' && (
-            <div className="absolute -top-1 -right-1 bg-amber-500 rounded-full p-0.5 text-white">
+            <div className="absolute -top-1 -right-1 bg-green-600 rounded-full p-0.5 text-white">
               <Crown className="h-2.5 w-2.5" />
             </div>
           )}

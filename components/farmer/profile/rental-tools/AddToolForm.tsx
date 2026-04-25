@@ -270,7 +270,7 @@ export function AddToolForm({ onToolAdded }: AddToolFormProps) {
               <label className="text-sm font-semibold text-foreground">
                 Tool Photos/Videos/Documents
               </label>
-              <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+              <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                 {mediaFiles.length} files
               </Badge>
             </div>

@@ -53,7 +53,7 @@ export function ProductSection({ title, products }: ProductSectionProps) {
               <div className="relative w-full aspect-square bg-muted flex items-center justify-center overflow-hidden">
                 <div className="text-5xl">{product.image}</div>
                 {product.discount > 0 && (
-                  <Badge className="absolute top-2 left-2 bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                  <Badge className="absolute top-2 left-2 bg-green-600 hover:bg-green-700 text-white text-xs">
                     {product.discount}% OFF
                   </Badge>
                 )}

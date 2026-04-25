@@ -61,7 +61,7 @@ interface CommunityMessageProps {
 
 function MessageItem({ message, onReply, onPin, isGrouped }: CommunityMessageProps) {
   const getRoleColor = (role: string) => {
-    if (role === 'admin') return 'text-amber-600 dark:text-amber-400 font-bold';
+    if (role === 'admin') return 'text-green-600 dark:text-green-400 font-bold';
     if (role === 'moderator') return 'text-blue-600 dark:text-blue-400 font-bold';
     return 'text-foreground';
   };

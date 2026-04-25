@@ -80,7 +80,7 @@ export function NotificationsCenter() {
       case 'message':
         return 'bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400';
       case 'alert':
-        return 'bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400';
+        return 'bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400';
       case 'promotion':
         return 'bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400';
       default:

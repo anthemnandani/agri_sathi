@@ -111,7 +111,7 @@ export function WeatherPageContent() {
         </Card>
 
         {/* Interactive Weather Map */}
-        <div className="relative w-full h-[300px] sm:h-[400px] lg:h-full lg:min-h-[400px] rounded-lg overflow-hidden border-2 border-foreground/10">
+        <div className="relative w-full h-[320px] sm:h-[420px] lg:h-[520px] rounded-lg overflow-hidden border-2 border-foreground/10 bg-gradient-to-b from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20">
           <InteractiveWeatherMap />
         </div>
       </div>

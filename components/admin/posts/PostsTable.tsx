@@ -86,7 +86,7 @@ const getStatusColor = (status: string) => {
     case 'approved':
       return 'bg-emerald-100 text-emerald-800';
     case 'pending':
-      return 'bg-amber-100 text-amber-800';
+      return 'bg-green-100 text-green-800';
     case 'rejected':
       return 'bg-red-100 text-red-800';
     default:
@@ -101,7 +101,7 @@ const getCategoryColor = (category: string) => {
     case 'Education':
       return 'bg-blue-100/50 text-blue-700';
     case 'Marketplace':
-      return 'bg-amber-100/50 text-amber-700';
+      return 'bg-green-100/50 text-green-700';
     default:
       return 'bg-gray-100/50 text-gray-700';
   }
