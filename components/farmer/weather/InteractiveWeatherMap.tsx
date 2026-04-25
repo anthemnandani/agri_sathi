@@ -429,7 +429,7 @@ export function InteractiveWeatherMap() {
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
 
       {/* Weather Details Popup */}
-      {weatherData && (
+      {/* {weatherData && (
         <WeatherDetailsPopup
           weatherData={weatherData}
           onClose={() => {
@@ -437,7 +437,7 @@ export function InteractiveWeatherMap() {
             setSelectedMarker(null);
           }}
         />
-      )}
+      )} */}
     </div>
   );
 }
