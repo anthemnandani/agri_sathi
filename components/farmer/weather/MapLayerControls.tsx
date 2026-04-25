@@ -63,15 +63,15 @@ export const MapLayerControls = React.memo(function MapLayerControls({
   const activeLayers = Object.values(layers).filter(Boolean).length;
 
   return (
-    <Card className="absolute bottom-6 left-6 w-full max-w-xs z-40 bg-background/95 backdrop-blur border-2 border-foreground/10">
-      <div className="p-4">
+    <Card className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 w-auto max-w-xs z-40 bg-background/95 backdrop-blur border-2 border-foreground/10">
+      <div className="p-3 sm:p-4">
         {/* Header */}
         <div
           className="flex items-center justify-between cursor-pointer hover:opacity-80 transition"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div>
-            <h3 className="font-semibold text-foreground">Weather Layers</h3>
+            <h3 className="text-sm sm:text-base font-semibold text-foreground">Weather Layers</h3>
             <p className="text-xs text-muted-foreground">{activeLayers} active</p>
           </div>
           <button className="p-1 hover:bg-muted rounded-md transition">
@@ -85,7 +85,7 @@ export const MapLayerControls = React.memo(function MapLayerControls({
 
         {/* Layer Controls */}
         {isExpanded && (
-          <div className="mt-4 space-y-2">
+          <div className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2">
             {LAYER_CONFIG.map((layer) => {
               const Icon = layer.icon;
               const isActive = layers[layer.id];
@@ -94,23 +94,23 @@ export const MapLayerControls = React.memo(function MapLayerControls({
                 <button
                   key={layer.id}
                   onClick={() => onLayerToggle(layer.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition ${
+                  className={`w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border-2 transition text-left ${
                     isActive
                       ? 'bg-primary/10 border-primary'
                       : 'bg-muted border-border hover:bg-muted/80'
                   }`}
                 >
-                  <Icon className={`h-5 w-5 ${isActive ? layer.color : 'text-muted-foreground'}`} />
-                  <div className="flex-1 text-left">
-                    <p className="text-sm font-medium text-foreground">{layer.label}</p>
-                    <p className="text-xs text-muted-foreground">{layer.description}</p>
+                  <Icon className={`h-4 sm:h-5 w-4 sm:w-5 flex-shrink-0 ${isActive ? layer.color : 'text-muted-foreground'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-foreground truncate">{layer.label}</p>
+                    <p className="text-xs text-muted-foreground hidden sm:block">{layer.description}</p>
                   </div>
                   <div
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition ${
+                    className={`w-4 sm:w-5 h-4 sm:h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition ${
                       isActive ? 'bg-primary border-primary' : 'border-border'
                     }`}
                   >
-                    {isActive && <div className="w-2 h-2 bg-background rounded-sm" />}
+                    {isActive && <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-background rounded-sm" />}
                   </div>
                 </button>
               );
@@ -120,8 +120,8 @@ export const MapLayerControls = React.memo(function MapLayerControls({
 
         {/* Info Text */}
         {isExpanded && (
-          <p className="text-xs text-muted-foreground mt-3 p-2 bg-muted rounded">
-            💡 Click on the map to view detailed weather information for any location
+          <p className="text-xs text-muted-foreground mt-2 sm:mt-3 p-2 bg-muted rounded">
+            Click on the map to view weather information
           </p>
         )}
       </div>

@@ -13,102 +13,102 @@ export const WeatherDetailsPopup = React.memo(function WeatherDetailsPopup({
   onClose,
 }: WeatherDetailsPopupProps) {
   return (
-    <div className="fixed inset-0 flex items-end md:items-center justify-center z-50 p-4 bg-black/40">
-      <Card className="w-full md:max-w-md max-h-[80vh] overflow-y-auto bg-background border-2 border-foreground/10">
+    <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-3 sm:p-4 bg-black/40">
+      <Card className="w-full sm:max-w-md max-h-[85vh] sm:max-h-[80vh] overflow-y-auto bg-background border-2 border-foreground/10 rounded-t-2xl sm:rounded-2xl">
         {/* Header */}
-        <CardHeader className="pb-3 flex flex-row items-start justify-between">
-          <div>
-            <CardTitle className="text-lg md:text-xl">{weatherData.location}</CardTitle>
+        <CardHeader className="pb-2 sm:pb-3 flex flex-row items-start justify-between px-4 sm:px-6 pt-4 sm:pt-6">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base sm:text-lg md:text-xl truncate">{weatherData.location}</CardTitle>
             <p className="text-xs text-muted-foreground mt-1">
               Updated: {new Date(weatherData.lastUpdated).toLocaleTimeString()}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-muted rounded-md transition"
+            className="p-1 hover:bg-muted rounded-md transition flex-shrink-0 ml-2"
             aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 sm:h-5 w-4 sm:w-5" />
           </button>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
           {/* Current Weather */}
           <div className="text-center space-y-2">
-            <div className="text-4xl md:text-5xl">{weatherData.icon}</div>
-            <p className="text-lg md:text-2xl font-bold text-foreground">{weatherData.condition}</p>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-3xl md:text-4xl font-bold text-primary">{Math.round(weatherData.temperature)}°</span>
-              <span className="text-sm text-muted-foreground">Feels like {Math.round(weatherData.feelsLike)}°</span>
+            <div className="text-3xl sm:text-4xl md:text-5xl">{weatherData.icon}</div>
+            <p className="text-base sm:text-lg md:text-2xl font-bold text-foreground">{weatherData.condition}</p>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">{Math.round(weatherData.temperature)}°</span>
+              <span className="text-xs sm:text-sm text-muted-foreground">Feels like {Math.round(weatherData.feelsLike)}°</span>
             </div>
           </div>
 
           {/* Weather Metrics Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <Droplets className="h-4 w-4 text-blue-500" />
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Droplets className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-blue-500 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Humidity</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.humidity)}%</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.humidity)}%</p>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <Wind className="h-4 w-4 text-cyan-500" />
-                <p className="text-xs text-muted-foreground">Wind Speed</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Wind className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-cyan-500 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground">Wind</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.windSpeed)} km/h</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.windSpeed)} km/h</p>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <Eye className="h-4 w-4 text-amber-500" />
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Eye className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-amber-500 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Visibility</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.visibility)} km</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.visibility)} km</p>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <Cloud className="h-4 w-4 text-gray-500" />
-                <p className="text-xs text-muted-foreground">Cloud Cover</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Cloud className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-gray-500 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground">Clouds</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.cloudCover)}%</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.cloudCover)}%</p>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <Sun className="h-4 w-4 text-yellow-500" />
-                <p className="text-xs text-muted-foreground">UV Index</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Sun className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-yellow-500 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground">UV</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.uvIndex * 10) / 10}</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.uvIndex * 10) / 10}</p>
             </div>
 
-            <div className="p-3 rounded-lg bg-muted border border-border">
-              <div className="flex items-center gap-2 mb-1">
-                <CloudRain className="h-4 w-4 text-blue-600" />
-                <p className="text-xs text-muted-foreground">Rain Probability</p>
+            <div className="p-2 sm:p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <CloudRain className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-blue-600 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground">Rain %</p>
               </div>
-              <p className="text-lg font-semibold text-foreground">{Math.round(weatherData.rainProbability)}%</p>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{Math.round(weatherData.rainProbability)}%</p>
             </div>
           </div>
 
           {/* Sun Times */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
-              <div className="flex items-center gap-2 mb-1">
-                <Sun className="h-4 w-4 text-amber-600" />
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="p-2 sm:p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Sun className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-amber-600 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Sunrise</p>
               </div>
-              <p className="text-sm font-semibold text-foreground">{weatherData.sunrise}</p>
+              <p className="text-xs sm:text-sm font-semibold text-foreground">{weatherData.sunrise}</p>
             </div>
-            <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
-              <div className="flex items-center gap-2 mb-1">
-                <Moon className="h-4 w-4 text-purple-600" />
+            <div className="p-2 sm:p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                <Moon className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-purple-600 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground">Sunset</p>
               </div>
-              <p className="text-sm font-semibold text-foreground">{weatherData.sunset}</p>
+              <p className="text-xs sm:text-sm font-semibold text-foreground">{weatherData.sunset}</p>
             </div>
           </div>
 
@@ -116,21 +116,21 @@ export const WeatherDetailsPopup = React.memo(function WeatherDetailsPopup({
           {(weatherData.thunderstorm || weatherData.floodRisk !== 'low' || weatherData.rainProbability > 70) && (
             <div className="space-y-2">
               {weatherData.thunderstorm && (
-                <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
-                  <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-red-600" />
-                    <p className="text-sm text-red-700 dark:text-red-400">⚠️ Thunderstorm Alert</p>
+                <div className="p-2 sm:p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <Zap className="h-3.5 sm:h-4 w-3.5 sm:w-4 text-red-600 flex-shrink-0" />
+                    <p className="text-xs sm:text-sm text-red-700 dark:text-red-400">Thunderstorm Alert</p>
                   </div>
                 </div>
               )}
               {weatherData.floodRisk === 'high' && (
-                <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800">
-                  <p className="text-sm text-orange-700 dark:text-orange-400">⚠️ High Flood Risk</p>
+                <div className="p-2 sm:p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800">
+                  <p className="text-xs sm:text-sm text-orange-700 dark:text-orange-400">High Flood Risk</p>
                 </div>
               )}
               {weatherData.rainProbability > 70 && (
-                <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-                  <p className="text-sm text-blue-700 dark:text-blue-400">💧 Heavy Rain Expected</p>
+                <div className="p-2 sm:p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+                  <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-400">Heavy Rain Expected</p>
                 </div>
               )}
             </div>

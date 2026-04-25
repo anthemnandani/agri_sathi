@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ForecastCard } from './ForecastCard';
 
 const mockForecast = [
@@ -57,17 +56,12 @@ const mockForecast = [
 
 export function ForecastSection() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>7-Day Forecast</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {mockForecast.map((day) => (
-            <ForecastCard key={day.date} forecast={day} />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="w-full">
+      <div className="grid gap-2 sm:gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3">
+        {mockForecast.map((day) => (
+          <ForecastCard key={day.date} forecast={day} />
+        ))}
+      </div>
+    </div>
   );
 }
