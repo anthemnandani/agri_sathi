@@ -171,6 +171,23 @@ export interface Report {
   status: 'pending' | 'ready' | 'failed';
 }
 
+export interface CropGuide {
+  id: string;
+  name: string;
+  scientificName: string;
+  category: 'cereals' | 'pulses' | 'vegetables' | 'fruits' | 'oilseeds' | 'spices';
+  season: 'kharif' | 'rabi' | 'zaid';
+  duration: string;
+  waterNeed: 'low' | 'medium' | 'high';
+  temperature: { min: number; max: number };
+  soilType: string[];
+  commonDiseases: string[];
+  pestManagement: string[];
+  harvestTime: string;
+  yield: string;
+  description: string;
+}
+
 export interface AdminStats {
   totalFarmers: number;
   activeFarmers: number;
@@ -1262,5 +1279,169 @@ export const reports: Report[] = [
       { label: 'Likes', value: 2438 },
     ],
     status: 'ready',
+  },
+];
+
+// Crop Guide Data
+export const cropGuide: CropGuide[] = [
+  {
+    id: 'crop1',
+    name: 'Rice (Paddy)',
+    scientificName: 'Oryza sativa',
+    category: 'cereals',
+    season: 'kharif',
+    duration: '120-150 days',
+    waterNeed: 'high',
+    temperature: { min: 20, max: 32 },
+    soilType: ['Loamy', 'Clay loam', 'Alluvial'],
+    commonDiseases: ['Blast', 'Sheath rot', 'Bacterial leaf blight'],
+    pestManagement: ['Stem borer control', 'Leaf folder management', 'Case worm control'],
+    harvestTime: 'September-October',
+    yield: '40-60 quintal/hectare',
+    description: 'Rice is the staple food crop of India. It requires waterlogged conditions and warm climate. Proper irrigation management is crucial for good yield.',
+  },
+  {
+    id: 'crop2',
+    name: 'Wheat',
+    scientificName: 'Triticum aestivum',
+    category: 'cereals',
+    season: 'rabi',
+    duration: '120-140 days',
+    waterNeed: 'medium',
+    temperature: { min: 7, max: 20 },
+    soilType: ['Loamy', 'Clay loam', 'Well-drained'],
+    commonDiseases: ['Rust', 'Loose smut', 'Septoria'],
+    pestManagement: ['Armyworm control', 'Sawfly management', 'Termite control'],
+    harvestTime: 'March-April',
+    yield: '35-50 quintal/hectare',
+    description: 'Wheat is a major cereal crop grown in winter season. It prefers cool climate and moderate rainfall. Proper nitrogen application is essential.',
+  },
+  {
+    id: 'crop3',
+    name: 'Cotton',
+    scientificName: 'Gossypium hirsutum',
+    category: 'oilseeds',
+    season: 'kharif',
+    duration: '160-180 days',
+    waterNeed: 'high',
+    temperature: { min: 21, max: 30 },
+    soilType: ['Black soil', 'Loamy', 'Well-drained'],
+    commonDiseases: ['Leaf curl', 'Boll rot', 'Bacterial blight'],
+    pestManagement: ['Bollworm control', 'Mite management', 'Whitefly control'],
+    harvestTime: 'October-November',
+    yield: '15-20 quintal/hectare',
+    description: 'Cotton is a cash crop requiring high temperature and moderate rainfall. Insect management is critical for cotton cultivation.',
+  },
+  {
+    id: 'crop4',
+    name: 'Chickpea',
+    scientificName: 'Cicer arietinum',
+    category: 'pulses',
+    season: 'rabi',
+    duration: '100-120 days',
+    waterNeed: 'low',
+    temperature: { min: 10, max: 25 },
+    soilType: ['Well-drained', 'Loamy', 'Black soil'],
+    commonDiseases: ['Wilt', 'Ascochyta blight', 'Root rot'],
+    pestManagement: ['Pod borer control', 'Gram caterpillar', 'Aphid management'],
+    harvestTime: 'February-March',
+    yield: '15-20 quintal/hectare',
+    description: 'Chickpea is an important pulse crop providing protein. It requires less water and fertilizer compared to cereals.',
+  },
+  {
+    id: 'crop5',
+    name: 'Tomato',
+    scientificName: 'Solanum lycopersicum',
+    category: 'vegetables',
+    season: 'rabi',
+    duration: '60-90 days',
+    waterNeed: 'medium',
+    temperature: { min: 15, max: 25 },
+    soilType: ['Loamy', 'Well-drained'],
+    commonDiseases: ['Late blight', 'Early blight', 'Leaf curl'],
+    pestManagement: ['Fruit borer control', 'Whitefly management', 'Mite control'],
+    harvestTime: 'November-February',
+    yield: '400-500 quintal/hectare',
+    description: 'Tomato is a high-value vegetable crop. Proper training and pruning improve yield quality. Regular watering is essential.',
+  },
+  {
+    id: 'crop6',
+    name: 'Sugarcane',
+    scientificName: 'Saccharum officinarum',
+    category: 'cereals',
+    season: 'kharif',
+    duration: '10-14 months',
+    waterNeed: 'high',
+    temperature: { min: 21, max: 27 },
+    soilType: ['Loamy', 'Clay loam', 'Alluvial'],
+    commonDiseases: ['Red rot', 'Leaf scald', 'Smut'],
+    pestManagement: ['Top borer control', 'Internode borer', 'Shoot borer management'],
+    harvestTime: 'November-February',
+    yield: '700-900 quintal/hectare',
+    description: 'Sugarcane is a long-duration cash crop requiring good irrigation. It needs heavy nitrogen and potassium application.',
+  },
+  {
+    id: 'crop7',
+    name: 'Onion',
+    scientificName: 'Allium cepa',
+    category: 'vegetables',
+    season: 'rabi',
+    duration: '150-180 days',
+    waterNeed: 'medium',
+    temperature: { min: 13, max: 24 },
+    soilType: ['Well-drained', 'Loamy'],
+    commonDiseases: ['Purple blotch', 'Neck rot', 'Basal rot'],
+    pestManagement: ['Thrips management', 'Maggot control', 'Mite control'],
+    harvestTime: 'April-May',
+    yield: '250-400 quintal/hectare',
+    description: 'Onion is a major vegetable crop with good storage life. Proper curing after harvest is important for long storage.',
+  },
+  {
+    id: 'crop8',
+    name: 'Mango',
+    scientificName: 'Mangifera indica',
+    category: 'fruits',
+    season: 'kharif',
+    duration: 'Perennial',
+    waterNeed: 'medium',
+    temperature: { min: 24, max: 30 },
+    soilType: ['Well-drained', 'Loamy', 'Red soil'],
+    commonDiseases: ['Anthracnose', 'Powdery mildew', 'Die-back'],
+    pestManagement: ['Midge management', 'Stem borer control', 'Scale insect control'],
+    harvestTime: 'May-August',
+    yield: '50-100 quintal/hectare',
+    description: 'Mango is a perennial fruit crop. Regular pruning and pest management enhance productivity. Requires good drainage.',
+  },
+  {
+    id: 'crop9',
+    name: 'Turmeric',
+    scientificName: 'Curcuma longa',
+    category: 'spices',
+    season: 'kharif',
+    duration: '7-10 months',
+    waterNeed: 'high',
+    temperature: { min: 20, max: 30 },
+    soilType: ['Loamy', 'Well-drained', 'Black soil'],
+    commonDiseases: ['Leaf blotch', 'Rhizome rot', 'Leaf spot'],
+    pestManagement: ['Shoot borer control', 'Scale insect', 'Mealybug management'],
+    harvestTime: 'January-March',
+    yield: '20-25 quintal/hectare',
+    description: 'Turmeric is an important spice crop with medicinal properties. It requires humid climate and shade in summer.',
+  },
+  {
+    id: 'crop10',
+    name: 'Soybean',
+    scientificName: 'Glycine max',
+    category: 'oilseeds',
+    season: 'kharif',
+    duration: '95-120 days',
+    waterNeed: 'medium',
+    temperature: { min: 20, max: 30 },
+    soilType: ['Well-drained', 'Loamy', 'Black soil'],
+    commonDiseases: ['Rust', 'Frogeye leaf spot', 'Stem canker'],
+    pestManagement: ['Girdle beetle control', 'Semilooper management', 'Whitefly control'],
+    harvestTime: 'October-November',
+    yield: '18-22 quintal/hectare',
+    description: 'Soybean is a high-protein oilseed crop. It improves soil fertility through nitrogen fixation. Good rotational crop.',
   },
 ];
