@@ -4,7 +4,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { CurrentWeather } from '@/components/farmer/weather/CurrentWeather';
 import { ForecastSection } from '@/components/farmer/weather/ForecastSection';
-import { InteractiveWeatherMap } from '@/components/farmer/weather/InteractiveWeatherMap';
+import { FarmerWeatherMap } from '@/components/farmer/weather/FarmerWeatherMap';
+import { ChatbotButton } from '@/components/farmer/chat/ChatbotButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Phone, CloudRain, Wind, Droplets, Sun, Moon, AlertCircle, MapPin } from 'lucide-react';
@@ -31,7 +32,9 @@ export function WeatherPageContent() {
   ];
 
   return (
-    <div className="w-full space-y-6 px-0 sm:px-2">
+    <>
+      <ChatbotButton />
+      <div className="w-full space-y-6 px-0 sm:px-2">
       {/* Location Header */}
       {userLocation && (
         <div className="flex items-center gap-2 px-4 sm:px-0">
@@ -110,11 +113,16 @@ export function WeatherPageContent() {
           </CardContent>
         </Card>
 
-        {/* Interactive Weather Map */}
-        <div className="relative w-full h-[320px] sm:h-[420px] lg:h-[520px] rounded-lg overflow-hidden border-2 border-foreground/10 bg-gradient-to-b from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20">
-          <InteractiveWeatherMap />
-        </div>
+        {/* Leaflet Weather Map */}
+        <FarmerWeatherMap 
+          userLocation={{ 
+            latitude: 26.2, 
+            longitude: 87.5, 
+            name: 'Bihar, Supaul' 
+          }}
+        />
       </div>
-    </div>
+      </div>
+    </>
   );
 }
