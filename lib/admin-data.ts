@@ -126,6 +126,68 @@ export interface WeatherAlert {
   createdBy: string;
 }
 
+export interface BackgroundJob {
+  id: string;
+  name: string;
+  type: 'data_sync' | 'report_generation' | 'email_broadcast' | 'image_processing' | 'data_cleanup';
+  status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
+  progress: number;
+  startTime: string;
+  endTime?: string;
+  duration?: string;
+  errorMessage?: string;
+  logsUrl: string;
+  triggeredBy: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'farmer' | 'buyer' | 'worker' | 'admin' | 'expert';
+  status: 'active' | 'inactive' | 'suspended' | 'pending';
+  avatar?: string;
+  joinDate: string;
+  lastActive: string;
+  verified: boolean;
+  activityScore: number;
+  successRate: number;
+}
+
+export interface Report {
+  id: string;
+  name: string;
+  type: 'sales' | 'users' | 'products' | 'rentals' | 'communities' | 'revenue';
+  generatedBy: string;
+  generatedAt: string;
+  dateRange: { start: string; end: string };
+  metrics: {
+    totalValue: number;
+    change: number;
+    changePercent: number;
+  };
+  dataPoints: { label: string; value: number }[];
+  status: 'pending' | 'ready' | 'failed';
+}
+
+export interface CropGuide {
+  id: string;
+  name: string;
+  scientificName: string;
+  category: 'cereals' | 'pulses' | 'vegetables' | 'fruits' | 'oilseeds' | 'spices';
+  season: 'kharif' | 'rabi' | 'zaid';
+  duration: string;
+  waterNeed: 'low' | 'medium' | 'high';
+  temperature: { min: number; max: number };
+  soilType: string[];
+  commonDiseases: string[];
+  pestManagement: string[];
+  harvestTime: string;
+  yield: string;
+  description: string;
+}
+
 export interface AdminStats {
   totalFarmers: number;
   activeFarmers: number;
@@ -907,4 +969,479 @@ export const recentActivity = [
   { id: 4, type: 'report', message: 'Post reported for spam content', time: '1 hour ago' },
   { id: 5, type: 'payment', message: 'Payment of Rs 6,000 received for tool rental', time: '2 hours ago' },
   { id: 6, type: 'community', message: 'New community "Wheat Growers" created', time: '3 hours ago' },
+];
+
+// Background Jobs Data
+export const backgroundJobs: BackgroundJob[] = [
+  {
+    id: 'job1',
+    name: 'Daily Sales Report Generation',
+    type: 'report_generation',
+    status: 'completed',
+    progress: 100,
+    startTime: '2024-03-20 10:15:00',
+    endTime: '2024-03-20 10:22:45',
+    duration: '7m 45s',
+    logsUrl: '/logs/job1',
+    triggeredBy: 'System Scheduled',
+  },
+  {
+    id: 'job2',
+    name: 'Farmer Database Sync',
+    type: 'data_sync',
+    status: 'running',
+    progress: 68,
+    startTime: '2024-03-20 11:30:00',
+    logsUrl: '/logs/job2',
+    triggeredBy: 'Admin - Rajesh Kumar',
+  },
+  {
+    id: 'job3',
+    name: 'Product Image Processing',
+    type: 'image_processing',
+    status: 'queued',
+    progress: 0,
+    startTime: '2024-03-20 12:00:00',
+    logsUrl: '/logs/job3',
+    triggeredBy: 'System Scheduled',
+  },
+  {
+    id: 'job4',
+    name: 'Weekly Email Broadcast',
+    type: 'email_broadcast',
+    status: 'completed',
+    progress: 100,
+    startTime: '2024-03-19 09:00:00',
+    endTime: '2024-03-19 09:18:30',
+    duration: '18m 30s',
+    logsUrl: '/logs/job4',
+    triggeredBy: 'System Scheduled',
+  },
+  {
+    id: 'job5',
+    name: 'Old Records Cleanup',
+    type: 'data_cleanup',
+    status: 'failed',
+    progress: 45,
+    startTime: '2024-03-20 02:00:00',
+    endTime: '2024-03-20 02:35:00',
+    duration: '35m 00s',
+    errorMessage: 'Connection timeout while processing historical data',
+    logsUrl: '/logs/job5',
+    triggeredBy: 'System Scheduled',
+  },
+  {
+    id: 'job6',
+    name: 'Monthly Revenue Report',
+    type: 'report_generation',
+    status: 'completed',
+    progress: 100,
+    startTime: '2024-03-18 08:00:00',
+    endTime: '2024-03-18 08:45:00',
+    duration: '45m 00s',
+    logsUrl: '/logs/job6',
+    triggeredBy: 'System Scheduled',
+  },
+  {
+    id: 'job7',
+    name: 'Product Listing Sync',
+    type: 'data_sync',
+    status: 'completed',
+    progress: 100,
+    startTime: '2024-03-20 06:15:00',
+    endTime: '2024-03-20 06:28:15',
+    duration: '13m 15s',
+    logsUrl: '/logs/job7',
+    triggeredBy: 'System Scheduled',
+  },
+];
+
+// Users Management Data
+export const users: User[] = [
+  {
+    id: 'u1',
+    name: 'Rajesh Kumar',
+    email: 'rajesh.kumar@email.com',
+    phone: '9876543210',
+    role: 'farmer',
+    status: 'active',
+    avatar: '/avatars/farmer1.jpg',
+    joinDate: '2024-01-15',
+    lastActive: '2024-03-20T14:30:00',
+    verified: true,
+    activityScore: 95,
+    successRate: 98,
+  },
+  {
+    id: 'u2',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@email.com',
+    phone: '9876543211',
+    role: 'farmer',
+    status: 'active',
+    joinDate: '2024-02-20',
+    lastActive: '2024-03-20T13:15:00',
+    verified: true,
+    activityScore: 87,
+    successRate: 96,
+  },
+  {
+    id: 'u3',
+    name: 'Arjun Singh',
+    email: 'arjun.singh@email.com',
+    phone: '9876543212',
+    role: 'farmer',
+    status: 'pending',
+    joinDate: '2024-03-10',
+    lastActive: '2024-03-18T10:00:00',
+    verified: false,
+    activityScore: 45,
+    successRate: 0,
+  },
+  {
+    id: 'u4',
+    name: 'Vikram Das',
+    email: 'vikram.das@email.com',
+    phone: '9876543214',
+    role: 'buyer',
+    status: 'suspended',
+    joinDate: '2023-11-20',
+    lastActive: '2024-02-15T09:00:00',
+    verified: false,
+    activityScore: 23,
+    successRate: 65,
+  },
+  {
+    id: 'u5',
+    name: 'Meera Patel',
+    email: 'meera.patel@email.com',
+    phone: '9876543213',
+    role: 'farmer',
+    status: 'active',
+    joinDate: '2023-12-05',
+    lastActive: '2024-03-20T15:45:00',
+    verified: true,
+    activityScore: 92,
+    successRate: 99,
+  },
+  {
+    id: 'u6',
+    name: 'Sunita Devi',
+    email: 'sunita.devi@email.com',
+    phone: '9876543215',
+    role: 'worker',
+    status: 'active',
+    joinDate: '2024-01-25',
+    lastActive: '2024-03-20T12:00:00',
+    verified: true,
+    activityScore: 78,
+    successRate: 91,
+  },
+  {
+    id: 'u7',
+    name: 'Dr. Ramesh Yadav',
+    email: 'dr.ramesh@email.com',
+    phone: '9876543216',
+    role: 'expert',
+    status: 'active',
+    joinDate: '2023-10-10',
+    lastActive: '2024-03-20T14:00:00',
+    verified: true,
+    activityScore: 88,
+    successRate: 100,
+  },
+  {
+    id: 'u8',
+    name: 'Kavita Reddy',
+    email: 'kavita.reddy@email.com',
+    phone: '9876543217',
+    role: 'farmer',
+    status: 'inactive',
+    joinDate: '2024-02-01',
+    lastActive: '2024-01-15T10:00:00',
+    verified: true,
+    activityScore: 52,
+    successRate: 88,
+  },
+  {
+    id: 'u9',
+    name: 'Admin Panel Manager',
+    email: 'admin@agrisathi.com',
+    phone: '9999999999',
+    role: 'admin',
+    status: 'active',
+    joinDate: '2023-01-01',
+    lastActive: '2024-03-20T16:00:00',
+    verified: true,
+    activityScore: 100,
+    successRate: 100,
+  },
+];
+
+// Reports Data
+export const reports: Report[] = [
+  {
+    id: 'r1',
+    name: 'March Sales Report',
+    type: 'sales',
+    generatedBy: 'System',
+    generatedAt: '2024-03-20T14:30:00',
+    dateRange: { start: '2024-03-01', end: '2024-03-20' },
+    metrics: {
+      totalValue: 4248900,
+      change: 856000,
+      changePercent: 25.2,
+    },
+    dataPoints: [
+      { label: 'Mar 01', value: 85000 },
+      { label: 'Mar 05', value: 120000 },
+      { label: 'Mar 10', value: 156000 },
+      { label: 'Mar 15', value: 198000 },
+      { label: 'Mar 20', value: 245000 },
+    ],
+    status: 'ready',
+  },
+  {
+    id: 'r2',
+    name: 'User Growth Report',
+    type: 'users',
+    generatedBy: 'Admin - Rajesh',
+    generatedAt: '2024-03-19T10:00:00',
+    dateRange: { start: '2024-01-01', end: '2024-03-20' },
+    metrics: {
+      totalValue: 12456,
+      change: 3956,
+      changePercent: 46.3,
+    },
+    dataPoints: [
+      { label: 'Jan', value: 8500 },
+      { label: 'Feb', value: 9200 },
+      { label: 'Mar', value: 12456 },
+    ],
+    status: 'ready',
+  },
+  {
+    id: 'r3',
+    name: 'Product Performance Analysis',
+    type: 'products',
+    generatedBy: 'System',
+    generatedAt: '2024-03-20T11:15:00',
+    dateRange: { start: '2024-02-01', end: '2024-03-20' },
+    metrics: {
+      totalValue: 2156,
+      change: 234,
+      changePercent: 12.1,
+    },
+    dataPoints: [
+      { label: 'Seeds', value: 756 },
+      { label: 'Fertilizer', value: 543 },
+      { label: 'Tools', value: 324 },
+      { label: 'Crops', value: 289 },
+      { label: 'Others', value: 244 },
+    ],
+    status: 'ready',
+  },
+  {
+    id: 'r4',
+    name: 'Rental Tools Revenue',
+    type: 'rentals',
+    generatedBy: 'System',
+    generatedAt: '2024-03-18T09:00:00',
+    dateRange: { start: '2024-03-01', end: '2024-03-20' },
+    metrics: {
+      totalValue: 856000,
+      change: 145000,
+      changePercent: 20.5,
+    },
+    dataPoints: [
+      { label: 'Tractors', value: 456000 },
+      { label: 'Harvesters', value: 234000 },
+      { label: 'Sprayers', value: 89000 },
+      { label: 'Others', value: 77000 },
+    ],
+    status: 'pending',
+  },
+  {
+    id: 'r5',
+    name: 'Community Engagement Report',
+    type: 'communities',
+    generatedBy: 'Admin - Meera',
+    generatedAt: '2024-03-17T15:00:00',
+    dateRange: { start: '2024-03-01', end: '2024-03-20' },
+    metrics: {
+      totalValue: 8234,
+      change: 1245,
+      changePercent: 17.8,
+    },
+    dataPoints: [
+      { label: 'Posts', value: 2340 },
+      { label: 'Comments', value: 3456 },
+      { label: 'Likes', value: 2438 },
+    ],
+    status: 'ready',
+  },
+];
+
+// Crop Guide Data
+export const cropGuide: CropGuide[] = [
+  {
+    id: 'crop1',
+    name: 'Rice (Paddy)',
+    scientificName: 'Oryza sativa',
+    category: 'cereals',
+    season: 'kharif',
+    duration: '120-150 days',
+    waterNeed: 'high',
+    temperature: { min: 20, max: 32 },
+    soilType: ['Loamy', 'Clay loam', 'Alluvial'],
+    commonDiseases: ['Blast', 'Sheath rot', 'Bacterial leaf blight'],
+    pestManagement: ['Stem borer control', 'Leaf folder management', 'Case worm control'],
+    harvestTime: 'September-October',
+    yield: '40-60 quintal/hectare',
+    description: 'Rice is the staple food crop of India. It requires waterlogged conditions and warm climate. Proper irrigation management is crucial for good yield.',
+  },
+  {
+    id: 'crop2',
+    name: 'Wheat',
+    scientificName: 'Triticum aestivum',
+    category: 'cereals',
+    season: 'rabi',
+    duration: '120-140 days',
+    waterNeed: 'medium',
+    temperature: { min: 7, max: 20 },
+    soilType: ['Loamy', 'Clay loam', 'Well-drained'],
+    commonDiseases: ['Rust', 'Loose smut', 'Septoria'],
+    pestManagement: ['Armyworm control', 'Sawfly management', 'Termite control'],
+    harvestTime: 'March-April',
+    yield: '35-50 quintal/hectare',
+    description: 'Wheat is a major cereal crop grown in winter season. It prefers cool climate and moderate rainfall. Proper nitrogen application is essential.',
+  },
+  {
+    id: 'crop3',
+    name: 'Cotton',
+    scientificName: 'Gossypium hirsutum',
+    category: 'oilseeds',
+    season: 'kharif',
+    duration: '160-180 days',
+    waterNeed: 'high',
+    temperature: { min: 21, max: 30 },
+    soilType: ['Black soil', 'Loamy', 'Well-drained'],
+    commonDiseases: ['Leaf curl', 'Boll rot', 'Bacterial blight'],
+    pestManagement: ['Bollworm control', 'Mite management', 'Whitefly control'],
+    harvestTime: 'October-November',
+    yield: '15-20 quintal/hectare',
+    description: 'Cotton is a cash crop requiring high temperature and moderate rainfall. Insect management is critical for cotton cultivation.',
+  },
+  {
+    id: 'crop4',
+    name: 'Chickpea',
+    scientificName: 'Cicer arietinum',
+    category: 'pulses',
+    season: 'rabi',
+    duration: '100-120 days',
+    waterNeed: 'low',
+    temperature: { min: 10, max: 25 },
+    soilType: ['Well-drained', 'Loamy', 'Black soil'],
+    commonDiseases: ['Wilt', 'Ascochyta blight', 'Root rot'],
+    pestManagement: ['Pod borer control', 'Gram caterpillar', 'Aphid management'],
+    harvestTime: 'February-March',
+    yield: '15-20 quintal/hectare',
+    description: 'Chickpea is an important pulse crop providing protein. It requires less water and fertilizer compared to cereals.',
+  },
+  {
+    id: 'crop5',
+    name: 'Tomato',
+    scientificName: 'Solanum lycopersicum',
+    category: 'vegetables',
+    season: 'rabi',
+    duration: '60-90 days',
+    waterNeed: 'medium',
+    temperature: { min: 15, max: 25 },
+    soilType: ['Loamy', 'Well-drained'],
+    commonDiseases: ['Late blight', 'Early blight', 'Leaf curl'],
+    pestManagement: ['Fruit borer control', 'Whitefly management', 'Mite control'],
+    harvestTime: 'November-February',
+    yield: '400-500 quintal/hectare',
+    description: 'Tomato is a high-value vegetable crop. Proper training and pruning improve yield quality. Regular watering is essential.',
+  },
+  {
+    id: 'crop6',
+    name: 'Sugarcane',
+    scientificName: 'Saccharum officinarum',
+    category: 'cereals',
+    season: 'kharif',
+    duration: '10-14 months',
+    waterNeed: 'high',
+    temperature: { min: 21, max: 27 },
+    soilType: ['Loamy', 'Clay loam', 'Alluvial'],
+    commonDiseases: ['Red rot', 'Leaf scald', 'Smut'],
+    pestManagement: ['Top borer control', 'Internode borer', 'Shoot borer management'],
+    harvestTime: 'November-February',
+    yield: '700-900 quintal/hectare',
+    description: 'Sugarcane is a long-duration cash crop requiring good irrigation. It needs heavy nitrogen and potassium application.',
+  },
+  {
+    id: 'crop7',
+    name: 'Onion',
+    scientificName: 'Allium cepa',
+    category: 'vegetables',
+    season: 'rabi',
+    duration: '150-180 days',
+    waterNeed: 'medium',
+    temperature: { min: 13, max: 24 },
+    soilType: ['Well-drained', 'Loamy'],
+    commonDiseases: ['Purple blotch', 'Neck rot', 'Basal rot'],
+    pestManagement: ['Thrips management', 'Maggot control', 'Mite control'],
+    harvestTime: 'April-May',
+    yield: '250-400 quintal/hectare',
+    description: 'Onion is a major vegetable crop with good storage life. Proper curing after harvest is important for long storage.',
+  },
+  {
+    id: 'crop8',
+    name: 'Mango',
+    scientificName: 'Mangifera indica',
+    category: 'fruits',
+    season: 'kharif',
+    duration: 'Perennial',
+    waterNeed: 'medium',
+    temperature: { min: 24, max: 30 },
+    soilType: ['Well-drained', 'Loamy', 'Red soil'],
+    commonDiseases: ['Anthracnose', 'Powdery mildew', 'Die-back'],
+    pestManagement: ['Midge management', 'Stem borer control', 'Scale insect control'],
+    harvestTime: 'May-August',
+    yield: '50-100 quintal/hectare',
+    description: 'Mango is a perennial fruit crop. Regular pruning and pest management enhance productivity. Requires good drainage.',
+  },
+  {
+    id: 'crop9',
+    name: 'Turmeric',
+    scientificName: 'Curcuma longa',
+    category: 'spices',
+    season: 'kharif',
+    duration: '7-10 months',
+    waterNeed: 'high',
+    temperature: { min: 20, max: 30 },
+    soilType: ['Loamy', 'Well-drained', 'Black soil'],
+    commonDiseases: ['Leaf blotch', 'Rhizome rot', 'Leaf spot'],
+    pestManagement: ['Shoot borer control', 'Scale insect', 'Mealybug management'],
+    harvestTime: 'January-March',
+    yield: '20-25 quintal/hectare',
+    description: 'Turmeric is an important spice crop with medicinal properties. It requires humid climate and shade in summer.',
+  },
+  {
+    id: 'crop10',
+    name: 'Soybean',
+    scientificName: 'Glycine max',
+    category: 'oilseeds',
+    season: 'kharif',
+    duration: '95-120 days',
+    waterNeed: 'medium',
+    temperature: { min: 20, max: 30 },
+    soilType: ['Well-drained', 'Loamy', 'Black soil'],
+    commonDiseases: ['Rust', 'Frogeye leaf spot', 'Stem canker'],
+    pestManagement: ['Girdle beetle control', 'Semilooper management', 'Whitefly control'],
+    harvestTime: 'October-November',
+    yield: '18-22 quintal/hectare',
+    description: 'Soybean is a high-protein oilseed crop. It improves soil fertility through nitrogen fixation. Good rotational crop.',
+  },
 ];
